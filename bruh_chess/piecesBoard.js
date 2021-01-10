@@ -37,7 +37,7 @@ function createBoard(){
     board[4][0] = new queen("qb", "black", [4,0]);
 }
 
-// TODO finish move validation for each piece
+// TODO finish move validation for each piece, for strange rules if we want.
 function gamePiece(name, color, moveFunction, startPosition){
     this.name = name;
     this.color = color;
@@ -157,6 +157,18 @@ function knight(name, color, startPosition){
 
 function kingMove(x, y, color, _moved){
     let possibles = [];
+    let pairs = [[1,0], [1,1], [0,1], [-1,1], [-1,0], [-1,-1],[0,-1],[1,-1]];
+    for (var i = 0;i<8;i++){
+        let actual = [x+pairs[i][0], y + pairs[i][1]];
+        if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0){ //on the grid, check color
+            var rx = actual[0];
+            var ry = actual[1];
+            if (board[rx][ry] != undefined && board[rx][ry] != ""){ //color check
+                if (board[rx][ry].color === color) {continue;}
+            }
+            possibles.push(actual);
+        }
+    }
     return possibles;
 }
 
@@ -165,7 +177,22 @@ function king(name, color, startPosition){
 }
 
 function queenMove(x, y, color, _moved){
-    let possibles = [];
+    let possibles = [];         //check verticals and the diagonals in the same way as always, just double the pairs
+    let pairs = [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]];
+    for (var i = 0;i<8;i++){    
+        for (var k = 1;k<8;k++){
+            let actual = [x+k*pairs[i][0], y+k*pairs[i][1]];
+            if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0){ //move is in the grid
+                var rx = actual[0];
+                var ry = actual[1];
+                if (board[rx][ry] != undefined && board[rx][ry] != ""){//check the color
+                    if (board[rx][ry].color === color) break; //same color, break
+                    else {possibles.push(actual); break;}
+                }
+                possibles.push(actual);
+            }
+        }
+    }
     return possibles;
 }
 
@@ -175,5 +202,7 @@ function queen(name, color, startPosition){
 
 if (require.main === module) {
     createBoard();
-    console.log(board[1][7].getMoves());
+    board[3][6] = "";
+    board[4][6] = "";
+    console.log(board[4][7].getMoves());
 }
