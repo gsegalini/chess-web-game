@@ -135,16 +135,15 @@ function rook(name, color, startPosition){
 
 function knightMove(x, y, color, _moved){
     let possibles = [];
-    let pairs = [[2,1], [2,-1], [-1,2], [-2,-1]];
+    let pairs = [[2,1], [1,2], [2,-1], [1,-2], [-1,-2], [-2,-1],[-2,1],[-1,2]];
 
-    for (var i = 0;i<4;i++){
+    for (var i = 0;i<8;i++){
         let actual = [x+pairs[i][0], y + pairs[i][1]];
         if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0){ //on the grid, check color
             var rx = actual[0];
             var ry = actual[1];
-            console.log(rx + " " + ry);
             if (board[rx][ry] != undefined && board[rx][ry] != ""){ //color check
-                if (board[rx][ry].color === color) continue;
+                if (board[rx][ry].color === color) {continue;}
             }
             possibles.push(actual);
         }
