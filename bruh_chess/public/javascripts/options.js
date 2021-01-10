@@ -1,5 +1,5 @@
-function options(){
-    this.sound = true;
-    this.premove = true;
-    this.clickMoves = true;
+const options = {
+    sound:true,
+    premove:true,
+    clickMove:true,
 }
