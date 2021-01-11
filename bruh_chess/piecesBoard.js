@@ -8,7 +8,9 @@ module.exports = boardObject;
 function boardObject(){
 
     this.board = createBoard();
-
+    this.getPiece = function(coords){
+        return this.board[coords[0]][coords[1]];
+    }
     function createBoard(){
         let board = 
         [["", "", "", "", "", "", "", ""],
@@ -131,9 +133,6 @@ function boardObject(){
                 }
             }
         }
-
-
-
         return possibles;
     }
 

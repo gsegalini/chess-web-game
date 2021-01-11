@@ -2,7 +2,8 @@ const bObject = require("./piecesBoard");
 
 module.exports = gameObject;
 
-function gameObject(){
+function gameObject(id){
+    this.is = id;
     this.boardObj = new bObject();
     this.whiteAlive = [];
     this.blackAlive =[];
@@ -10,7 +11,23 @@ function gameObject(){
     this.blackDead = [];
     this.p1websocket = "placeholder";
     this.p2websocket = "placeholder";
+
     this.board = function(){return this.boardObj.board};
+    this.addPlayer = function(socket){
+        if (this.p1websocket === "placeholder"){ this.p1websocket = socket; return "white";}
+        else{ this.p2websocket = socket; return "black";}
+    }
+
+    this.validateMove = function(start, end){
+        var piece = this.board().getPiece(start);
+        if (piece === "" || piece === undefined){return false;}
+        var possibles = piece.getMoves();
+        return possibles.include(end);
+    }
+
+    this.movePiece = function(start, end){
+
+    }
     /**
      * possible statuses:
      * 0-JOINT no players
@@ -37,6 +54,6 @@ function gameObject(){
 if (require.main === module) {
     let game = new gameObject();
     console.table(game.board());
-    console.log(game.blackAlive);
+    console.log(game.boardObj.getPiece([0,0]).getMoves());
 
 }
