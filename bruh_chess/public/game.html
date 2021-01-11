@@ -2,124 +2,45 @@
 <html>
 <head>
   <title>BruhChess</title>
+  <script src="javascripts/options.js"></script>
+  <script src="javascripts/main.js"></script>
+  <link rel="stylesheet" href="stylesheets/style.css">
 </head>
 
 <body>
 
 <section class="left-block">
   <div class="title">
-    BruhChess
+    <img class="logo" src="images/BruhChess.svg"/>
   </div>
 
-  <button class="back-button"><</button> 
-  <button class="back-button">></button> 
+  <div class="left-container">
+    <button class="back-button"><</button> 
+    <button class="back-button">></button> 
+  
+    <ol>
+      <li>Last move example</li>
+    </ol>
+    <div class="settings">
+      <div class="premoves">Premoves</div>
+      <div class="click-move">Click move</div>
+      <div class="sound-toggle">Sound</div>
+    </div>
+    <div class="control-buttons">
+      <div class="time"><button id="resign">resign</button></div>   <!-- put it in series-->
+      <div class="time"><button id="abort">abort</button></div>
+    </div>
 
-  <ol>
-    <li>Last move example</li>
-  </ol>
-  <div class="settings">
-    <div class="premoves">Premoves</div>
-    <div class="click-move">Click move</div>
-    <div class="sound-toggle">Sound</div>
   </div>
 </section>
 
-<div class="control-buttons">
-  <div class="time"><button id="resign">resign</button></div>   <!-- put it in series-->
-  <div class="time"><button id="abort">abort</button></div>
-</div>
 
 <div class="right-block">
   <div class="top-player"></div>
 
-  <div class="chess-board">
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
 
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
-
-    <div class="row">
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-      <div class="column"></div>
-    </div>
+  <div id="chess-board" >
+    
 
   </div>
 
