@@ -5,7 +5,7 @@
 
     <script>
         const button = document.getElementById("button");
-        const socket = new WebSocket("ws://localhost:25565");
+        const socket = new WebSocket("ws://pizzozzano.zapto.org:25565"); //very temporary, only as i host this
         socket.onmessage = function(event){
             console.log(event.data);
         };
