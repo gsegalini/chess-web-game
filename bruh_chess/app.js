@@ -103,6 +103,7 @@ wss.on("connection", function connection(ws) {
           if(gameObj.validateMove(start, end)){
             gameObj.movePiece(start, end);
             gameObj.changeTurn();
+            con.send("Move made");
           }
           else{
             console.log("An invalid move was sent");
