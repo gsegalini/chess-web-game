@@ -11,6 +11,15 @@ function gameObject(){
     this.p1websocket = "placeholder";
     this.p2websocket = "placeholder";
     this.board = function(){return this.boardObj.board};
+    /**
+     * possible statuses:
+     * 0-JOINT no players
+     * 1-JOINT 1 player
+     * 2-JOINT 2 players
+     * W-WIN white wins
+     * B-WIN black wins
+     */
+    this.status = "0-JOINT";                
 
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){
