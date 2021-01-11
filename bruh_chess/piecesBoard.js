@@ -16,7 +16,7 @@ let board =
  */
 function createBoard(){
     for (let x = 0;x<8;x++){
-        board[x][1] = new pawn("pb"+(8-x), "black", [x,1]);
+        board[x][1] = new pawn("pb"+(8-x), "black", [x,1]);   // Why are these numbered backwards?
         board[x][6] = new pawn("pw"+x, "white", [x,6]);
     }
     board[0][0] = new rook("rb1", "black", [0,0]);
@@ -31,10 +31,10 @@ function createBoard(){
     board[5][0] = new bishop("bb0", "black", [5,0]);
     board[2][7] = new bishop("bw0", "white", [2,7]);
     board[5][7] = new bishop("bw1", "white", [5,7]);
-    board[3][7] = new king("kw", "white", [3,7]);
-    board[4][7] = new queen("qw", "white", [4,7]);
-    board[3][0] = new king("kb", "black", [3,0]);
-    board[4][0] = new queen("qb", "black", [4,0]);
+    board[4][7] = new king("kw", "white", [4,7]);
+    board[3][7] = new queen("qw", "white", [3,7]);
+    board[4][0] = new king("kb", "black", [4,0]);
+    board[3][0] = new queen("qb", "black", [3,0]);
 }
 
 // TODO finish move validation for each piece, for strange rules if we want.
@@ -53,7 +53,7 @@ function gamePiece(name, color, moveFunction, startPosition){
 function pawnMove(x, y, color, moved){
     let possibles = [];
     if (color === "white"){
-        if (board[x][y+1] === undefined) possibles.push([x, y+1]);
+        if (board[x][y+1] === undefined) possibles.push([x, y+1]);     // When i did testing undefined did not count as ""
         if (moved === 0)
             if (board[x][y+2] === undefined) possibles.push([x, y+2]);
         if (board[x+1][y+1] != undefined && board[x+1][y+1].color != color){
@@ -126,6 +126,9 @@ function rookMove(x, y, color, _moved){
             }
         }
     }
+
+
+
     return possibles;
 }
 
@@ -169,6 +172,43 @@ function kingMove(x, y, color, _moved){
             possibles.push(actual);
         }
     }
+
+    if(_moved === 0) {
+        if(color === "white") {
+            if(x == 4 && y == 7) {
+                if(board[7][7].name === "rw1" && board[7][7].moved === 0) {
+                    if(board[6][7] == "" && board[5][7] == "") {
+                        console.log("castle kingside!");
+                        possibles.push([6,7]);
+                    }
+                } 
+                if(board[0][7].name === "rw0" && board[0][7].moved === 0) {
+                    if(board[1][7] == "" && board[2][7] == "" && board[3][7] == "") {
+                        console.log("castle queenside!");
+                        possibles.push([2,7]);
+                    }
+                }
+            }
+
+        } else {
+            if(x == 4 && y == 0) {
+                if(board[7][0].name === "rb0" && board[7][0].moved === 0) {
+                    if(board[6][0] == "" && board[5][0] == "") {
+                        console.log("castle kingside!");
+                        possibles.push([6,0]);
+                    }
+                } 
+                if(board[0][0].name === "rb1" && board[0][0].moved === 0) {
+                    if(board[1][0] == "" && board[2][0] == "" && board[3][0] == "") {
+                        console.log("castle queenside!");
+                        possibles.push([2,0]);
+                    }
+                }
+            }
+        }
+    }
+
+
     return possibles;
 }
 
@@ -202,7 +242,10 @@ function queen(name, color, startPosition){
 
 if (require.main === module) {
     createBoard();
-    board[3][6] = "";
-    board[4][6] = "";
-    console.log(board[4][7].getMoves());
+    board[1][0] = "";
+    board[2][0] = "";
+    board[3][0] = "";
+    board[5][0] = "";
+    board[6][0] = "";
+    console.table(board[4][0].getMoves());
 }
