@@ -9,14 +9,14 @@ function gameObject(id){
     this.blackAlive =[];
     this.whiteDead = [];
     this.blackDead = [];
-    this.p1websocket = "placeholder";
-    this.p2websocket = "placeholder";
+    this.whiteWebSocket = "placeholder";
+    this.blackWebSocket = "placeholder";
     this.turn = "white";
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){
-        if (this.p1websocket === "placeholder"){ this.p1websocket = socket; return "white";}
-        else{ this.p2websocket = socket; return "black";}
+        if (this.whiteWebSocket === "placeholder"){ this.whiteWebSocket = socket; return "white";}
+        else{ this.blackWebSocket = socket; return "black";}
     }
     this.changeTurn = function(){
         if (this.turn === "white") this.turn = "black";
@@ -41,15 +41,16 @@ function gameObject(id){
             var index;
             if (tempA.color === "white"){
                 this.whiteDead.push(tempA.name);
-                index = this.whiteAlive.indexOf(tempA);
+                index = this.whiteAlive.indexOf(tempA.name);
                 this.whiteAlive.splice(index, 1);
             }
             else{
                 this.blackDead.push(tempA.name);
-                index = this.blackAlive.indexOf(tempA);
+                index = this.blackAlive.indexOf(tempA.name);
                 this.blackAlive.splice(index, 1);
             }
         }
+        tempP.increaseMoved();
         this.board()[end[0]][end[1]] = tempP;
     }
     /**

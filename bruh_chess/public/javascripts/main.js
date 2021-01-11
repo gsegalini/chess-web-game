@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-
+/**
+ * TODO find a way to connect a function sending websockets messages to the pieces images
+ */
 
 
 let activeMatch;
