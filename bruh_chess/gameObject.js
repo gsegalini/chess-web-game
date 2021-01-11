@@ -3,7 +3,7 @@ const bObject = require("./piecesBoard");
 module.exports = gameObject;
 
 function gameObject(id){
-    this.is = id;
+    this.id = id;
     this.boardObj = new bObject();
     this.whiteAlive = [];
     this.blackAlive =[];

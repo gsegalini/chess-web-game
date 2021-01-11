@@ -17,10 +17,10 @@ let server = http.createServer(app);
 
 app.get("/game", indexRouter);
 
-app.get("/splash", indexRouter);
+app.get("/", indexRouter);
 
+app.get("/test", indexRouter)
 
-var server = http.createServer(app);
 const wss = new websocket.Server({ server });
 
 var websockets = {}; //key:websocket.id, value:gameObject
@@ -50,7 +50,6 @@ wss.on("connection", function connection(ws) {
   con.id = socketID++;
   let playerType = currentGame.addPlayer(con);
   websockets[con.id] = currentGame;
-
   console.log(
     "Player %s placed in game %s as %s",
     con.id,
@@ -70,7 +69,7 @@ wss.on("connection", function connection(ws) {
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
   if (currentGame.p1websocket != "placeholder" && currentGame.p2websocket != "placeholder") {
-    currentGame = new Game(gamesInitialized++);
+    currentGame = new gameObject(startedGames++);
   }
 
   /*
@@ -84,21 +83,49 @@ wss.on("connection", function connection(ws) {
 
     let gameObj = websockets[con.id];
     let isWhite = gameObj.p1websocket == con ? true : false;
+    //switch case for types of messages
 
-    /**
-     * check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
-     */
-    if (isWhite && gameObj.turn === "white"){
-      //get move from guy
-      let start = [] //starting piece place
-      let end = [] // ending piece place
-      if(gameObj.validateMove(start, end)){
-        gameObj.movePiece(start, end);
-      }
-      else{
-        console.log("you inputted an invalid move, sneaky bricky cheater");
-      }
+    switch (oMsg.type){
+      case messages.T_OFFER_DRAW:
+        //send back draw to other guy
+        break;
+
+      case messages.T_RESIGN:
+        //send win to other guy
+        break;
+
+      case messages.T_POSSIBLE_MOVE:
+        //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
+        if (isWhite && gameObj.turn === "white"){
+          //get move from guy
+          let start = oMsg.data[0]; //starting piece place
+          let end = oMsg.data[1]; // ending piece place
+          if(gameObj.validateMove(start, end)){
+            gameObj.movePiece(start, end);
+            gameObj.changeTurn();
+          }
+          else{
+            console.log("you inputted an invalid move, sneaky bricky cheater");
+          }
+        }
+        else if (!isWhite && gameObj.turn === "black"){
+          //get move from guy
+          let start = oMsg.data[0]; //starting piece place
+          let end = oMsg.data[1]; // ending piece place
+          if(gameObj.validateMove(start, end)){
+            gameObj.movePiece(start, end);
+            gameObj.changeTurn();
+          }
+          else{
+            console.log("you inputted an invalid move, sneaky bricky cheater");
+          }          
+        }
+        break;
+      
+      
     }
+    
+
 
     
   });
