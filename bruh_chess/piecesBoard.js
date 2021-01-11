@@ -16,7 +16,7 @@ let board =
  */
 function createBoard(){
     for (let x = 0;x<8;x++){
-        board[x][1] = new pawn("pb"+(8-x), "black", [x,1]);   // Why are these numbered backwards?
+        board[x][1] = new pawn("pb"+(8-x), "black", [x,1]);   // Why are these numbered backwards?, because they are numbered "correctly" if we look at them from their side
         board[x][6] = new pawn("pw"+x, "white", [x,6]);
     }
     board[0][0] = new rook("rb1", "black", [0,0]);
@@ -53,9 +53,9 @@ function gamePiece(name, color, moveFunction, startPosition){
 function pawnMove(x, y, color, moved){
     let possibles = [];
     if (color === "white"){
-        if (board[x][y+1] === undefined) possibles.push([x, y+1]);     // When i did testing undefined did not count as ""
+        if (board[x][y+1] === undefined || board[x][y+1] === "") possibles.push([x, y+1]);     // When i did testing undefined did not count as "" ye i know, i corrected it only in latters
         if (moved === 0)
-            if (board[x][y+2] === undefined) possibles.push([x, y+2]);
+            if (board[x][y+2] === undefined || board[x][y+2] === "") possibles.push([x, y+2]);
         if (board[x+1][y+1] != undefined && board[x+1][y+1].color != color){
             possibles.push[x+1, y+1];
         }
@@ -64,9 +64,9 @@ function pawnMove(x, y, color, moved){
         }
     }
     else{
-        if (board[x][y-1] === undefined) possibles.push([x, y-1]);
+        if (board[x][y-1] === undefined || board[x][y-1] === "") possibles.push([x, y-1]);
         if (moved === 0)
-            if (board[x][y-2] === undefined) possibles.push([x, y-2]);
+            if (board[x][y-2] === undefined || board[x][y-2] === "") possibles.push([x, y-2]);
         if (board[x+1][y-1] != undefined && board[x+1][y-1].color != color){
             possibles.push[x+1, y-1];
         }
