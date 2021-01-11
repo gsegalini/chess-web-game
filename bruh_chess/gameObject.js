@@ -19,14 +19,34 @@ function gameObject(id){
     }
 
     this.validateMove = function(start, end){
-        var piece = this.board().getPiece(start);
+        var piece = this.boardObj.getPiece(start);
         if (piece === "" || piece === undefined){return false;}
         var possibles = piece.getMoves();
-        return possibles.include(end);
+        for (var i = 0;i<possibles.length;i++){
+            var a = possibles[i];
+            if (a[0] == end[0] && a[1] == end[1]) return true;
+        }
+        return false;
     }
 
     this.movePiece = function(start, end){
-
+        var tempP = this.boardObj.getPiece(start);
+        this.board()[start[0]][start[1]] = "";
+        var tempA = this.boardObj.getPiece(end);
+        if (tempA != undefined && tempA != ""){//tempA is dead
+            var index;
+            if (tempA.color === "white"){
+                this.whiteDead.push(tempA.name);
+                index = this.whiteAlive.indexOf(tempA);
+                this.whiteAlive.splice(index, 1);
+            }
+            else{
+                this.blackDead.push(tempA.name);
+                index = this.blackAlive.indexOf(tempA);
+                this.blackAlive.splice(index, 1);
+            }
+        }
+        this.board()[end[0]][end[1]] = tempP;
     }
     /**
      * possible statuses:
@@ -54,6 +74,7 @@ function gameObject(id){
 if (require.main === module) {
     let game = new gameObject();
     console.table(game.board());
-    console.log(game.boardObj.getPiece([0,0]).getMoves());
-
+    console.log(game.validateMove([0,1], [0,2]));
+    game.movePiece([0,0], [0,7]);
+    console.table(game.board());
 }

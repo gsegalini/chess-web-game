@@ -11,6 +11,19 @@ function boardObject(){
     this.getPiece = function(coords){
         return this.board[coords[0]][coords[1]];
     }
+    setupPieces(this.board);
+
+
+    function setupPieces(board){
+        for (var x = 0;x<8;x++){
+            for (var y = 0;y<8;y++){
+                if (board[x][y] != undefined && board[x][y] != ""){
+                    board[x][y].setBoard(board);
+                }
+            }
+        }
+    }
+
     function createBoard(){
         let board = 
         [["", "", "", "", "", "", "", ""],
@@ -44,29 +57,31 @@ function boardObject(){
         return board;
     }
 
+
     // TODO finish move validation for each piece, for strange rules if we want.
-    function gamePiece(name, color, moveFunction, startPosition){
+    function gamePiece(name, color, moveFunction, startPosition, board){
         this.name = name;
         this.color = color;
         this.move = moveFunction;
         this.moved = 0;
         this.position = startPosition;
-
+        this.board = null;
         this.increaseMoved = function(){this.moved++};
         this.setPosition = function(x,y){this.position = [x,y]};
         this.getMoves = function(){return this.move(this.position[0], this.position[1], this.color, this.moved)};
+        this.setBoard = function(board){this.board = board};
     }
 
     function pawnMove(x, y, color, moved){
         let possibles = [];
-        if (color === "white"){
+        if (color === "black"){
             if (this.board[x][y+1] === undefined || this.board[x][y+1] === "") possibles.push([x, y+1]);     // When i did testing undefined did not count as "" ye i know, i corrected it only in latters
             if (moved === 0)
                 if (this.board[x][y+2] === undefined || this.board[x][y+2] === "") possibles.push([x, y+2]);
-            if (this.board[x+1][y+1] != undefined && this.board[x+1][y+1].color != color){
+            if ((x+1) < 8 && this.board[x+1][y+1] != undefined && this.board[x+1][y+1] != "" && this.board[x+1][y+1].color != color){
                 possibles.push[x+1, y+1];
             }
-            if (this.board[x-1][y+1] != undefined && this.board[x-1][y+1].color != color){
+            if ((x-1) >= 0 && this.board[x-1][y+1] != undefined && this.board[x-1][y+1] != "" && this.board[x-1][y+1].color != color){
                 possibles.push[x-1, y+1];
             }
         }
@@ -74,10 +89,10 @@ function boardObject(){
             if (this.board[x][y-1] === undefined || this.board[x][y-1] === "") possibles.push([x, y-1]);
             if (moved === 0)
                 if (this.board[x][y-2] === undefined || this.board[x][y-2] === "") possibles.push([x, y-2]);
-            if (this.board[x+1][y-1] != undefined && this.board[x+1][y-1].color != color){
+            if ((x+1) < 8 && this.board[x+1][y-1] != undefined && this.board[x+1][y-1] != "" && this.board[x+1][y-1].color != color){
                 possibles.push[x+1, y-1];
             }
-            if (this.board[x-1][y-1] != undefined && this.board[x-1][y-1].color != color){
+            if ((x-1) >= 0 && this.board[x-1][y-1] != undefined && this.board[x-1][y-1] != "" && this.board[x-1][y-1].color != color){
                 possibles.push[x-1, y-1];
             }
         }
