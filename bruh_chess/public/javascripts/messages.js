@@ -41,7 +41,7 @@
      * server to both client: move from server to update board
      */
     exports.T_CONFIRMED_MOVE = "CONFIRMED-MOVE";
-    exports.O_CONFIERMED_MOVE = {
+    exports.O_CONFIRMED_MOVE = {
         type: exports.T_CONFIRMED_MOVE,
         data: null
     }

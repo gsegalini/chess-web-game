@@ -68,7 +68,7 @@ wss.on("connection", function connection(ws) {
    * a new game object is created;
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
-  if (currentGame.p1websocket != "placeholder" && currentGame.p2websocket != "placeholder") {
+  if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
     currentGame = new gameObject(startedGames++);
   }
 
@@ -82,7 +82,7 @@ wss.on("connection", function connection(ws) {
     let oMsg = JSON.parse(message);
 
     let gameObj = websockets[con.id];
-    let isWhite = gameObj.p1websocket == con ? true : false;
+    let isWhite = gameObj.whiteWebSocket == con ? true : false;
     //switch case for types of messages
 
     switch (oMsg.type){
@@ -142,15 +142,15 @@ wss.on("connection", function connection(ws) {
          * close it
          */
         try {
-          gameObj.p1websocket.close();
-          gameObj.p1websocket = "placeholder";
+          gameObj.whiteWebSocket.close();
+          gameObj.whiteWebSocket = "placeholder";
         } catch (e) {
           console.log("White closing: " + e);
         }
 
         try {
-          gameObj.p2websocket.close();
-          gameObj.p1websocket = "placeholder";
+          gameObj.blackWebSocket.close();
+          gameObj.whiteWebSocket = "placeholder";
         } catch (e) {
           console.log("Black closing: " + e);
         }
