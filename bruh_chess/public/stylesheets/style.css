@@ -1,8 +1,73 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:0;
+}
+
 body {
-  padding: 50px;
+  padding-top: 20px;
+  padding-left:50px;
+  background: #343434;
+  display:flex;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+
 a {
   color: #00B7FF;
+}
+
+
+
+/**************   Left side  ************/
+.left-block {
+  width:442px;
+  height: 800px;
+}
+.logo {
+  width:350px;
+}
+
+.title {
+  height:7%;
+}
+
+.left-container {
+  background: #2B2B2B;
+  height:600px;
+  
+}
+
+
+/**************   Right side  ************/
+.right-block {
+  padding-left: 65px;
+  width: 600px;
+  height: 800px;
+}
+
+.top-player {
+  height:7%;
+}
+
+/**************   Chess Board  ************/
+.column {
+  width: 75px;
+  height: 75px;
+}
+
+.white-block {
+  background-color: white;
+}
+
+.piece {
+  width: 75px;
+  height: 75px;
+}
+
+#chess-board {
+  width: 600px;
+  height: 600px;
+  background-color: #C5CBD3;
+  display:flex;
 }
