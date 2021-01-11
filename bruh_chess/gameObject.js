@@ -50,6 +50,7 @@ function gameObject(id){
                 this.blackAlive.splice(index, 1);
             }
         }
+        tempP.increaseMoved();
         this.board()[end[0]][end[1]] = tempP;
     }
     /**

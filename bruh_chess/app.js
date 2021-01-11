@@ -96,7 +96,7 @@ wss.on("connection", function connection(ws) {
 
       case messages.T_POSSIBLE_MOVE:
         //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
-        if (isWhite && gameObj.turn === "white"){
+        if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black"){
           //get move from guy
           let start = oMsg.data[0]; //starting piece place
           let end = oMsg.data[1]; // ending piece place
@@ -105,20 +105,11 @@ wss.on("connection", function connection(ws) {
             gameObj.changeTurn();
           }
           else{
-            console.log("you inputted an invalid move, sneaky bricky cheater");
+            console.log("An invalid move was sent");
           }
         }
-        else if (!isWhite && gameObj.turn === "black"){
-          //get move from guy
-          let start = oMsg.data[0]; //starting piece place
-          let end = oMsg.data[1]; // ending piece place
-          if(gameObj.validateMove(start, end)){
-            gameObj.movePiece(start, end);
-            gameObj.changeTurn();
-          }
-          else{
-            console.log("you inputted an invalid move, sneaky bricky cheater");
-          }          
+        else{
+          console.log("Wrong turn");
         }
         break;
       
@@ -136,7 +127,6 @@ wss.on("connection", function connection(ws) {
      * source: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
      */
     console.log(con.id + " disconnected ...");
-
     if (code == "1001") {
       /*
        * if possible, abort the game; if not, the game is already completed
