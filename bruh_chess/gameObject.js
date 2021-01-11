@@ -1,11 +1,15 @@
 const bObject = require("./piecesBoard");
 
+module.exports = gameObject;
+
 function gameObject(){
     this.boardObj = new bObject();
     this.whiteAlive = [];
     this.blackAlive =[];
     this.whiteDead = [];
     this.blackDead = [];
+    this.p1websocket = "placeholder";
+    this.p2websocket = "placeholder";
     this.board = function(){return this.boardObj.board};
 
     for (var x = 0;x<8;x++){
