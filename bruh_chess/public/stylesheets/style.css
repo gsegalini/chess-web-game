@@ -70,6 +70,19 @@ a {
   background-color: #A0C9FF;
 }
 
+.container-movable {
+  position:relative;
+}
+.movable {
+  position:absolute;
+  background-color: #79B2FF;
+  border-radius: 100px;
+  top:25px;
+  left:25px;
+  width: 25px;
+  height: 25px;
+}
+
 #chess-board {
   position:relative;
   width: 600px;
