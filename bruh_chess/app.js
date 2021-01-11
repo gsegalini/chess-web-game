@@ -25,7 +25,9 @@ const wss = new websocket.Server({ server });
 
 var websockets = {}; //key:websocket.id, value:gameObject
 
-
+/**
+ * TODO create websockets helper functions, put them everywhere we need them.
+ */
 setInterval(function() {
   for (let i in websockets) {
     if (Object.prototype.hasOwnProperty.call(websockets,i)) {
@@ -107,6 +109,7 @@ wss.on("connection", function connection(ws) {
           }
           else{
             console.log("An invalid move was sent");
+            con.send("Move")
           }
         }
         else{
