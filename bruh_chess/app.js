@@ -10,7 +10,7 @@ var gameObject = require("./gameObject");
 
 var port = process.argv[2];
 var app = express();
-
+var websockets = {};
 app.use(express.static(__dirname + "/public"));
 http.createServer(app).listen(port);
 
