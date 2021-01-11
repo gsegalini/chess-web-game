@@ -41,12 +41,12 @@ function gameObject(id){
             var index;
             if (tempA.color === "white"){
                 this.whiteDead.push(tempA.name);
-                index = this.whiteAlive.indexOf(tempA);
+                index = this.whiteAlive.indexOf(tempA.name);
                 this.whiteAlive.splice(index, 1);
             }
             else{
                 this.blackDead.push(tempA.name);
-                index = this.blackAlive.indexOf(tempA);
+                index = this.blackAlive.indexOf(tempA.name);
                 this.blackAlive.splice(index, 1);
             }
         }
