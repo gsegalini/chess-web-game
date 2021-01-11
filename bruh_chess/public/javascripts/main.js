@@ -17,7 +17,6 @@ window.addEventListener('load', function(){
 function draw(match) {
   let htmlBoard = document.getElementById("chess-board");
   let i = 0;
-
   let x = 0;
   let y = 0;
 
@@ -40,41 +39,50 @@ function draw(match) {
         const htmlImage = document.createElement("IMG");
         htmlImage.classList.add("piece");
         htmlImage.style.position = "absolute";
+        htmlImage.style.zIndex = "10"
 
         htmlImage.style.left = x*75 + "px";
         htmlImage.style.top = y*75 + "px";
+        
+        column.htmlRef = htmlImage;
 
-        htmlImage.addEventListener("mousedown", function(e) {
-          match.pieceHeld = true;
-          console.log("up");
+        const color = column.color;
+        const piece = lookup[column.name];
+
+        htmlImage.classList.add(column.name);
+        const loc = "images/" + color + "_" + piece + ".svg";
+
+        htmlImage.setAttribute("src", loc);
+        htmlImage.setAttribute('draggable', false);
+
+
+
+        htmlImage.addEventListener("mousedown", function() {
+            htmlImage.parentElement.classList.add("focused");
+          htmlImage.style.zIndex = "1000"
+          match.pieceHeld = htmlImage.classList[1];
         }, true)
-
+        
         htmlImage.addEventListener("mouseup", function(e) {
-          match.pieceHeld = false;
-          console.log("down");
+          htmlImage.parentElement.classList.remove("focused");
+          htmlImage.style.zIndex = "10"
+          match.pieceHeld = "";
         }, true)
-
+        
         htmlImage.addEventListener('mousemove', function(event) {
           event.preventDefault();
           const offset = htmlBoard.getBoundingClientRect();
-
-          if (match.pieceHeld) {
+          if (match.pieceHeld == htmlImage.classList[1]) {
             const xCord = event.pageX - offset.left - 37;
             const yCord = event.pageY - offset.top - 45;
             htmlImage.style.left = xCord + "px";
             htmlImage.style.top = yCord + "px";
-              console.log(event.pageY - offset.top);
           }
       }, true);
 
 
 
-        const color = column.color;
-        const piece = lookup[column.name];
-        const loc = "images/" + color + "_" + piece + ".svg";
 
-        htmlImage.setAttribute("src", loc);
-        htmlImage.setAttribute('draggable', false);
         htmlColumn.appendChild(htmlImage);
       }
       
@@ -106,7 +114,7 @@ function Match() {
   this.myDeadPieces = [];
   this.opponentDeadPieces = [];
 
-  this.pieceHeld = false;
+  this.pieceHeld = "";
 
 }
 
@@ -166,6 +174,8 @@ function gamePiece(name, color, moveFunction, startPosition, board){
     this.moved = 0;
     this.position = startPosition;
     this.board = null;
+    this.htmlRef = null;
+
     this.increaseMoved = function(){this.moved++};
     this.setPosition = function(x,y){this.position = [x,y]};
     this.getMoves = function(){return this.move(this.position[0], this.position[1], this.color, this.moved)};

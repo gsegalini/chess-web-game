@@ -66,10 +66,22 @@ a {
   height: 75px;
 }
 
+.focused {
+  background-color: #A0C9FF;
+}
+
 #chess-board {
   position:relative;
   width: 600px;
   height: 600px;
   background-color: #C5CBD3;
   display:flex;
+
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /*
 }
