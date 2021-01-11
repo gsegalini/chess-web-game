@@ -35,7 +35,7 @@ function boardObject(){
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""]];
         for (let x = 0;x<8;x++){
-            board[x][1] = new pawn("pb"+(8-x), "black", [x,1]);   // Why are these numbered backwards?, because they are numbered "correctly" if we look at them from their side
+            board[x][1] = new pawn("pb"+(x), "black", [x,1]);   // Why are these numbered backwards?, because they are numbered "correctly" if we look at them from their side
             board[x][6] = new pawn("pw"+x, "white", [x,6]);
         }
         board[0][0] = new rook("rb1", "black", [0,0]);
