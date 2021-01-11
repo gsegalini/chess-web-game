@@ -31,7 +31,7 @@ function createBoard(){
     board[5][0] = new bishop("bb0", "black", [5,0]);
     board[2][7] = new bishop("bw0", "white", [2,7]);
     board[5][7] = new bishop("bw1", "white", [5,7]);
-    board[4][7] = new king("kw", "white", [4,7]);
+    board[4][7] = new king("kw", "white", [4,7]);    // I swapped both kings and q
     board[3][7] = new queen("qw", "white", [3,7]);
     board[4][0] = new king("kb", "black", [4,0]);
     board[3][0] = new queen("qb", "black", [3,0]);
