@@ -239,7 +239,9 @@ function queenMove(x, y, color, _moved){
 function queen(name, color, startPosition){
     return new gamePiece(name, color, queenMove, startPosition);
 }
-
+/**
+ * testing lines, they start only if executing this file with node
+ */
 if (require.main === module) {
     createBoard();
     board[1][0] = "";
