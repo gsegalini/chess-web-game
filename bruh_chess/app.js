@@ -84,9 +84,22 @@ wss.on("connection", function connection(ws) {
 
     let gameObj = websockets[con.id];
     let isWhite = gameObj.p1websocket == con ? true : false;
+
     /**
      * check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
      */
+    if (isWhite && gameObj.turn === "white"){
+      //get move from guy
+      let start = [] //starting piece place
+      let end = [] // ending piece place
+      if(gameObj.validateMove(start, end)){
+        gameObj.movePiece(start, end);
+      }
+      else{
+        console.log("you inputted an invalid move, sneaky bricky cheater");
+      }
+    }
+
     
   });
 

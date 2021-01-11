@@ -11,13 +11,17 @@ function gameObject(id){
     this.blackDead = [];
     this.p1websocket = "placeholder";
     this.p2websocket = "placeholder";
+    this.turn = "white";
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){
         if (this.p1websocket === "placeholder"){ this.p1websocket = socket; return "white";}
         else{ this.p2websocket = socket; return "black";}
     }
-
+    this.changeTurn = function(){
+        if (this.turn === "white") this.turn = "black";
+        else this.turn = "white";
+    }
     this.validateMove = function(start, end){
         var piece = this.boardObj.getPiece(start);
         if (piece === "" || piece === undefined){return false;}
