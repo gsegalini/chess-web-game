@@ -55,13 +55,12 @@ function gameObject(id){
     }
     /**
      * possible statuses:
-     * 0-JOINT no players
-     * 1-JOINT 1 player
-     * 2-JOINT 2 players
+     * ABORTED
+     * WAITING
      * W-WIN white wins
      * B-WIN black wins
      */
-    this.status = "0-JOINT";                
+    this.status = "WAITING";                
 
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){
@@ -79,7 +78,8 @@ function gameObject(id){
 if (require.main === module) {
     let game = new gameObject();
     console.table(game.board());
-    console.log(game.validateMove([0,1], [0,2]));
-    game.movePiece([0,0], [0,7]);
+    console.log(game.validateMove([0,6], [0,5]));
+    game.movePiece([0,6], [0,5]);
+    console.log(game.validateMove([1,7], [0,5]));
     console.table(game.board());
 }

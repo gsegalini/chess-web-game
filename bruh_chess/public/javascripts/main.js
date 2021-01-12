@@ -77,6 +77,7 @@ function draw(match) {
 
             // Draws points to which the piece can move
             const moves = piece.getMoves();
+            //console.table(piece.board);
             for (let index = 0; index < moves.length; index++) {
 
               const container = document.createElement("div");
@@ -123,7 +124,7 @@ function draw(match) {
                 // makes the positional change
                 match.board[piece.position[0]][piece.position[1]] = "";
                 piece.setPosition(moves[index][0], moves[index][1])
-                match.board[piece.position[0]][piece.position[1]] = piece.name;
+                match.board[piece.position[0]][piece.position[1]] = piece; //it is not piece.name, but piece
 
                 // focuses the move
                 const currentLoc = String(piece.position[0]) + String(piece.position[1])
