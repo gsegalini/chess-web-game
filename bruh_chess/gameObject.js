@@ -55,6 +55,7 @@ function gameObject(id){
     }
     /**
      * possible statuses:
+     * ABORTED
      * WAITING
      * W-WIN white wins
      * B-WIN black wins
