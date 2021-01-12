@@ -7,9 +7,9 @@
 
 let activeMatch;
 
-
 window.addEventListener('load', function () {
-  activeMatch = new Match();
+  const myColor = "white";
+  activeMatch = new Match(myColor);
   draw(activeMatch);
 
 });
@@ -18,16 +18,30 @@ window.addEventListener('load', function () {
 function draw(match) {
   let htmlBoard = document.getElementById("chess-board");
   let i = 0;
-  let x = 0;
   let y = 0;
+  let x = 0;
 
+  // Checks which side
+  if(match.myColor == "white") {
+    x = 0;
+  } else {
+    x = 7;
+  }
   for (row of match.board) {
-
+    
+    // Creates the row element
     const htmlRow = document.createElement("div");
     htmlRow.classList.add("row");
-    y = 0;
+    
+    // Checks which side
+    if(match.myColor == "white") {
+      y = 0;
+    } else {
+      y = 7;
+    }
 
     for (column of row) {
+
       // makes blocks
       const htmlColumn = document.createElement("div");
       htmlColumn.classList.add("column");
@@ -43,12 +57,11 @@ function draw(match) {
         htmlImage.classList.add("piece");
         htmlImage.style.position = "absolute";
         htmlImage.style.zIndex = "10"
-
         htmlImage.style.left = x * 75 + "px";
         htmlImage.style.top = y * 75 + "px";
 
+        // gives the html attributes to the piece
         column.htmlPosition = [(x * 75 + "px"), (y * 75 + "px")];
-
         column.htmlRef = htmlImage;
 
         const color = column.color;
@@ -61,7 +74,7 @@ function draw(match) {
         htmlImage.setAttribute('draggable', false);
 
         // Only active pieces get listeners
-        if (column.color == "white") {
+        if (column.color == match.myColor) {
 
           // Click and hold
           htmlImage.addEventListener("mousedown", function () {
@@ -77,7 +90,7 @@ function draw(match) {
 
             // Draws points to which the piece can move
             const moves = piece.getMoves();
-            //console.table(piece.board);
+            // console.table(moves);
             for (let index = 0; index < moves.length; index++) {
 
               const container = document.createElement("div");
@@ -92,6 +105,7 @@ function draw(match) {
               document.getElementById(id).appendChild(container);
             }
             
+            // Adds focus attributes
             const currentLoc = String(piece.position[0]) + String(piece.position[1])
             document.getElementById(currentLoc).classList.add("focused");
             htmlImage.style.zIndex = "1000"
@@ -107,19 +121,40 @@ function draw(match) {
             const offset = htmlBoard.getBoundingClientRect();
             const xCord = event.clientX - offset.left;
             const yCord = event.clientY - offset.top;
+            // Find position based on pov
+            const position = match.myColor == "white" ? getBoardPositionWhite(xCord, yCord) : getBoardPositionBlack(xCord, yCord);
             
-            const position = getBoardPosition(xCord, yCord);
-            
+            // Check if the move was valid
             const moves = piece.getMoves();
             for (let index = 0; index < moves.length; index++) {
               const id = String(moves[index][0]) + String(moves[index][1]);
-              if(id == position) {
 
-                document.querySelectorAll('.container-movable').forEach(e => e.remove());
+              // Confirms move
+              if(id == position) {
+                document.querySelectorAll(".container-movable").forEach(e => e.remove());
                 const normalCord = normalizeCoordinates(xCord, yCord);
-                console.log(normalCord);
                 piece.htmlPosition = normalCord;
                 piece.increaseMoved();
+
+                // Checks for capturing piece
+                const checkBlock = match.board[moves[index][0]][moves[index][1]];
+                if(checkBlock != "") {
+                  match.opponentDeadPieces.push(checkBlock);
+                  drawDeadPieces(checkBlock);
+                  const nameOfRemoved = checkBlock.name;
+                  document.querySelectorAll("."+nameOfRemoved).forEach(e => e.remove());
+                  match.opponentPieces.filter((elem) => {
+                    return elem != checkBlock
+                  });
+                  match.board[moves[index][0]][moves[index][1]] = "";
+                }
+
+                // Records history 
+                match.moveHistory.push({
+                  piece: piece,
+                  startPos: [piece.position[0],piece.position[1]],
+                  endPos: [moves[index][0], moves[index][1]],
+                })
                 
                 // makes the positional change
                 match.board[piece.position[0]][piece.position[1]] = "";
@@ -134,6 +169,7 @@ function draw(match) {
               }
             }
             
+            // Resets defaults
             htmlImage.style.zIndex = "10"
             match.pieceHeld = "";
             htmlImage.style.left = piece.htmlPosition[0];
@@ -144,9 +180,11 @@ function draw(match) {
           htmlImage.addEventListener('mousemove', function (event) {
             event.preventDefault();
             const offset = htmlBoard.getBoundingClientRect();
+            // Checks correspondence
             if (match.pieceHeld == htmlImage.classList[1]) {
               const xCord = event.clientX - offset.left - 37;
               const yCord = event.clientY - offset.top - 45;
+              // Removes the move if it goes out of focus
               if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
                 const piece = match.myPieces.find((x) => {
                   return x.name == htmlImage.classList[1];
@@ -169,22 +207,33 @@ function draw(match) {
 
       htmlRow.appendChild(htmlColumn);
       i++;
-      y++;
+
+
+      if(match.myColor == "white") {
+        y++;
+      } else {
+        y--;
+      }
     }
     i++;
     htmlBoard.appendChild(htmlRow);
-    x++;
+    if(match.myColor == "white") {
+      x++;
+    } else {
+      x--;
+    }
   }
 
 
 }
 
 
-function Match() {
+function Match(color) {
+  this.myColor = color;
   this.myPieces = [];
   this.opponentPieces = [];
 
-  this.board = createBoard(this.myPieces, this.opponentPieces);
+  this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) :createBoard(this.opponentPieces, this.myPieces);
   setupPieces(this.board);
 
   this.getPiece = function (coords) {
@@ -199,8 +248,32 @@ function Match() {
 
 }
 
-function getBoardPosition(x, y) {
+
+function drawDeadPieces(piece) {
+  
+  const htmlImage = document.createElement("IMG");
+  htmlImage.classList.add("deadPiece");
+  htmlImage.style.zIndex = "10"
+
+  const color = piece.color;
+  const nameOfPiece = lookup[piece.name];
+
+  const loc = "images/" + color + "_" + nameOfPiece + ".svg";
+
+  htmlImage.setAttribute("src", loc);
+  htmlImage.setAttribute('draggable', false);
+  const deadContainer = document.createElement("div");
+  deadContainer.classList.add("deadcontainer");
+  deadContainer.appendChild(htmlImage)
+  document.getElementById("enemyPieces").appendChild(deadContainer);
+}
+
+function getBoardPositionWhite(x, y) {
   return String(Math.floor(x/75)) + String(Math.floor(y/75));
+}
+
+function getBoardPositionBlack(x, y) {
+  return String(Math.floor((600 - x)/75)) + String(Math.floor((600-y)/75));
 }
 
 function normalizeCoordinates(x, y) {

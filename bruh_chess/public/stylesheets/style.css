@@ -44,13 +44,36 @@ a {
 .right-block {
   padding-left: 65px;
   width: 600px;
-  height: 800px;
+  height: 700px;
 }
 
-.top-player {
+.player {
   height:7%;
+  display:flex;
+  justify-content: space-between;
 }
 
+.timer {
+  margin-top:10px;
+  height:60%;
+  width:16%;
+  background: #F0F2F4;
+}
+.deadPieces {
+  display:flex;
+  background: #C7CCD2;
+  width:50%;
+  margin-top:10px;
+  height:60%;
+}
+.deadPiece {
+  width: 26px;
+  height: 26px;
+}
+.deadcontainer{
+  width: 18px;
+  height:18px;
+}
 /**************   Chess Board  ************/
 
 

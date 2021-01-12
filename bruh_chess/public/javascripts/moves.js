@@ -1,3 +1,11 @@
+/*
+Issues found:
+pawns cant capture other pieces
+pawns give moves that are beyond the board (like -1 or 8)
+*/
+
+
+
 function pawnMove(x, y, color, moved) {
   let possibles = [];
   if (color === "black") {
