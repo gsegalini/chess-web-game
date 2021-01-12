@@ -6,6 +6,7 @@
 
 
 let activeMatch;
+const moveAudio = new Audio("files/move.wav");
 
 window.addEventListener('load', function () {
   const myColor = "white";
@@ -81,7 +82,6 @@ function draw(match) {
             const piece = match.myPieces.find((x) => {
               return x.name == htmlImage.classList[1];
             })
-
             // disables focus for all
             document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"))
 
@@ -147,6 +147,8 @@ function draw(match) {
                     return elem != checkBlock
                   });
                   match.board[moves[index][0]][moves[index][1]] = "";
+                } else {
+                  moveAudio.play();
                 }
 
                 // Records history 
