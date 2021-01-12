@@ -8,7 +8,7 @@ var indexRouter = require("./routes/index");
 var messages = require("./public/javascripts/messages");
 var websocket = require("ws");
 var websocketFunction = require("./websocketsFunctionsServer");
-
+var gameStats = require("./gamestats");
 var gameObject = require("./gameObject");
 
 var port = process.argv[2];
@@ -35,15 +35,14 @@ setInterval(function() {
     if (Object.prototype.hasOwnProperty.call(websockets,i)) {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
-      if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN") {
+      if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED") {
         delete websockets[i];
       }
     }
   }
 }, 50000);
 
-let startedGames = 0;
-let currentGame = new gameObject(startedGames++);   //startedGames will come from the stats tracker
+let currentGame = new gameObject(gameStats.startedGames++);   //startedGames will come from the stats tracker
 let socketID = 0;
 
 wss.on("connection", function connection(ws) {
@@ -65,7 +64,7 @@ wss.on("connection", function connection(ws) {
    * inform the client about its assigned player type
    */
   con.send(playerType == "white" ? messages.S_PLAYER_WHITE : messages.S_PLAYER_BLACK);
-
+  gameStats.playerWaiting++;
 
   /*
    * once we have two players, there is no way back;
@@ -73,7 +72,8 @@ wss.on("connection", function connection(ws) {
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
   if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
-    currentGame = new gameObject(startedGames++);
+    currentGame = new gameObject(gameStats.startedGames++);
+    gameStats.playerWaiting -= 2;
   }
 
   /*
@@ -158,28 +158,27 @@ wss.on("connection", function connection(ws) {
        */
       let gameObj = websockets[con.id];
 
-      if (gameObj.isValidTransition(gameObj.gameState, "ABORTED")) {
-        gameObj.setStatus("ABORTED");
-        gameStatus.gamesAborted++;
+      gameObj.status = "ABORTED";
+      gameStats.gamesAborted++;
 
-        /*
-         * determine whose connection remains open;
-         * close it
-         */
-        try {
-          gameObj.whiteWebSocket.close();
-          gameObj.whiteWebSocket = "placeholder";
-        } catch (e) {
-          console.log("White closing: " + e);
-        }
-
-        try {
-          gameObj.blackWebSocket.close();
-          gameObj.whiteWebSocket = "placeholder";
-        } catch (e) {
-          console.log("Black closing: " + e);
-        }
+      /*
+        * determine whose connection remains open;
+        * close it
+        */
+      try {
+        gameObj.whiteWebSocket.close();
+        gameObj.whiteWebSocket = "placeholder";
+      } catch (e) {
+        console.log("White closing: " + e);
       }
+
+      try {
+        gameObj.blackWebSocket.close();
+        gameObj.whiteWebSocket = "placeholder";
+      } catch (e) {
+        console.log("Black closing: " + e);
+      }
+      
     }
   });
 });
