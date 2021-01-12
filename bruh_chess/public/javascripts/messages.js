@@ -19,13 +19,13 @@
     exports.S_PLAYER_BLACK = JSON.stringify(exports.O_PLAYER_BLACK);
 
     /**
-     * client to server: offering draw
+     * client to server and server to other client: offering draw
      */
     exports.T_OFFER_DRAW = "OFFER-DRAW";
     exports.O_OFFER_DRAW = {
         type: exports.T_OFFER_DRAW,
-        data: null
     };
+    exports.S_OFFER_DRAW = JSON.stringify(exports.O_OFFER_DRAW);
 
     /**
      * client to server: move from client
@@ -47,8 +47,9 @@
     }
 
     /**
-    * Server to client: abort game (e.g. if second player exited the game or abort before start)
+    * Server to client or client to server: abort game (e.g. if second player exited the game or abort before start)
     */
+   exports.T_GAME_ABORT = "GAME-ABORTED";
     exports.O_GAME_ABORTED = {
         type: "GAME-ABORTED"
         };
@@ -66,7 +67,15 @@
     exports.T_RESIGN = "RESIGN";
     exports.O_RESIGN = {
         type: exports.T_RESIGN,
-        data: null
     };//data is color
+
+    /**
+     * server to client: you won/lost
+     */
+    exports.T_RESULT = "RESULT";
+    exports.O_RESULT = {
+        type: exports.T_RESULT,
+        data: null
+    }//data is won/loss
 
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);

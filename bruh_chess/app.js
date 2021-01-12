@@ -7,6 +7,7 @@ var http = require("http");
 var indexRouter = require("./routes/index");
 var messages = require("./public/javascripts/messages");
 var websocket = require("ws");
+var websocketFunction = require("./websocketsFunctionsServer");
 
 var gameObject = require("./gameObject");
 
@@ -25,6 +26,7 @@ const wss = new websocket.Server({ server });
 
 var websockets = {}; //key:websocket.id, value:gameObject
 
+let f = new websocketFunction();
 /**
  * TODO create websockets helper functions, put them everywhere we need them.
  */
@@ -89,27 +91,41 @@ wss.on("connection", function connection(ws) {
 
     switch (oMsg.type){
       case messages.T_OFFER_DRAW:
-        //send back draw to other guy
+        if (isWhite){
+          f.sendDraw(gameObj.blackWebSocket);
+        }
+        else{
+          f.sendDraw(gameObj.whiteWebSocket);
+        } 
         break;
 
       case messages.T_RESIGN:
-        //send win to other guy
+        if (isWhite){
+          f.sendResult(gameObj.blackWebSocket, "WIN");
+          f.sendResult(gameObj.whiteWebSocket, "LOSS");
+        }
+        else{
+          f.sendResult(gameObj.blackWebSocket, "LOSS");
+          f.sendResult(gameObj.whiteWebSocket, "WIN");
+        }
         break;
 
       case messages.T_POSSIBLE_MOVE:
         //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
         if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black"){
-          //get move from guy
           let start = oMsg.data[0]; //starting piece place
           let end = oMsg.data[1]; // ending piece place
+          //check he is moving own color
+          if ((gameObj.boardObj().getPiece(start).color == "white") != isWhite) {console.log("moving opponent piece"); break;}
+
           if(gameObj.validateMove(start, end)){
             gameObj.movePiece(start, end);
             gameObj.changeTurn();
-            con.send("Move made");
+            f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
+            f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
           }
           else{
             console.log("An invalid move was sent");
-            con.send("Move")
           }
         }
         else{
@@ -117,6 +133,11 @@ wss.on("connection", function connection(ws) {
         }
         break;
       
+      case messages.T_GAME_ABORT:
+        f.abortGame(gameObj.whiteWebSocket);
+        f.abortGame(gameObj.blackWebSocket);
+        console.log("game aborted");
+        break;
       
     }
     
