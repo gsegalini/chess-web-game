@@ -52,6 +52,8 @@ a {
 }
 
 /**************   Chess Board  ************/
+
+
 .column {
   width: 75px;
   height: 75px;
@@ -89,12 +91,11 @@ a {
   height: 600px;
   background-color: #C5CBD3;
   display:flex;
-
-
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
    -khtml-user-select: none; /* Konqueror HTML */
      -moz-user-select: none; /* Old versions of Firefox */
       -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none; /*
+         user-select: none; 
+
 }

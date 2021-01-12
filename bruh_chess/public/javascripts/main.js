@@ -70,12 +70,10 @@ function draw(match) {
             })
 
             // disables focus for all
-            match.myPieces.forEach((elem) => {
-              elem.htmlRef.parentElement.classList.remove("focused")
-            });
+            document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"))
 
             // deletes movable
-            document.querySelectorAll('.container-movable').forEach(e => e.remove());
+            document.querySelectorAll(".container-movable").forEach(e => e.remove());
 
             // Draws points to which the piece can move
             const moves = piece.getMoves();
@@ -93,7 +91,8 @@ function draw(match) {
               document.getElementById(id).appendChild(container);
             }
             
-            htmlImage.parentElement.classList.add("focused");
+            const currentLoc = String(piece.position[0]) + String(piece.position[1])
+            document.getElementById(currentLoc).classList.add("focused");
             htmlImage.style.zIndex = "1000"
             match.pieceHeld = htmlImage.classList[1];
           }, true)
@@ -114,19 +113,21 @@ function draw(match) {
             for (let index = 0; index < moves.length; index++) {
               const id = String(moves[index][0]) + String(moves[index][1]);
               if(id == position) {
-                document.querySelectorAll('.container-movable').forEach(e => e.remove());
 
+                document.querySelectorAll('.container-movable').forEach(e => e.remove());
                 const normalCord = normalizeCoordinates(xCord, yCord);
-                
+                console.log(normalCord);
                 piece.htmlPosition = normalCord;
                 piece.increaseMoved();
                 
-
-                // THIS IS WHAT BREAKS IT????????
+                // makes the positional change
                 match.board[piece.position[0]][piece.position[1]] = "";
                 piece.setPosition(moves[index][0], moves[index][1])
                 match.board[piece.position[0]][piece.position[1]] = piece.name;
 
+                // focuses the move
+                const currentLoc = String(piece.position[0]) + String(piece.position[1])
+                document.getElementById(currentLoc).classList.add("focused");
 
                 break;
               }
@@ -204,11 +205,11 @@ function getBoardPosition(x, y) {
 function normalizeCoordinates(x, y) {
   const res = [];
   let realX = 0;
-  while(realX + 75 < x) {
+  while(realX + 75 <= x) {
     realX+=75;
   }
   let realY = 0;
-  while(realY +75 < y) {
+  while(realY + 75 <= y) {
     realY+=75;
   }
   realX+= "px";
