@@ -7,13 +7,31 @@
 
 let activeMatch;
 const moveAudio = new Audio("files/move.wav");
+const captureAudio = new Audio("files/capture.wav");
 
 window.addEventListener('load', function () {
-  const myColor = "white";
+  const myColor = "black";
   activeMatch = new Match(myColor);
   draw(activeMatch);
 
+  window.addEventListener('mousemove', function (event) {
+    event.preventDefault();
+    const offset = document.getElementById("chess-board").getBoundingClientRect();
+    // Checks correspondence
+    if (activeMatch.pieceHTML != null) {
+      const xCord = event.clientX - offset.left - 37;
+      const yCord = event.clientY - offset.top - 45;
+      // Removes the move if it goes out of focus
+      if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+      } else {
+        activeMatch.pieceHTML.style.left = xCord + "px";
+        activeMatch.pieceHTML.style.top = yCord + "px";
+      }
+    }
+  })
 });
+
+
 
 // Puts the visual pieces on the board
 function draw(match) {
@@ -82,6 +100,7 @@ function draw(match) {
             const piece = match.myPieces.find((x) => {
               return x.name == htmlImage.classList[1];
             })
+            match.pieceHTML = htmlImage;
             // disables focus for all
             document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"))
 
@@ -115,6 +134,7 @@ function draw(match) {
 
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
+            match.pieceHTML = null;
             const piece = match.myPieces.find((x) => {
               return x.name == htmlImage.classList[1];
             })
@@ -139,6 +159,7 @@ function draw(match) {
                 // Checks for capturing piece
                 const checkBlock = match.board[moves[index][0]][moves[index][1]];
                 if(checkBlock != "") {
+                  captureAudio.play();
                   match.opponentDeadPieces.push(checkBlock);
                   drawDeadPieces(checkBlock);
                   const nameOfRemoved = checkBlock.name;
@@ -195,6 +216,7 @@ function draw(match) {
                 match.pieceHeld = "";
                 htmlImage.style.left = piece.htmlPosition[0];
                 htmlImage.style.top = piece.htmlPosition[1];
+                match.pieceHTML = null;
               } else {
                 htmlImage.style.left = xCord + "px";
                 htmlImage.style.top = yCord + "px";
@@ -247,6 +269,7 @@ function Match(color) {
   this.opponentDeadPieces = [];
 
   this.pieceHeld = "";
+  this.pieceHTML = null;
 
 }
 
