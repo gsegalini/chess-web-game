@@ -75,10 +75,7 @@ function draw(match) {
             });
 
             // deletes movable
-            match.movableLocation.forEach((id) => {
-              document.getElementById(id).innerHTML = "";
-            })
-            match.movableLocation = [];
+            document.querySelectorAll('.container-movable').forEach(e => e.remove());
 
             // Draws points to which the piece can move
             const moves = piece.getMoves();
@@ -92,11 +89,10 @@ function draw(match) {
               container.appendChild(movable);
 
               const id = String(moves[index][0]) + String(moves[index][1]);
-              match.movableLocation.push(id);
 
               document.getElementById(id).appendChild(container);
             }
-
+            
             htmlImage.parentElement.classList.add("focused");
             htmlImage.style.zIndex = "1000"
             match.pieceHeld = htmlImage.classList[1];
@@ -118,19 +114,20 @@ function draw(match) {
             for (let index = 0; index < moves.length; index++) {
               const id = String(moves[index][0]) + String(moves[index][1]);
               if(id == position) {
+                document.querySelectorAll('.container-movable').forEach(e => e.remove());
+
                 const normalCord = normalizeCoordinates(xCord, yCord);
                 
                 piece.htmlPosition = normalCord;
                 piece.increaseMoved();
                 
+
+                // THIS IS WHAT BREAKS IT????????
                 match.board[piece.position[0]][piece.position[1]] = "";
                 piece.setPosition(moves[index][0], moves[index][1])
                 match.board[piece.position[0]][piece.position[1]] = piece.name;
 
-                match.movableLocation.forEach((id) => {
-                  document.getElementById(id).innerHTML = "";
-                })
-                match.movableLocation = [];
+
                 break;
               }
             }
@@ -197,7 +194,6 @@ function Match() {
   this.opponentDeadPieces = [];
 
   this.pieceHeld = "";
-  this.movableLocation = [];
 
 }
 
