@@ -264,5 +264,7 @@ function boardObject(){
  */
 if (require.main === module) {
     let board = new boardObject();
-    console.table(board.getBoard());
+    console.table(board.board);
+    console.log(board.getPiece([0,0]).getMoves());
+    console.log(board.getPiece([1,0]).getMoves());
 }

@@ -78,7 +78,8 @@ function gameObject(id){
 if (require.main === module) {
     let game = new gameObject();
     console.table(game.board());
-    console.log(game.validateMove([0,1], [0,2]));
-    game.movePiece([0,0], [0,7]);
+    console.log(game.validateMove([0,6], [0,5]));
+    game.movePiece([0,6], [0,5]);
+    console.log(game.validateMove([1,7], [0,5]));
     console.table(game.board());
 }
