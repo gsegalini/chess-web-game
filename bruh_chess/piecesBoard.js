@@ -252,7 +252,6 @@ function boardObject(){
             }
           }
         }
-        console.log(possibles);
         return possibles;
       }
 

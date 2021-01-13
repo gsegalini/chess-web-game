@@ -85,7 +85,6 @@ wss.on("connection", function connection(ws) {
   con.on("message", function incoming(message) {
     let oMsg = JSON.parse(message);
     let gameObj = websockets[con.id];
-    console.log(gameObj.boardObj);
     let isWhite = gameObj.whiteWebSocket == con ? true : false;
     //switch case for types of messages
 
@@ -115,7 +114,6 @@ wss.on("connection", function connection(ws) {
         if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black"){
           let start = oMsg.data[0]; //starting piece place
           let end = oMsg.data[1]; // ending piece place
-          console.log(oMsg);
           //check he is moving own color
           if ((gameObj.boardObj.getPiece(start).color == "white") != isWhite) {console.log("moving opponent piece"); break;}
 
