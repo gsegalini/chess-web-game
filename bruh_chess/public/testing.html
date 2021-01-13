@@ -6,9 +6,13 @@
     <script>
         const button = document.getElementById("button");
         const socket = new WebSocket("ws://pizzozzano.zapto.org:25565"); //very temporary, only as i host this
+
+        //receive a test message
         socket.onmessage = function(event){
             console.log(event.data);
         };
+
+        //send a test message
         button.addEventListener("click", a);
         let test = {
             type: "POSSIBLE-MOVE",
