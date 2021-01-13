@@ -2,33 +2,41 @@
 
 /**
  * TODO find a way to connect a function sending websockets messages to the pieces images
+ * Idea of implementing squares where king is checked: make seperate board which contains locations, which the king can move to
  */
-
 
 let activeMatch;
 const moveAudio = new Audio("files/move.wav");
 const captureAudio = new Audio("files/capture.wav");
 
 window.addEventListener('load', function () {
-  const myColor = "black";
-  activeMatch = new Match(myColor);
-  draw(activeMatch);
+  const socket = new WebSocket("ws://localhost:25565");
 
-  window.addEventListener('mousemove', function (event) {
-    event.preventDefault();
-    const offset = document.getElementById("chess-board").getBoundingClientRect();
-    // Checks correspondence
-    if (activeMatch.pieceHTML != null) {
-      const xCord = event.clientX - offset.left - 37;
-      const yCord = event.clientY - offset.top - 45;
-      // Removes the move if it goes out of focus
-      if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
-      } else {
-        activeMatch.pieceHTML.style.left = xCord + "px";
-        activeMatch.pieceHTML.style.top = yCord + "px";
-      }
+  socket.onmessage = function (event) {
+    const msg = JSON.parse(event.data);
+    
+    if (msg.type == "PLAYER-COLOR") {
+
+      activeMatch = new Match(msg.data, socket);
+      draw(activeMatch);
+      window.addEventListener('mousemove', function (event) {
+        event.preventDefault();
+        const offset = document.getElementById("chess-board").getBoundingClientRect();
+        // Checks correspondence
+        if (activeMatch.pieceHTML != null) {
+          const xCord = event.clientX - offset.left - 37;
+          const yCord = event.clientY - offset.top - 45;
+          // Removes the move if it goes out of focus
+          if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+          } else {
+            activeMatch.pieceHTML.style.left = xCord + "px";
+            activeMatch.pieceHTML.style.top = yCord + "px";
+          }
+        }
+      })
     }
-  })
+  }
+
 });
 
 
@@ -41,19 +49,19 @@ function draw(match) {
   let x = 0;
 
   // Checks which side
-  if(match.myColor == "white") {
+  if (match.myColor == "white") {
     x = 0;
   } else {
     x = 7;
   }
   for (row of match.board) {
-    
+
     // Creates the row element
     const htmlRow = document.createElement("div");
     htmlRow.classList.add("row");
-    
+
     // Checks which side
-    if(match.myColor == "white") {
+    if (match.myColor == "white") {
       y = 0;
     } else {
       y = 7;
@@ -97,129 +105,145 @@ function draw(match) {
 
           // Click and hold
           htmlImage.addEventListener("mousedown", function () {
-            const piece = match.myPieces.find((x) => {
-              return x.name == htmlImage.classList[1];
-            })
-            match.pieceHTML = htmlImage;
-            // disables focus for all
-            document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"))
+            if (match.myMove) {
+              const piece = match.myPieces.find((x) => {
+                return x.name == htmlImage.classList[1];
+              })
+              match.pieceHTML = htmlImage;
+              // disables focus for all
+              document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"))
 
-            // deletes movable
-            document.querySelectorAll(".container-movable").forEach(e => e.remove());
+              // deletes movable
+              document.querySelectorAll(".container-movable").forEach(e => e.remove());
 
-            // Draws points to which the piece can move
-            const moves = piece.getMoves();
-            // console.table(moves);
-            for (let index = 0; index < moves.length; index++) {
+              // Draws points to which the piece can move
+              const moves = piece.getMoves();
+              // console.table(moves);
+              for (let index = 0; index < moves.length; index++) {
 
-              const container = document.createElement("div");
-              container.classList.add("container-movable");
+                const container = document.createElement("div");
+                container.classList.add("container-movable");
 
-              const movable = document.createElement("div");
-              movable.classList.add("movable");
-              container.appendChild(movable);
+                const movable = document.createElement("div");
+                movable.classList.add("movable");
+                container.appendChild(movable);
 
-              const id = String(moves[index][0]) + String(moves[index][1]);
+                const id = String(moves[index][0]) + String(moves[index][1]);
 
-              document.getElementById(id).appendChild(container);
+                document.getElementById(id).appendChild(container);
+              }
+
+              // Adds focus attributes
+              const currentLoc = String(piece.position[0]) + String(piece.position[1])
+              document.getElementById(currentLoc).classList.add("focused");
+              htmlImage.style.zIndex = "1000"
+              match.pieceHeld = htmlImage.classList[1];
             }
-            
-            // Adds focus attributes
-            const currentLoc = String(piece.position[0]) + String(piece.position[1])
-            document.getElementById(currentLoc).classList.add("focused");
-            htmlImage.style.zIndex = "1000"
-            match.pieceHeld = htmlImage.classList[1];
           }, true)
 
 
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
-            match.pieceHTML = null;
-            const piece = match.myPieces.find((x) => {
-              return x.name == htmlImage.classList[1];
-            })
-            const offset = htmlBoard.getBoundingClientRect();
-            const xCord = event.clientX - offset.left;
-            const yCord = event.clientY - offset.top;
-            // Find position based on pov
-            const position = match.myColor == "white" ? getBoardPositionWhite(xCord, yCord) : getBoardPositionBlack(xCord, yCord);
-            
-            // Check if the move was valid
-            const moves = piece.getMoves();
-            for (let index = 0; index < moves.length; index++) {
-              const id = String(moves[index][0]) + String(moves[index][1]);
+            if (match.myMove) {
+              match.pieceHTML = null;
+              const piece = match.myPieces.find((x) => {
+                return x.name == htmlImage.classList[1];
+              })
+              const offset = htmlBoard.getBoundingClientRect();
+              const xCord = event.clientX - offset.left;
+              const yCord = event.clientY - offset.top;
+              // Find position based on pov
+              const position = match.myColor == "white" ? getBoardPositionWhite(xCord, yCord) : getBoardPositionBlack(xCord, yCord);
 
-              // Confirms move
-              if(id == position) {
-                document.querySelectorAll(".container-movable").forEach(e => e.remove());
-                const normalCord = normalizeCoordinates(xCord, yCord);
-                piece.htmlPosition = normalCord;
-                piece.increaseMoved();
+              // Check if the move was valid
+              const moves = piece.getMoves();
+              for (let index = 0; index < moves.length; index++) {
+                const id = String(moves[index][0]) + String(moves[index][1]);
 
-                // Checks for capturing piece
-                const checkBlock = match.board[moves[index][0]][moves[index][1]];
-                if(checkBlock != "") {
-                  captureAudio.play();
-                  match.opponentDeadPieces.push(checkBlock);
-                  drawDeadPieces(checkBlock);
-                  const nameOfRemoved = checkBlock.name;
-                  document.querySelectorAll("."+nameOfRemoved).forEach(e => e.remove());
-                  match.opponentPieces.filter((elem) => {
-                    return elem != checkBlock
+                // Confirms move
+                if (id == position) {
+                  document.querySelectorAll(".container-movable").forEach(e => e.remove());
+                  const normalCord = normalizeCoordinates(xCord, yCord);
+                  piece.htmlPosition = normalCord;
+                  piece.increaseMoved();
+
+                  // Checks for capturing piece
+                  const checkBlock = match.board[moves[index][0]][moves[index][1]];
+                  if (checkBlock != "") {
+                    captureAudio.play();
+                    match.opponentDeadPieces.push(checkBlock);
+                    drawDeadPieces(checkBlock);
+                    const nameOfRemoved = checkBlock.name;
+                    document.querySelectorAll("." + nameOfRemoved).forEach(e => e.remove());
+                    match.opponentPieces.filter((elem) => {
+                      return elem != checkBlock
+                    });
+                    match.board[moves[index][0]][moves[index][1]] = "";
+                  } else {
+                    moveAudio.play();
+                  }
+
+                  // Records history 
+                  const startPos = [piece.position[0], piece.position[1]];
+                  const endPos =[moves[index][0], moves[index][1]];
+                  match.moveHistory.push({
+                    piece: piece,
+                    startPos,
+                    endPos,
                   });
-                  match.board[moves[index][0]][moves[index][1]] = "";
-                } else {
-                  moveAudio.play();
+
+                  // makes the positional change
+                  match.board[piece.position[0]][piece.position[1]] = "";
+                  piece.setPosition(moves[index][0], moves[index][1])
+                  match.board[piece.position[0]][piece.position[1]] = piece; //it is not piece.name, but piece
+
+                  // focuses the move
+                  const currentLoc = String(piece.position[0]) + String(piece.position[1])
+                  document.getElementById(currentLoc).classList.add("focused");
+
+                  match.myMove = false;
+
+                  // Send Server
+                  
+                  sendMove(match.socket,startPos, endPos);
+                  
+                  break;
                 }
 
-                // Records history 
-                match.moveHistory.push({
-                  piece: piece,
-                  startPos: [piece.position[0],piece.position[1]],
-                  endPos: [moves[index][0], moves[index][1]],
-                })
-                
-                // makes the positional change
-                match.board[piece.position[0]][piece.position[1]] = "";
-                piece.setPosition(moves[index][0], moves[index][1])
-                match.board[piece.position[0]][piece.position[1]] = piece; //it is not piece.name, but piece
-
-                // focuses the move
-                const currentLoc = String(piece.position[0]) + String(piece.position[1])
-                document.getElementById(currentLoc).classList.add("focused");
-
-                break;
               }
+
+              // Resets defaults
+              htmlImage.style.zIndex = "10"
+              match.pieceHeld = "";
+              htmlImage.style.left = piece.htmlPosition[0];
+              htmlImage.style.top = piece.htmlPosition[1];
             }
-            
-            // Resets defaults
-            htmlImage.style.zIndex = "10"
-            match.pieceHeld = "";
-            htmlImage.style.left = piece.htmlPosition[0];
-            htmlImage.style.top = piece.htmlPosition[1];
           }, true)
 
           // move around while holding
           htmlImage.addEventListener('mousemove', function (event) {
-            event.preventDefault();
-            const offset = htmlBoard.getBoundingClientRect();
-            // Checks correspondence
-            if (match.pieceHeld == htmlImage.classList[1]) {
-              const xCord = event.clientX - offset.left - 37;
-              const yCord = event.clientY - offset.top - 45;
-              // Removes the move if it goes out of focus
-              if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
-                const piece = match.myPieces.find((x) => {
-                  return x.name == htmlImage.classList[1];
-                })
-                htmlImage.style.zIndex = "10"
-                match.pieceHeld = "";
-                htmlImage.style.left = piece.htmlPosition[0];
-                htmlImage.style.top = piece.htmlPosition[1];
-                match.pieceHTML = null;
-              } else {
-                htmlImage.style.left = xCord + "px";
-                htmlImage.style.top = yCord + "px";
+            if (match.myMove) {
+
+              event.preventDefault();
+              const offset = htmlBoard.getBoundingClientRect();
+              // Checks correspondence
+              if (match.pieceHeld == htmlImage.classList[1]) {
+                const xCord = event.clientX - offset.left - 37;
+                const yCord = event.clientY - offset.top - 45;
+                // Removes the move if it goes out of focus
+                if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+                  const piece = match.myPieces.find((x) => {
+                    return x.name == htmlImage.classList[1];
+                  })
+                  htmlImage.style.zIndex = "10"
+                  match.pieceHeld = "";
+                  htmlImage.style.left = piece.htmlPosition[0];
+                  htmlImage.style.top = piece.htmlPosition[1];
+                  match.pieceHTML = null;
+                } else {
+                  htmlImage.style.left = xCord + "px";
+                  htmlImage.style.top = yCord + "px";
+                }
               }
             }
           }, true);
@@ -233,7 +257,7 @@ function draw(match) {
       i++;
 
 
-      if(match.myColor == "white") {
+      if (match.myColor == "white") {
         y++;
       } else {
         y--;
@@ -241,7 +265,7 @@ function draw(match) {
     }
     i++;
     htmlBoard.appendChild(htmlRow);
-    if(match.myColor == "white") {
+    if (match.myColor == "white") {
       x++;
     } else {
       x--;
@@ -252,12 +276,16 @@ function draw(match) {
 }
 
 
-function Match(color) {
+function Match(color, socket) {
   this.myColor = color;
   this.myPieces = [];
   this.opponentPieces = [];
 
-  this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) :createBoard(this.opponentPieces, this.myPieces);
+
+  this.myMove = color == "white";
+  this.socket = socket;
+
+  this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) : createBoard(this.opponentPieces, this.myPieces);
   setupPieces(this.board);
 
   this.getPiece = function (coords) {
@@ -275,7 +303,7 @@ function Match(color) {
 
 
 function drawDeadPieces(piece) {
-  
+
   const htmlImage = document.createElement("IMG");
   htmlImage.classList.add("deadPiece");
   htmlImage.style.zIndex = "10"
@@ -294,26 +322,26 @@ function drawDeadPieces(piece) {
 }
 
 function getBoardPositionWhite(x, y) {
-  return String(Math.floor(x/75)) + String(Math.floor(y/75));
+  return String(Math.floor(x / 75)) + String(Math.floor(y / 75));
 }
 
 function getBoardPositionBlack(x, y) {
-  return String(Math.floor((600 - x)/75)) + String(Math.floor((600-y)/75));
+  return String(Math.floor((600 - x) / 75)) + String(Math.floor((600 - y) / 75));
 }
 
 function normalizeCoordinates(x, y) {
   const res = [];
   let realX = 0;
-  while(realX + 75 <= x) {
-    realX+=75;
+  while (realX + 75 <= x) {
+    realX += 75;
   }
   let realY = 0;
-  while(realY + 75 <= y) {
-    realY+=75;
+  while (realY + 75 <= y) {
+    realY += 75;
   }
-  realX+= "px";
+  realX += "px";
   realY += "px";
-  res.push(realX,realY);
+  res.push(realX, realY);
 
   return res;
 }
@@ -339,7 +367,7 @@ function gamePiece(name, color, moveFunction, startPosition, board) {
   this.moved = 0;
   this.position = startPosition;
   this.board = null;
-  
+
   this.htmlRef = null;
   this.htmlPosition = [];
 
