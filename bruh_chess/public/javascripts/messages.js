@@ -49,10 +49,10 @@
     /**
     * Server to client or client to server: abort game (e.g. if second player exited the game or abort before start)
     */
-   exports.T_GAME_ABORT = "GAME-ABORTED";
+    exports.T_GAME_ABORT = "GAME-ABORTED";
     exports.O_GAME_ABORTED = {
         type: "GAME-ABORTED"
-        };
+    };
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
 
     /**
@@ -67,7 +67,7 @@
     exports.T_RESIGN = "RESIGN";
     exports.O_RESIGN = {
         type: exports.T_RESIGN,
-    };//data is color
+    };
 
     /**
      * server to client: you won/lost
@@ -76,6 +76,6 @@
     exports.O_RESULT = {
         type: exports.T_RESULT,
         data: null
-    }//data is won/loss
+    };//data is won/loss
 
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);
