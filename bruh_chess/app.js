@@ -116,7 +116,7 @@ wss.on("connection", function connection(ws) {
           let start = oMsg.data[0]; //starting piece place
           let end = oMsg.data[1]; // ending piece place
           //check he is moving own color
-          if ((gameObj.boardObj().getPiece(start).color == "white") != isWhite) {console.log("moving opponent piece"); break;}
+          if ((gameObj.boardObj.getPiece(start).color == "white") != isWhite) {console.log("moving opponent piece"); break;}
 
           if(gameObj.validateMove(start, end)){
             gameObj.movePiece(start, end);
