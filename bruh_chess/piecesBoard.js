@@ -235,25 +235,26 @@ function boardObject(){
         return new gamePiece(name, color, kingMove, startPosition);
     }
 
-    function queenMove(x, y, color, _moved){
+    function queenMove(x, y, color, _moved) {
         let possibles = [];         //check verticals and the diagonals in the same way as always, just double the pairs
-        let pairs = [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]];
-        for (var i = 0;i<8;i++){    
-            for (var k = 1;k<8;k++){
-                let actual = [x+k*pairs[i][0], y+k*pairs[i][1]];
-                if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0){ //move is in the grid
-                    var rx = actual[0];
-                    var ry = actual[1];
-                    if (this.board[rx][ry] != undefined && this.board[rx][ry] != ""){//check the color
-                        if (this.board[rx][ry].color === color) break; //same color, break
-                        else {possibles.push(actual); break;}
-                    }
-                    possibles.push(actual);
-                }
+        let pairs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+        for (var i = 0; i < 8; i++) {
+          for (var k = 1; k < 8; k++) {
+            let actual = [x + k * pairs[i][0], y + k * pairs[i][1]];
+            if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0) { //move is in the grid
+              var rx = actual[0];
+              var ry = actual[1];
+              if (this.board[rx][ry] != undefined && this.board[rx][ry] != "") {//check the color
+                if (this.board[rx][ry].color == color) break; //same color, break
+                else { possibles.push(actual); break; }
+              }
+              possibles.push(actual);
             }
+          }
         }
+        console.log(possibles);
         return possibles;
-    }
+      }
 
     function queen(name, color, startPosition){
         return new gamePiece(name, color, queenMove, startPosition);

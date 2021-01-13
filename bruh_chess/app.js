@@ -123,6 +123,7 @@ wss.on("connection", function connection(ws) {
             gameObj.changeTurn();
             f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
+            console.table(gameObj.boardObj.board);
           }
           else{
             console.log("An invalid move was sent");
