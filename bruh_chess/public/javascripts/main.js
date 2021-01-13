@@ -6,8 +6,8 @@
  */
 
 let activeMatch;
-const moveAudio = new Audio("files/move.wav");
-const captureAudio = new Audio("files/capture.wav");
+const moveAudio = new Audio("move.wav");
+const captureAudio = new Audio("capture.wav");
 
 // Setup
 window.addEventListener('load', function () {
