@@ -6,8 +6,8 @@
  */
 
 let activeMatch;
-const moveAudio = new Audio("move.wav");
-const captureAudio = new Audio("capture.wav");
+const moveAudio = new Audio("./files/move.wav");
+const captureAudio = new Audio("./files/capture.wav");
 
 // Setup
 window.addEventListener('load', function () {
@@ -26,7 +26,6 @@ window.addEventListener('load', function () {
         if(whoMoved) {
           activeMatch.myMove = true;
           renderEnemyMove(msg.data[0], msg.data[1], activeMatch);
-        } else {
         }
       break;
 

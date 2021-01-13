@@ -180,13 +180,14 @@ function queenMove(x, y, color, _moved) {
         var rx = actual[0];
         var ry = actual[1];
         if (this.board[rx][ry] != undefined && this.board[rx][ry] != "") {//check the color
-          if (this.board[rx][ry].color === color) break; //same color, break
+          if (this.board[rx][ry].color == color) break; //same color, break
           else { possibles.push(actual); break; }
         }
         possibles.push(actual);
       }
     }
   }
+  console.log(possibles);
   return possibles;
 }
 

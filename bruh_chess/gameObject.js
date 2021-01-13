@@ -26,7 +26,6 @@ function gameObject(id){
         var piece = this.boardObj.getPiece(start);
         if (piece === "" || piece === undefined){return false;}
         var possibles = piece.getMoves();
-        console.log(piece);
         for (var i = 0;i<possibles.length;i++){
             var a = possibles[i];
             if (a[0] == end[0] && a[1] == end[1]) return true;
