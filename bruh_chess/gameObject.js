@@ -70,9 +70,11 @@ function gameObject(id){
         const w = this.whiteDead.find((x) => {
             return x == "kw";
           })
-        const b = this.whiteDead.find((x) => {
+        const b = this.blackDead.find((x) => {
         return x == "kb";
         })
+        console.log(w);
+        console.log(b);
         if (w != undefined) return "black";
         else if (b != undefined) return "white";
         else return false;
