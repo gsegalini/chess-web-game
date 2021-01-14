@@ -51,6 +51,7 @@ function gameObject(id){
             }
         }
         tempP.increaseMoved();
+        tempP.setPosition(end[0],end[1]);
         this.board()[end[0]][end[1]] = tempP;
     }
     /**

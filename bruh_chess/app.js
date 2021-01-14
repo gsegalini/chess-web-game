@@ -85,7 +85,6 @@ wss.on("connection", function connection(ws) {
    */
   con.on("message", function incoming(message) {
     let oMsg = JSON.parse(message);
-
     let gameObj = websockets[con.id];
     let isWhite = gameObj.whiteWebSocket == con ? true : false;
     //switch case for types of messages
