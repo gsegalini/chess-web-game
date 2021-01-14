@@ -1,7 +1,7 @@
 const options = {
-    sound:true,
-    premove:true,
-    clickMove:true,
+    sound:false,
+    premove:false,
+    clickMove:false,
 }
 
 const lookup = {

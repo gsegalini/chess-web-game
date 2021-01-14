@@ -54,7 +54,6 @@ let socketID = 0;
 wss.on("connection", function connection(ws, req) {
 
   gameStats.onlinePlayers++;
-  console.log(req); 
   /**
    * check if we are coming from splash, in that case we return and increase online players
    */

@@ -9,9 +9,20 @@ let activeMatch;
 const moveAudio = new Audio("./files/move.wav");
 const captureAudio = new Audio("./files/capture.wav");
 
+
 var url = "ws://" + location.host;
 
+window.onload = function() {
 
+  const premoves = document.getElementById("premoves");
+  const clicks = document.getElementById("clicks");
+  const sound = document.getElementById("sound");
+
+  premoves.addEventListener("change", changePremove);
+  clicks.addEventListener("change", changeClick);
+  sound.addEventListener("change", changeSound);
+
+}
 // Setup
 window.addEventListener('load', function () {
   const socket = new WebSocket(url);
@@ -230,4 +241,16 @@ function gamePiece(name, color, moveFunction, startPosition, board) {
   this.setPosition = function (x, y) { this.position = [x, y] };
   this.getMoves = function () { return this.move(this.position[0], this.position[1], this.color, this.moved) };
   this.setBoard = function (board) { this.board = board };
+}
+
+function changeSound(option){
+  options.sound = !options.sound; 
+}
+
+function changePremove(option){
+  options.premove = !options.premove; 
+}
+
+function changeClick(option){
+  options.clickMove = !options.clickMove; 
 }
