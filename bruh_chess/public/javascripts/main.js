@@ -33,6 +33,10 @@ window.addEventListener('load', function () {
     console.log(msg);
     switch(msg.type) {
 
+      case "START":
+        activeMatch.myTurn == (activeMatch.myColor == "white");
+        break;
+
       case "PLAYER-COLOR":
         resign.addEventListener("click", () => sendResign(socket));
         draws.addEventListener("click", () => sendDraw(socket));
@@ -217,7 +221,7 @@ function Match(color, socket) {
   this.opponentPieces = [];
 
 
-  this.myMove = color == "white";
+  this.myMove = false;
   this.socket = socket;
 
   this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) : createBoard(this.opponentPieces, this.myPieces);

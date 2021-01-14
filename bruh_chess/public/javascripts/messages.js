@@ -65,10 +65,9 @@
     exports.S_GAME_ABORTED = JSON.stringify(exports.O_GAME_ABORTED);
 
     /**
-     * Server to client: your turn
+     * Server to client: start
      */
-    exports.O_TURN = { type: "YOUR-TURN" };
-    exports.S_TURN = JSON.stringify(exports.O_TURN);
+    exports.O_START = { type: "START" };
 
     /**
      * client to server: resign

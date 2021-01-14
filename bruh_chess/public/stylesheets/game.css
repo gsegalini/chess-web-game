@@ -216,3 +216,8 @@ input:checked + .slider:before {
 .c-button:hover {
   border: 1px #79B2FF;
 }
+
+img {
+  user-select: none;
+  border: 10px solid #cacca0;
+}
