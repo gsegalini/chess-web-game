@@ -60,7 +60,7 @@ window.addEventListener('load', function () {
 
 
 // Puts the visual pieces on the board
-function draw(match) {
+function drawGameStart(match) {
   let htmlBoard = document.getElementById("chess-board");
   let i = 0;
   let y = 0;

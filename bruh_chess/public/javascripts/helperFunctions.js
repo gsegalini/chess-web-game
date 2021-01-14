@@ -65,7 +65,7 @@ function findHTMLLocation(loc, color) {
 
 function renderGameStart(msg, socket) {
   activeMatch = new Match(msg.data, socket);
-  draw(activeMatch);
+  drawGameStart(activeMatch);
   window.addEventListener('mousemove', function (event) {
     event.preventDefault();
     const offset = document.getElementById("chess-board").getBoundingClientRect();

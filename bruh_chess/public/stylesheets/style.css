@@ -13,11 +13,36 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-
 a {
   color: #00B7FF;
 }
 
+
+button {
+  border:0;
+  cursor:pointer;
+}
+button:focus {
+  outline:none;
+}
+
+.question {
+  top:5px;
+  left:5px;
+  background-color: #4997FF;
+  color:white;
+  position:absolute;
+  border-radius: 100px;
+  width:40px;
+  height:40px;
+  font-size: 1.5rem;
+  
+}
+
+.question:hover {
+  transition: background-color 0.2s;
+  background-color: #368af8;
+}
 
 
 /**************   Left side  ************/
@@ -34,6 +59,7 @@ a {
 }
 
 .left-container {
+  position:relative;
   background: #2B2B2B;
   height:600px;
   
