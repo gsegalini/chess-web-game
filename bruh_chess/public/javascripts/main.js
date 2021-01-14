@@ -9,9 +9,12 @@ let activeMatch;
 const moveAudio = new Audio("./files/move.wav");
 const captureAudio = new Audio("./files/capture.wav");
 
+var url = "ws://" + location.host;
+
+
 // Setup
 window.addEventListener('load', function () {
-  const socket = new WebSocket("ws://localhost:25565");
+  const socket = new WebSocket(url);
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);

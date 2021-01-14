@@ -16,10 +16,15 @@ var app = express();
 app.use(express.static(__dirname + "/public"));
 let server = http.createServer(app);
 
+app.set('view engine', 'ejs')
+
 app.get("/game", indexRouter);
 
-app.get("/", indexRouter);
-
+app.get('/', function(req, res) {
+    var ingame = 2*(gameStats.startedGames - gameStats.abortedGames - 1);
+    var onlinePlayers = ingame + gameStats.playerWaiting;
+    res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
+})
 app.get("/test", indexRouter)
 
 const wss = new websocket.Server({ server });
@@ -36,6 +41,7 @@ setInterval(function() {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
       if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED") {
+        gameStats.abortedGames++;
         delete websockets[i];
       }
     }
@@ -45,8 +51,15 @@ setInterval(function() {
 let currentGame = new gameObject(gameStats.startedGames++);   //startedGames will come from the stats tracker
 let socketID = 0;
 
-wss.on("connection", function connection(ws) {
-  /*
+wss.on("connection", function connection(ws, req) {
+
+  gameStats.onlinePlayers++;
+  console.log(req); 
+  /**
+   * check if we are coming from splash, in that case we return and increase online players
+   */
+
+  /**
    * two-player game: every two players are added to the same game
    */
   let con = ws;
@@ -174,7 +187,7 @@ wss.on("connection", function connection(ws) {
 
       gameObj.status = "ABORTED";
       gameStats.gamesAborted++;
-
+      gameStats.onlinePlayers--;
       /*
         * determine whose connection remains open;
         * close it
