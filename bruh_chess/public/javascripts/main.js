@@ -34,7 +34,8 @@ window.addEventListener('load', function () {
     switch(msg.type) {
 
       case "START":
-        activeMatch.myTurn == (activeMatch.myColor == "white");
+        console.log(activeMatch.myMove);
+        activeMatch.myMove = (activeMatch.myColor == "white");
         break;
 
       case "PLAYER-COLOR":

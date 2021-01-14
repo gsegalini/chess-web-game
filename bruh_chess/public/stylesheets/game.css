@@ -219,5 +219,4 @@ input:checked + .slider:before {
 
 img {
   user-select: none;
-  border: 10px solid #cacca0;
 }

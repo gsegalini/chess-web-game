@@ -36,4 +36,8 @@ function functions(){
     this.sendReject = function(socket){
         this.sendmessage(socket, messages.O_REJECTED_MOVE);
     }
+
+    this.sendStart = function(socket){
+        this.sendmessage(socket, messages.O_START);
+    }
 }

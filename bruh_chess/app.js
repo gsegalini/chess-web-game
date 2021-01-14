@@ -85,6 +85,8 @@ wss.on("connection", function connection(ws, req) {
    */
   if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
     currentGame.setStatus("STARTED");
+    f.sendStart(currentGame.whiteWebSocket);
+    f.sendStart(currentGame.blackWebSocket);
     currentGame = new gameObject(gameStats.startedGames++);
     gameStats.playerWaiting -= 2;
   }
