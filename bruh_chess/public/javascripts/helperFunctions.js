@@ -1,4 +1,3 @@
-
 function renderEnemyMove(start, end, match) {
   const piece = match.board[start[0]][start[1]];
   const coordinates = findHTMLLocation(end, match.myColor);
@@ -8,7 +7,8 @@ function renderEnemyMove(start, end, match) {
   // Checks for capturing piece
   const checkBlock = match.board[end[0]][end[1]];
   if (checkBlock != "") {
-    captureAudio.play();
+    if (options.sound)
+      captureAudio.play();
     match.myDeadPieces.push(checkBlock);
     drawDeadPieces(checkBlock);
     const nameOfRemoved = checkBlock.name;
@@ -18,7 +18,8 @@ function renderEnemyMove(start, end, match) {
     });
     match.board[end[0]][end[1]] = "";
   } else {
-    moveAudio.play();
+    if (options.sound)
+      moveAudio.play();
   }
 
   // Records history 
@@ -208,7 +209,8 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
         // Checks for capturing piece
         const checkBlock = match.board[moves[index][0]][moves[index][1]];
         if (checkBlock != "") {
-          captureAudio.play();
+          if (options.sound)
+            captureAudio.play();
           match.opponentDeadPieces.push(checkBlock);
           drawDeadPieces(checkBlock);
           const nameOfRemoved = checkBlock.name;
@@ -218,7 +220,8 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
           });
           match.board[moves[index][0]][moves[index][1]] = "";
         } else {
-          moveAudio.play();
+          if (options.sound)
+            moveAudio.play();
         }
 
         // Records history 
@@ -228,6 +231,7 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
           piece: piece,
           startPos,
           endPos,
+          endPiece: checkBlock
         });
 
         // makes the positional change
@@ -255,4 +259,20 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
     htmlImage.style.left = piece.htmlPosition[0];
     htmlImage.style.top = piece.htmlPosition[1];
   }
+}
+
+function waitForSocketConnection(socket, callback){
+  setTimeout(
+      function () {
+          if (socket.readyState === 1) {
+              console.log("Connection is made")
+              if (callback != null){
+                  callback();
+              }
+          } else {
+              console.log("wait for connection...")
+              waitForSocketConnection(socket, callback);
+          }
+
+      }, 5); // wait 5 milisecond for the connection...
 }

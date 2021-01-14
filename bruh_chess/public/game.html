@@ -8,7 +8,9 @@
   <script src="javascripts/websocketsFunctions.js"></script>
   <script src="javascripts/messages.js"></script>
   <script src="javascripts/helperFunctions.js"></script>
-  <link rel="stylesheet" href="stylesheets/style.css">
+  <link rel="stylesheet" href="stylesheets/game.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
 </head>
 
 <body>
@@ -29,14 +31,27 @@
       <li>Last move example</li>
     </ol>
     <div class="settings">
-      <div class="premoves">Premoves</div>
-      <div class="click-move">Click move</div>
-      <div class="sound-toggle">Sound</div>
+      <div class="option">Premoves<!-- Rounded switch -->
+        <label class="switch">
+          <input type="checkbox" id="premoves">
+          <span class="slider round"></span>
+        </label></div>
+      <br>
+      <div class="option">Click move<!-- Rounded switch -->
+        <label class="switch">
+          <input type="checkbox" id="clicks">
+          <span class="slider round"></span>
+        </label></div>
+      <br>
+      <div class="option">Sound<!-- Rounded switch -->
+        <label class="switch">
+          <input type="checkbox" id="sound">
+          <span class="slider round"></span>
+        </label></div>
     </div>
-    <div class="control-buttons">
-      <div class="time"><button id="resign">resign</button></div>   <!-- put it in series-->
-      <div class="time"><button id="abort">abort</button></div>
-    </div>
+    <br>
+    <button class="c-button" id="resign">Resign</button> 
+    <button class="c-button" id="draw">Offer Draw</button>
 
   </div>
 </section>

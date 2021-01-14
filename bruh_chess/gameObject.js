@@ -62,6 +62,7 @@ function gameObject(id){
      * STARTED
      * W-WIN white wins
      * B-WIN black wins
+     * DRAW
      */
     this.status = "WAITING";                
 
@@ -74,8 +75,6 @@ function gameObject(id){
         const b = this.blackDead.find((x) => {
         return x == "kb";
         })
-        console.log(w);
-        console.log(b);
         if (w != undefined) return "black";
         else if (b != undefined) return "white";
         else return false;

@@ -13,36 +13,11 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+
 a {
   color: #00B7FF;
 }
 
-
-button {
-  border:0;
-  cursor:pointer;
-}
-button:focus {
-  outline:none;
-}
-
-.question {
-  top:5px;
-  left:5px;
-  background-color: #4997FF;
-  color:white;
-  position:absolute;
-  border-radius: 100px;
-  width:40px;
-  height:40px;
-  font-size: 1.5rem;
-  
-}
-
-.question:hover {
-  transition: background-color 0.2s;
-  background-color: #368af8;
-}
 
 
 /**************   Left side  ************/
@@ -59,7 +34,6 @@ button:focus {
 }
 
 .left-container {
-  position:relative;
   background: #2B2B2B;
   height:600px;
   
@@ -156,7 +130,6 @@ user-select: none;
 }
 
 
-
  /* The switch - the box around the slider */
  .switch {
   position: relative;
@@ -219,3 +192,31 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 } 
+
+.option {
+  color: white;
+  font-size: large;
+}
+
+.control-buttons {
+  display:inline;
+}
+
+.c-button {
+  background-color: #393939;
+  color: white;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: x-large;
+  padding: 6px 24px;
+  font-family: 'Roboto', sans-serif;
+  transition-duration: 0.4s;
+}
+
+.c-button:hover {
+  border: 1px #79B2FF;
+}
+
+img {
+  user-select: none;
+}

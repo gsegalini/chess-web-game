@@ -6,22 +6,41 @@
  */
 
 let activeMatch;
-const moveAudio = new Audio("./files/move.wav");
+const moveAudio = new Audio("./files/move.mp3");
 const captureAudio = new Audio("./files/capture.wav");
 
-var url = "ws://" + location.host;
 
+var url = "ws://" + location.host;
 
 // Setup
 window.addEventListener('load', function () {
   const socket = new WebSocket(url);
+
+
+  const premoves = document.getElementById("premoves");
+  const clicks = document.getElementById("clicks");
+  const sound = document.getElementById("sound");
+  const resign = document.getElementById("resign");
+  const draws = document.getElementById("draw");
+
+  premoves.addEventListener("change", changePremove);
+  clicks.addEventListener("change", changeClick);
+  sound.addEventListener("change", changeSound);
+  
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
     console.log(msg);
     switch(msg.type) {
 
+      case "START":
+        //console.log(activeMatch.myMove);
+        activeMatch.myMove = (activeMatch.myColor == "white");
+        break;
+
       case "PLAYER-COLOR":
+        resign.addEventListener("click", () => sendResign(socket));
+        draws.addEventListener("click", () => sendDraw(socket));
         renderGameStart(msg, socket);
         break;
 
@@ -35,6 +54,14 @@ window.addEventListener('load', function () {
 
       case "REJECTED-MOVE":
         var previous = activeMatch.moveHistory.slice(-1)[0];
+        var start = previous.startPos;
+        var end = previous.endPos;
+        activeMatch.board[start[0]][start[1]] = previous.piece;
+        previous.piece.position = start;
+        activeMatch.board[end[0]][end[1]] = previous.endPiece;
+        activeMatch.moveHistory.pop();
+        console.log(activeMatch.moveHistory);
+        activeMatch.myMove = true;
         break;
 
       case "GAME-ABORTED":
@@ -195,7 +222,7 @@ function Match(color, socket) {
   this.opponentPieces = [];
 
 
-  this.myMove = color == "white";
+  this.myMove = false;
   this.socket = socket;
 
   this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) : createBoard(this.opponentPieces, this.myPieces);
@@ -230,4 +257,20 @@ function gamePiece(name, color, moveFunction, startPosition, board) {
   this.setPosition = function (x, y) { this.position = [x, y] };
   this.getMoves = function () { return this.move(this.position[0], this.position[1], this.color, this.moved) };
   this.setBoard = function (board) { this.board = board };
+}
+
+
+function changeSound(){
+  options.sound = !options.sound; 
+  console.log(options);
+}
+
+function changePremove(){
+  options.premove = !options.premove; 
+  console.log(options);
+}
+
+function changeClick(){
+  options.clickMove = !options.clickMove; 
+  console.log(options);
 }
