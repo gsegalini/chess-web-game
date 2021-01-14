@@ -47,6 +47,15 @@
     }
 
     /**
+     * server to client: rejected move for cheaters
+     */
+    exports.T_REJECTED_MOVE = "REJECTED-MOVE";
+    exports.O_REJECTED_MOVE = {
+        type: exports.T_REJECTED_MOVE
+    }
+    exports.S_REJECTED_MOVE = JSON.stringify(exports.O_REJECTED_MOVE);
+
+    /**
     * Server to client or client to server: abort game (e.g. if second player exited the game or abort before start)
     */
     exports.T_GAME_ABORT = "GAME-ABORTED";
@@ -77,5 +86,24 @@
         type: exports.T_RESULT,
         data: null
     };//data is won/loss
+
+
+    /**
+     * client to server and server to other client: accept draw
+     */
+    exports.T_ACCEPT_DRAW = "ACCEPT-DRAW";
+    exports.O_ACCEPT_DRAW = {
+        type: exports.T_ACCEPT_DRAW,
+    };
+    exports.S_ACCEPT_DRAW = JSON.stringify(exports.O_ACCEPT_DRAW);
+
+    /**
+     * client to server and server to other client: reject draw
+     */
+    exports.T_REJECT_DRAW = "ACCEPT-DRAW";
+    exports.O_REJECT_DRAW = {
+        type: exports.T_REJECT_DRAW,
+    };
+    exports.S_REJECT_DRAW = JSON.stringify(exports.O_REJECT_DRAW);
 
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);

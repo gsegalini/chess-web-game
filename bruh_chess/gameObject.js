@@ -12,6 +12,7 @@ function gameObject(id){
     this.whiteWebSocket = "placeholder";
     this.blackWebSocket = "placeholder";
     this.turn = "white";
+    this.draws = 0;
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){

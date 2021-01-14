@@ -97,7 +97,7 @@ wss.on("connection", function connection(ws) {
         }
         else{
           f.sendDraw(gameObj.whiteWebSocket);
-        } 
+        }
         break;
 
       case messages.T_RESIGN:
@@ -138,6 +138,7 @@ wss.on("connection", function connection(ws) {
           }
           else{
             console.log("An invalid move was sent");
+            f.sendReject(con);
           }
         }
         else{

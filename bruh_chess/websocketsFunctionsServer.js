@@ -32,4 +32,8 @@ function functions(){
         object.data = result;
         this.sendmessage(socket, object);
     }
+
+    this.sendReject = function(socket){
+        this.sendmessage(socket, messages.O_REJECTED_MOVE);
+    }
 }

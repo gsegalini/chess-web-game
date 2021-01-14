@@ -17,6 +17,7 @@ window.addEventListener('load', function () {
     const msg = JSON.parse(event.data);
     console.log(msg);
     switch(msg.type) {
+
       case "PLAYER-COLOR":
         renderGameStart(msg, socket);
         break;
@@ -29,6 +30,21 @@ window.addEventListener('load', function () {
         }
       break;
 
+      case "REJECTED-MOVE":
+        var previous = activeMatch.moveHistory.slice(-1)[0];
+        break;
+
+      case "GAME-ABORTED":
+        //show message
+        break;
+      
+      case "RESULT":
+        //show msg.data
+        break;
+
+      case "OFFER-DRAW":
+        //ask for draw and send it back
+        break;
       default:
         console.log("error?");
     }
@@ -196,7 +212,6 @@ function Match(color, socket) {
 }
 
 
-// TODO finish move validation for each piece, for strange rules if we want.
 function gamePiece(name, color, moveFunction, startPosition, board) {
   this.name = name;
   this.color = color;
