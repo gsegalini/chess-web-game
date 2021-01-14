@@ -49,6 +49,14 @@ window.addEventListener('load', function () {
 
       case "REJECTED-MOVE":
         var previous = activeMatch.moveHistory.slice(-1)[0];
+        var start = previous.startPos;
+        var end = previous.endPos;
+        activeMatch.board[start[0]][start[1]] = previous.piece;
+        previous.piece.position = start;
+        activeMatch.board[end[0]][end[1]] = previous.endPiece;
+        activeMatch.moveHistory.pop();
+        console.log(activeMatch.moveHistory);
+        activeMatch.myMove = true;
         break;
 
       case "GAME-ABORTED":

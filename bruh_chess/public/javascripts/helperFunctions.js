@@ -231,6 +231,7 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
           piece: piece,
           startPos,
           endPos,
+          endPiece: checkBlock
         });
 
         // makes the positional change
