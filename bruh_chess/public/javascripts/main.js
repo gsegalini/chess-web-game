@@ -6,7 +6,7 @@
  */
 
 let activeMatch;
-const moveAudio = new Audio("./files/move.wav");
+const moveAudio = new Audio("./files/move.mp3");
 const captureAudio = new Audio("./files/capture.wav");
 
 
