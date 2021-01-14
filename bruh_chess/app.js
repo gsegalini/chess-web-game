@@ -72,6 +72,7 @@ wss.on("connection", function connection(ws) {
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
   if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
+    currentGame.setStatus("STARTED");
     currentGame = new gameObject(gameStats.startedGames++);
     gameStats.playerWaiting -= 2;
   }
@@ -91,6 +92,7 @@ wss.on("connection", function connection(ws) {
 
     switch (oMsg.type){
       case messages.T_OFFER_DRAW:
+        if (gameObj.status == "WAITING") break;
         if (isWhite){
           f.sendDraw(gameObj.blackWebSocket);
         }
@@ -111,6 +113,7 @@ wss.on("connection", function connection(ws) {
         break;
 
       case messages.T_POSSIBLE_MOVE:
+        if (gameObj.status == "WAITING") break;
         //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
         if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black"){
           let start = oMsg.data[0]; //starting piece place
@@ -123,7 +126,16 @@ wss.on("connection", function connection(ws) {
             gameObj.changeTurn();
             f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
-            console.table(gameObj.boardObj.board);
+            if (gameObj.checkWin() == "black"){
+              f.sendResult(gameObj.blackWebSocket, "WIN");
+              f.sendResult(gameObj.whiteWebSocket, "LOSS");
+              gameObj.setStatus("W-WIN");
+            }
+            else if (gameObj.checkWin() == "white"){
+              f.sendResult(gameObj.blackWebSocket, "LOSS");
+              f.sendResult(gameObj.whiteWebSocket, "WIN");
+              gameObj.setStatus("B-WIN");
+            }
           }
           else{
             console.log("An invalid move was sent");
@@ -135,8 +147,9 @@ wss.on("connection", function connection(ws) {
         break;
       
       case messages.T_GAME_ABORT:
-        f.abortGame(gameObj.whiteWebSocket);
-        f.abortGame(gameObj.blackWebSocket);
+        if (gameObj.whiteWebSocket != "placeholder") f.abortGame(gameObj.whiteWebSocket);
+        if (gameObj.blackWebSocket != "placeholder")f.abortGame(gameObj.blackWebSocket);
+        gameObj.setStatus("ABORTED");
         console.log("game aborted");
         break;
       

@@ -57,11 +57,19 @@ function gameObject(id){
      * possible statuses:
      * ABORTED
      * WAITING
+     * STARTED
      * W-WIN white wins
      * B-WIN black wins
      */
     this.status = "WAITING";                
 
+    this.setStatus = function(status){this.status = status;}
+
+    this.checkWin = function(){
+        if (this.whiteDead.contains("kw")) return "black";
+        else if (this.blackDead.contains("kb")) return "white";
+        else return false;
+    }
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){
             if (this.board()[x][y] != undefined && this.board()[x][y] != ""){
