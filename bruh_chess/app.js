@@ -20,10 +20,10 @@ app.set('view engine', 'ejs')
 
 app.get("/game", indexRouter);
 
-app.get('/', function(req, res) {
-    var ingame = 2*(gameStats.startedGames - gameStats.abortedGames - 1);
-    var onlinePlayers = ingame + gameStats.playerWaiting;
-    res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
+app.get('/', function (req, res) {
+  var ingame = 2 * (gameStats.startedGames - gameStats.abortedGames - 1);
+  var onlinePlayers = ingame + gameStats.playerWaiting;
+  res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
 })
 app.get("/test", indexRouter)
 
@@ -35,9 +35,9 @@ let f = new websocketFunction();
 /**
  * TODO create websockets helper functions, put them everywhere we need them.
  */
-setInterval(function() {
+setInterval(function () {
   for (let i in websockets) {
-    if (Object.prototype.hasOwnProperty.call(websockets,i)) {
+    if (Object.prototype.hasOwnProperty.call(websockets, i)) {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
       if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED" || gameObj.status == "DRAW") {
@@ -102,78 +102,85 @@ wss.on("connection", function connection(ws, req) {
     //switch case for types of messages
 
     console.log(oMsg);
-    switch (oMsg.type){
+    switch (oMsg.type) {
       case messages.T_OFFER_DRAW:
         if (gameObj.status == "WAITING") break;
-        if (isWhite){
+        if (isWhite) {
           f.sendDraw(gameObj.blackWebSocket);
         }
-        else{
+        else {
           f.sendDraw(gameObj.whiteWebSocket);
         }
         break;
 
+      case messages.T_ACCEPT_DRAW:
+        f.sendResult(gameObj.blackWebSocket, "DRAW");
+        f.sendResult(gameObj.whiteWebSocket, "DRAW");
+        gameObj.setStatus("DRAW");  
+        break;
       case messages.T_RESIGN:
-        if (isWhite){
+        if (isWhite) {
           f.sendResult(gameObj.blackWebSocket, "WIN");
           f.sendResult(gameObj.whiteWebSocket, "LOSS");
+          gameObj.setStatus("B-WIN");
         }
-        else{
+        else {
           f.sendResult(gameObj.blackWebSocket, "LOSS");
           f.sendResult(gameObj.whiteWebSocket, "WIN");
+          gameObj.setStatus("W-WIN");
         }
         break;
 
       case messages.T_POSSIBLE_MOVE:
         if (gameObj.status == "WAITING") break;
         //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
-        if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black"){
+        if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black") {
           let start = oMsg.data[0]; //starting piece place
           let end = oMsg.data[1]; // ending piece place
           //check he is moving own color
-          if ((gameObj.boardObj.getPiece(start).color == "white") != isWhite) {console.log("moving opponent piece"); break;}
+          if ((gameObj.boardObj.getPiece(start).color == "white") != isWhite) { console.log("moving opponent piece"); break; }
 
-          if(gameObj.validateMove(start, end)){
+          if (gameObj.validateMove(start, end)) {
             gameObj.movePiece(start, end);
             gameObj.changeTurn();
             f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
-            if (gameObj.checkWin() == "black"){
+            if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");
               f.sendResult(gameObj.whiteWebSocket, "LOSS");
               gameObj.setStatus("W-WIN");
             }
-            else if (gameObj.checkWin() == "white"){
+            else if (gameObj.checkWin() == "white") {
               f.sendResult(gameObj.blackWebSocket, "LOSS");
               f.sendResult(gameObj.whiteWebSocket, "WIN");
               gameObj.setStatus("B-WIN");
             }
           }
-          else{
+          else {
             console.log("An invalid move was sent");
             f.sendReject(con);
           }
         }
-        else{
+        else {
           console.log("Wrong turn");
         }
         break;
-      
+
       case messages.T_GAME_ABORT:
         if (gameObj.whiteWebSocket != "placeholder") f.abortGame(gameObj.whiteWebSocket);
-        if (gameObj.blackWebSocket != "placeholder")f.abortGame(gameObj.blackWebSocket);
+        if (gameObj.blackWebSocket != "placeholder") f.abortGame(gameObj.blackWebSocket);
         gameObj.setStatus("ABORTED");
         console.log("game aborted");
         break;
-      
+
     }
-    
 
 
-    
+
+
   });
 
-  con.on("close", function(code) {
+  con.on("close", function (code) {
     /*
      * code 1001 means almost always closing initiated by the client;
      * source: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
@@ -205,7 +212,7 @@ wss.on("connection", function connection(ws, req) {
       } catch (e) {
         console.log("Black closing: " + e);
       }
-      
+
     }
   });
 });
