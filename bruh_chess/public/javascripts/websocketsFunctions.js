@@ -10,6 +10,7 @@ function sendMove(socket, start, end){
 }
 
 function sendDraw(socket){
+    let object = Messages.O_OFFER_DRAW;
     sendmessage(socket, object);
 }
 

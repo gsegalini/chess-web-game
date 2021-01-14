@@ -12,20 +12,21 @@ const captureAudio = new Audio("./files/capture.wav");
 
 var url = "ws://" + location.host;
 
-window.onload = function() {
+// Setup
+window.addEventListener('load', function () {
+  const socket = new WebSocket(url);
+
 
   const premoves = document.getElementById("premoves");
   const clicks = document.getElementById("clicks");
   const sound = document.getElementById("sound");
+  const resign = document.getElementById("resign");
+  const draws = document.getElementById("draw");
 
   premoves.addEventListener("change", changePremove);
   clicks.addEventListener("change", changeClick);
   sound.addEventListener("change", changeSound);
-
-}
-// Setup
-window.addEventListener('load', function () {
-  const socket = new WebSocket(url);
+  
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
@@ -33,6 +34,8 @@ window.addEventListener('load', function () {
     switch(msg.type) {
 
       case "PLAYER-COLOR":
+        resign.addEventListener("click", () => sendResign(socket));
+        draws.addEventListener("click", () => sendDraw(socket));
         renderGameStart(msg, socket);
         break;
 
@@ -243,14 +246,18 @@ function gamePiece(name, color, moveFunction, startPosition, board) {
   this.setBoard = function (board) { this.board = board };
 }
 
-function changeSound(option){
+
+function changeSound(){
   options.sound = !options.sound; 
+  console.log(options);
 }
 
-function changePremove(option){
+function changePremove(){
   options.premove = !options.premove; 
+  console.log(options);
 }
 
-function changeClick(option){
+function changeClick(){
   options.clickMove = !options.clickMove; 
+  console.log(options);
 }

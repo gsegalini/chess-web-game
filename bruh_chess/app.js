@@ -40,7 +40,7 @@ setInterval(function() {
     if (Object.prototype.hasOwnProperty.call(websockets,i)) {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
-      if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED") {
+      if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED" || gameObj.status == "DRAW") {
         gameStats.abortedGames++;
         delete websockets[i];
       }
@@ -101,6 +101,7 @@ wss.on("connection", function connection(ws, req) {
     let isWhite = gameObj.whiteWebSocket == con ? true : false;
     //switch case for types of messages
 
+    console.log(oMsg);
     switch (oMsg.type){
       case messages.T_OFFER_DRAW:
         if (gameObj.status == "WAITING") break;

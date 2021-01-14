@@ -62,6 +62,7 @@ function gameObject(id){
      * STARTED
      * W-WIN white wins
      * B-WIN black wins
+     * DRAW
      */
     this.status = "WAITING";                
 
