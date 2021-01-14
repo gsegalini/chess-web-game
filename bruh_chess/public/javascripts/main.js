@@ -34,7 +34,7 @@ window.addEventListener('load', function () {
     switch(msg.type) {
 
       case "START":
-        console.log(activeMatch.myMove);
+        //console.log(activeMatch.myMove);
         activeMatch.myMove = (activeMatch.myColor == "white");
         break;
 
