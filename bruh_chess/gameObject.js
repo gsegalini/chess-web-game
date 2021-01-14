@@ -67,8 +67,14 @@ function gameObject(id){
     this.setStatus = function(status){this.status = status;}
 
     this.checkWin = function(){
-        if (this.whiteDead.contains("kw")) return "black";
-        else if (this.blackDead.contains("kb")) return "white";
+        const w = this.whiteDead.find((x) => {
+            return x == "kw";
+          })
+        const b = this.whiteDead.find((x) => {
+        return x == "kb";
+        })
+        if (w != undefined) return "black";
+        else if (b != undefined) return "white";
         else return false;
     }
     for (var x = 0;x<8;x++){
