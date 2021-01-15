@@ -19,11 +19,7 @@ a {
 
 
 button {
-  border:0;
   cursor:pointer;
-}
-button:focus {
-  outline:none;
 }
 
 .question {
@@ -36,12 +32,18 @@ button:focus {
   width:40px;
   height:40px;
   font-size: 1.5rem;
+  border:0;
+  font-weight:bold;
   
 }
 
 .question:hover {
+  
   transition: background-color 0.2s;
   background-color: #368af8;
+}
+.question:focus {
+  outline:none;
 }
 
 
@@ -62,107 +64,29 @@ button:focus {
   position:relative;
   background: #2B2B2B;
   height:600px;
-  
+  width:100%;
+}
+.settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
 }
 
-
-/**************   Right side  ************/
-.right-block {
-  padding-left: 65px;
-  width: 600px;
-  height: 700px;
-}
-
-.player {
-  height:7%;
+.option {
+  width:90%;
+  color: white;
+  font-size: 1.5rem;
   display:flex;
   justify-content: space-between;
 }
-
-.timer {
-  margin-top:10px;
-  height:60%;
-  width:16%;
-  background: #F0F2F4;
-}
-.deadPieces {
-  display:flex;
-  background: #C7CCD2;
-  width:50%;
-  margin-top:10px;
-  height:60%;
-}
-.deadPiece {
-  width: 26px;
-  height: 26px;
-}
-.deadcontainer{
-  width: 18px;
-  height:18px;
-}
-/**************   Chess Board  ************/
-
-
-.column {
-  width: 75px;
-  height: 75px;
-}
-
-.white-block {
-  background-color: white;
-}
-
-.piece {
-  user-drag: none; 
-user-select: none;
--moz-user-select: none;
--webkit-user-drag: none;
--webkit-user-select: none;
--ms-user-select: none;
-  width: 75px;
-  height: 75px;
-}
-
-.focused {
-  background-color: #A0C9FF;
-}
-
-.container-movable {
-  position:relative;
-}
-.movable {
-  position:absolute;
-  background-color: #79B2FF;
-  border-radius: 100px;
-  top:25px;
-  left:25px;
-  width: 25px;
-  height: 25px;
-}
-
-#chess-board {
-  position:relative;
-  width: 600px;
-  height: 600px;
-  background-color: #C5CBD3;
-  display:flex;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-   -khtml-user-select: none; /* Konqueror HTML */
-     -moz-user-select: none; /* Old versions of Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-         user-select: none; 
-
-}
-
-
 
  /* The switch - the box around the slider */
  .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 48px;
+  height: 28px;
 }
 
 /* Hide default HTML checkbox */
@@ -188,8 +112,8 @@ user-select: none;
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 20px;
+  width: 20px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -206,9 +130,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
 }
 
 /* Rounded sliders */
@@ -219,3 +143,51 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 } 
+
+
+/**************   Right side  ************/
+.right-block {
+  padding-left: 65px;
+  width: 600px;
+  height: 700px;
+}
+
+/**************   Chess Board  ************/
+
+
+.column {
+  width: 75px;
+  height: 75px;
+}
+
+.white-block {
+  background-color: white;
+}
+
+.piece {
+  user-drag: none; 
+user-select: none;
+-moz-user-select: none;
+-webkit-user-drag: none;
+-webkit-user-select: none;
+-ms-user-select: none;
+  width: 75px;
+  height: 75px;
+}
+
+
+#chess-board {
+  position:relative;
+  width: 600px;
+  height: 600px;
+  background-color: #C5CBD3;
+  display:flex;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+         user-select: none; 
+
+}
+

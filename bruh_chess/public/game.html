@@ -9,6 +9,7 @@
   <script src="javascripts/messages.js"></script>
   <script src="javascripts/helperFunctions.js"></script>
   <link rel="stylesheet" href="stylesheets/game.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
 </head>
@@ -24,12 +25,33 @@
   
   <div class="left-container">
     <button class="question">?</button>
-    <button class="back-button"><</button> 
-    <button class="back-button">></button> 
-    
-    <ol>
-      <li>Last move example</li>
-    </ol>
+    <div class="move-buttons">
+      <button class="back-button"><</button> 
+      <button class="back-button">></button> 
+    </div>
+    <div class="wrapper-fix">
+      <table class="past-moves">
+        <tr>
+        <td>1.</td>
+        <td>e4</td>
+        <td>e5</td>
+      </tr>
+      <tr>
+        <td>2.</td>
+        <td>f3</td>
+        <td>g3</td>
+      </tr>
+      <tr>
+        <td>3.</td>
+        <td>e4</td>
+        <td>e5</td>
+      </tr>
+    </table>
+  </div>
+    <div class="button-wrapper">
+      <button class="c-button" id="resign">Resign</button> 
+      <button class="c-button" id="draw">Offer Draw</button>
+    </div>
     <div class="settings">
       <div class="option">Premoves<!-- Rounded switch -->
         <label class="switch">
@@ -50,8 +72,6 @@
         </label></div>
     </div>
     <br>
-    <button class="c-button" id="resign">Resign</button> 
-    <button class="c-button" id="draw">Offer Draw</button>
 
   </div>
 </section>
