@@ -24,7 +24,7 @@
   </div>
   
   <div class="left-container">
-    <button class="question">?</button>
+    <button class="question" onclick="toggleRules()">?</button>
     <div class="move-buttons">
       <button id="goBack" class="back-button"><</button> 
       <button id="goForward" class="back-button">></button> 
@@ -70,7 +70,19 @@
   </div>
 
 
-  <div id="chess-board" ></div>
+  <div id="chess-board" >
+    <div class="rules" id="questionPopup">
+      <div class="rules-title">Rules</div>
+      <div class="rules-text">
+        <div class="rules-block">Chess is played according to the classical rules.</div>
+        <div class="rules-block"><strong>x min</strong> - both players have a x minute timer</div>
+        <div class="rules-block"><strong>x | x</strong> - both players have a x minute timer with x second increment</div>
+        <div class="rules-block"><strong>Premoves</strong> - allows the player to play 1 move ahead</div>
+        <div class="rules-block"><strong>Click move</strong> - allows the player to click pieces instead of dragging them</div>
+        <div class="rules-block"><strong>Sound</strong> - toggles sound</div>
+      </div>
+    </div>
+  </div>
 
   <div class="player bottom-player">
     <div class="timer"></div>

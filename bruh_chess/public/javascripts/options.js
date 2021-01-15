@@ -84,3 +84,26 @@ const lookup = {
     6: "g",
     7: "h",
   }
+
+
+
+function changeSound(){
+  options.sound = !options.sound; 
+  console.log(options);
+}
+
+function changePremove(){
+  options.premove = !options.premove; 
+  console.log(options);
+}
+
+function changeClick(){
+  options.clickMove = !options.clickMove; 
+  console.log(options);
+}
+
+
+function toggleRules() {
+  var popup = document.getElementById("questionPopup");
+  popup.classList.toggle("show");
+}

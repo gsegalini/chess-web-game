@@ -251,35 +251,4 @@ function Match(color, socket) {
 }
 
 
-function gamePiece(name, color, moveFunction, startPosition, board) {
-  this.name = name;
-  this.color = color;
-  this.move = moveFunction;
-  this.moved = 0;
-  this.position = startPosition;
-  this.board = null;
 
-  this.htmlRef = null;
-  this.htmlPosition = [];
-
-  this.increaseMoved = function () { this.moved++ };
-  this.setPosition = function (x, y) { this.position = [x, y] };
-  this.getMoves = function () { return this.move(this.position[0], this.position[1], this.color, this.moved) };
-  this.setBoard = function (board) { this.board = board };
-}
-
-
-function changeSound(){
-  options.sound = !options.sound; 
-  console.log(options);
-}
-
-function changePremove(){
-  options.premove = !options.premove; 
-  console.log(options);
-}
-
-function changeClick(){
-  options.clickMove = !options.clickMove; 
-  console.log(options);
-}
