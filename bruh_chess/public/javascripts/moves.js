@@ -12,26 +12,30 @@ function pawnMove(x, y, color, moved) {
   if (color === "black") {
     if (y + 1 < 8) {
       if (this.board[x][y + 1] === undefined || this.board[x][y + 1] === "") possibles.push([x, y + 1]);
+
       if (moved === 0)
         if (this.board[x][y + 2] === undefined || this.board[x][y + 2] === "") possibles.push([x, y + 2]);
+        
       if ((x + 1) < 8 && this.board[x + 1][y + 1] != undefined && this.board[x + 1][y + 1] != "" && this.board[x + 1][y + 1].color != color) {
-        possibles.push[x + 1, y + 1];
+        possibles.push([x + 1, y + 1]);
       }
       if ((x - 1) >= 0 && this.board[x - 1][y + 1] != undefined && this.board[x - 1][y + 1] != "" && this.board[x - 1][y + 1].color != color) {
-        possibles.push[x - 1, y + 1];
+        possibles.push([x - 1, y + 1]);
       }
     }
   }
   else {
     if (y - 1 >= 0) {
       if (this.board[x][y - 1] === undefined || this.board[x][y - 1] === "") possibles.push([x, y - 1]);
+
       if (moved === 0)
         if (this.board[x][y - 2] === undefined || this.board[x][y - 2] === "") possibles.push([x, y - 2]);
+      
       if ((x + 1) < 8 && this.board[x + 1][y - 1] != undefined && this.board[x + 1][y - 1] != "" && this.board[x + 1][y - 1].color != color) {
-        possibles.push[x + 1, y - 1];
+        possibles.push([x + 1, y - 1]);
       }
       if ((x - 1) >= 0 && this.board[x - 1][y - 1] != undefined && this.board[x - 1][y - 1] != "" && this.board[x - 1][y - 1].color != color) {
-        possibles.push[x - 1, y - 1];
+        possibles.push([x - 1, y - 1]);
       }
     }
   }
