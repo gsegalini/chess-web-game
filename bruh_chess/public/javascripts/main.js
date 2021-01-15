@@ -3,30 +3,34 @@
 /**
  * TODO find a way to connect a function sending websockets messages to the pieces images
  * Idea of implementing squares where king is checked: make seperate board which contains locations, which the king can move to
+ * 
+ 
  */
 
 let activeMatch;
 const moveAudio = new Audio("./files/move.mp3");
-const captureAudio = new Audio("./files/capture.wav");
-
-
+const captureAudio = new Audio("./files/capture.wav"); 
 var url = "ws://" + location.host;
 
 // Setup
 window.addEventListener('load', function () {
   const socket = new WebSocket(url);
-
+  const resign = document.getElementById("resign");
+  const draws = document.getElementById("draw");
 
   const premoves = document.getElementById("premoves");
   const clicks = document.getElementById("clicks");
   const sound = document.getElementById("sound");
-  const resign = document.getElementById("resign");
-  const draws = document.getElementById("draw");
-
+  
+  //Bug: the options reset on refresh, but the visuals stay the same. (seems to happen only on firefox)
   premoves.addEventListener("change", changePremove);
   clicks.addEventListener("change", changeClick);
   sound.addEventListener("change", changeSound);
-  
+
+  // fixes firefox drag issue
+  document.addEventListener('dragstart', function (e) {
+    e.preventDefault();
+  });
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
@@ -45,6 +49,7 @@ window.addEventListener('load', function () {
         break;
 
       case "CONFIRMED-MOVE":
+        activeMatch.currentMove++;
         const whoMoved = didEnemyMove(msg.data[0], activeMatch);
         if(whoMoved) {
           activeMatch.myMove = true;
@@ -221,6 +226,8 @@ function Match(color, socket) {
   this.myPieces = [];
   this.opponentPieces = [];
 
+  this.myDeadPieces = [];
+  this.opponentDeadPieces = [];
 
   this.myMove = false;
   this.socket = socket;
@@ -228,13 +235,15 @@ function Match(color, socket) {
   this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) : createBoard(this.opponentPieces, this.myPieces);
   setupPieces(this.board);
 
+  
   this.getPiece = function (coords) {
     return this.board[coords[0]][coords[1]];
   }
-
+  
   this.moveHistory = [];
-  this.myDeadPieces = [];
-  this.opponentDeadPieces = [];
+  this.currentMove = 0;
+
+  this.tableIndex = 1;
 
   this.pieceHeld = "";
   this.pieceHTML = null;

@@ -31,12 +31,14 @@ a {
 
 .wrapper-fix {
   height:57%;
+  overflow: auto;
 }
 
 .past-moves {
   width:100%;
   border-collapse: collapse;
   border-spacing: 0px;
+
 }
 
 tr:nth-child(odd) {

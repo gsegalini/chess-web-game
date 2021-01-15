@@ -1,4 +1,128 @@
+function renderBoardState(match) {
+  let y = 0;
+  let x = 0;
+
+  clearBoard();
+
+  // Checks which side
+  if (match.myColor == "white") {
+    x = 0;
+  } else {
+    x = 7;
+  }
+
+  for (row of match.board) {
+
+    // Checks which side
+    if (match.myColor == "white") {
+      y = 0;
+    } else {
+      y = 7;
+    }
+
+    for (column of row) {
+
+      const id = String(x) + String(y);
+      const htmlBlock = document.getElementById(id);
+
+      // makes piece
+      if (column != "") {
+        const htmlImage = document.createElement("IMG");
+        htmlImage.classList.add("piece");
+        htmlImage.style.position = "absolute";
+        htmlImage.style.zIndex = "10"
+        htmlImage.style.left = x * 75 + "px";
+        htmlImage.style.top = y * 75 + "px";
+        htmlImage.classList.add(column.name);
+        htmlImage.setAttribute('draggable', false);
+
+        // gives the html attributes to the piece
+        column.htmlPosition = [(x * 75 + "px"), (y * 75 + "px")];
+        column.htmlRef = htmlImage;
+
+        // Import images
+        const color = column.color;
+        const piece = lookup[column.name];
+        const loc = "images/" + color + "_" + piece + ".svg";
+
+        htmlImage.setAttribute("src", loc);
+
+        if (column.color == match.myColor) {
+
+          // Click and hold
+          htmlImage.addEventListener("mousedown", function () {
+            mouseDownFun(match, htmlImage);
+          }, true)
+
+
+          // let go of click
+          htmlImage.addEventListener("mouseup", function (event) {
+            moveDownFun(match, event, document.getElementById("chess-board"), htmlImage);
+          }, true)
+
+          // move around while holding
+          htmlImage.addEventListener('mousemove', function (event) {
+            if (match.myMove) {
+
+              event.preventDefault();
+              const offset = document.getElementById("chess-board").getBoundingClientRect();
+              // Checks correspondence
+              if (match.pieceHeld == htmlImage.classList[1]) {
+                const xCord = event.clientX - offset.left - 37;
+                const yCord = event.clientY - offset.top - 45;
+                // Removes the move if it goes out of focus
+                if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+                  const piece = match.myPieces.find((x) => {
+                    return x.name == htmlImage.classList[1];
+                  })
+                  htmlImage.style.zIndex = "10"
+                  match.pieceHeld = "";
+                  htmlImage.style.left = piece.htmlPosition[0];
+                  htmlImage.style.top = piece.htmlPosition[1];
+                  match.pieceHTML = null;
+                } else {
+                  htmlImage.style.left = xCord + "px";
+                  htmlImage.style.top = yCord + "px";
+                }
+              }
+            }
+          }, true);
+        }
+        
+        htmlBlock.innerHTML = "";
+        htmlBlock.appendChild(htmlImage);
+      }
+
+      if (match.myColor == "white") {
+        y++;
+      } else {
+        y--;
+      }
+    }
+    if (match.myColor == "white") {
+      x++;
+    } else {
+      x--;
+    }
+  }
+}
+
+function clearBoard() {
+  const htmlKids = document.getElementsByClassName("column");
+  for(let index = 0; index < htmlKids.length; index++) {
+    htmlKids[index].innerHTML = "";
+  }
+}
+
+
 function renderEnemyMove(start, end, match) {
+  if(match.currentMove < match.moveHistory.length) {
+    match.currentMove--;
+    while(match.currentMove < match.moveHistory.length) {
+      goForwardHistory(match);
+    }
+  }
+
   const piece = match.board[start[0]][start[1]];
   const coordinates = findHTMLLocation(end, match.myColor);
   piece.htmlPosition = coordinates;
@@ -29,7 +153,10 @@ function renderEnemyMove(start, end, match) {
     piece: piece,
     startPos,
     endPos,
+    endPiece: checkBlock
   });
+  renderTable(startPos,endPos, piece);
+  
 
   // makes the positional change
   match.board[piece.position[0]][piece.position[1]] = "";
@@ -46,6 +173,7 @@ function renderEnemyMove(start, end, match) {
   htmlImage.style.left = piece.htmlPosition[0];
   htmlImage.style.top = piece.htmlPosition[1];  
 }
+
 
 function didEnemyMove(start, match) {
   return match.board[start[0]][start[1]] != "";
@@ -64,9 +192,36 @@ function findHTMLLocation(loc, color) {
   return htmlLoc;
 }
 
+function renderTable(start,end, piece) {
+  const tBod = document.getElementById('moveTable').getElementsByTagName('tbody')[0];
+  const row = tBod.insertRow();
+  const cell1 = row.insertCell();
+  const cell2 = row.insertCell();
+  const cell3 = row.insertCell();
+
+  const pieceInit = letterLookup[piece.name];
+  const newText1 = document.createTextNode(activeMatch.tableIndex + ".");
+  const newText2 = document.createTextNode(pieceInit + xLookup[start[0]] + (8 -start[1]));
+  const newText3 = document.createTextNode(pieceInit + xLookup[end[0]] + (8 -end[1]));
+
+  cell1.appendChild(newText1);
+  cell2.appendChild(newText2);
+  cell3.appendChild(newText3);
+
+  activeMatch.tableIndex++;
+}
+
 function renderGameStart(msg, socket) {
   activeMatch = new Match(msg.data, socket);
   drawGameStart(activeMatch);
+
+  const goBack = document.getElementById("goBack");
+  const goForward = document.getElementById("goForward");
+
+  goBack.addEventListener("click", () => goBackHistory(activeMatch));
+  goForward.addEventListener("click", () => goForwardHistory(activeMatch));
+
+
   window.addEventListener('mousemove', function (event) {
     event.preventDefault();
     const offset = document.getElementById("chess-board").getBoundingClientRect();
@@ -84,6 +239,38 @@ function renderGameStart(msg, socket) {
   }) 
 }
 
+function goBackHistory(match) {
+  if(match.currentMove > 0) {
+    match.myMove = false;
+    match.currentMove--;
+    var previous = match.moveHistory[match.currentMove];
+    var start = previous.startPos;
+    var end = previous.endPos;
+    match.board[start[0]][start[1]] = previous.piece;
+    previous.piece.position = start;
+    match.board[end[0]][end[1]] = previous.endPiece;
+    renderBoardState(match);
+  }
+}
+
+function goForwardHistory(match) {
+  console.log(match.currentMove);
+  console.log(match.moveHistory);
+  if(match.currentMove < match.moveHistory.length) {
+    match.currentMove++;
+    var previous = match.moveHistory[match.currentMove - 1];
+    var start = previous.startPos;
+    var end = previous.endPos;
+    match.board[end[0]][end[1]] = previous.piece;
+    previous.piece.position = end;
+    match.board[start[0]][start[1]] = "";
+    renderBoardState(match);
+    
+    if(match.currentMove == match.moveHistory.length && previous.piece.color != match.myColor) {
+      match.myMove = true;
+    }
+  }
+}
 
 function drawDeadPieces(piece) {
 
@@ -101,7 +288,12 @@ function drawDeadPieces(piece) {
   const deadContainer = document.createElement("div");
   deadContainer.classList.add("deadcontainer");
   deadContainer.appendChild(htmlImage)
-  document.getElementById("enemyPieces").appendChild(deadContainer);
+
+  if(color == activeMatch.myColor) {
+    document.getElementById("myPieces").appendChild(deadContainer);
+  } else {
+    document.getElementById("enemyPieces").appendChild(deadContainer);
+  }
 }
 
 function getBoardPositionWhite(x, y) {
@@ -233,6 +425,8 @@ function moveDownFun(match, event, htmlBoard, htmlImage) {
           endPos,
           endPiece: checkBlock
         });
+
+        renderTable(startPos, endPos, piece);
 
         // makes the positional change
         match.board[piece.position[0]][piece.position[1]] = "";
