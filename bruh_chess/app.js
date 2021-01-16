@@ -25,7 +25,10 @@ app.get('/', function (req, res) {
   var onlinePlayers = ingame + gameStats.playerWaiting;
   res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
 })
-app.get("/test", indexRouter)
+app.get('/*', function (req, res) {
+  res.render('html_error.ejs', { message: "Error 404 File not Found", status: "File not found" });
+})
+
 
 const wss = new websocket.Server({ server });
 
