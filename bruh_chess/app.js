@@ -116,11 +116,13 @@ wss.on("connection", function connection(ws, req) {
         break;
 
       case messages.T_ACCEPT_DRAW:
+        if (gameObj.status == "WAITING") break;
         f.sendResult(gameObj.blackWebSocket, "DRAW");
         f.sendResult(gameObj.whiteWebSocket, "DRAW");
         gameObj.setStatus("DRAW");  
         break;
       case messages.T_RESIGN:
+        if (gameObj.status == "WAITING") break;
         if (isWhite) {
           f.sendResult(gameObj.blackWebSocket, "WIN");
           f.sendResult(gameObj.whiteWebSocket, "LOSS");
