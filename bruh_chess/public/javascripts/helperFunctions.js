@@ -333,7 +333,7 @@ function setupPieces(board) {
 
 
 function mouseDownFun(match, htmlImage) {
-  if (match.myMove) {
+  if (match.myMove || options.premove) {
     // Finds piece
     const piece = match.myPieces.find((index) => {
       return index.name == htmlImage.classList[1];

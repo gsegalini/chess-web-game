@@ -9,7 +9,7 @@
 
 let activeMatch;
 const moveAudio = new Audio("./files/move.mp3");
-const captureAudio = new Audio("./files/capture.wav"); 
+const captureAudio = new Audio("./files/capture.wav");
 var url = "ws://" + location.host;
 
 
@@ -27,7 +27,7 @@ window.addEventListener('load', function () {
   const premoves = document.getElementById("premoves");
   const clicks = document.getElementById("clicks");
   const sound = document.getElementById("sound");
-  
+
   const myTimer = document.getElementById("myTimer");
   const enemyTimer = document.getElementById("enemyTimer");
 
@@ -45,7 +45,7 @@ window.addEventListener('load', function () {
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
     console.log(msg);
-    switch(msg.type) {
+    switch (msg.type) {
 
       case "START":
         //console.log(activeMatch.myMove);
@@ -61,11 +61,11 @@ window.addEventListener('load', function () {
       case "CONFIRMED-MOVE":
         activeMatch.currentMove++;
         const whoMoved = didEnemyMove(msg.data[0], activeMatch);
-        if(whoMoved) {
+        if (whoMoved) {
           activeMatch.myMove = true;
           renderEnemyMove(msg.data[0], msg.data[1], activeMatch);
         }
-      break;
+        break;
 
       case "REJECTED-MOVE":
         var previous = activeMatch.moveHistory.slice(-1)[0];
@@ -82,7 +82,7 @@ window.addEventListener('load', function () {
       case "GAME-ABORTED":
         //show message
         break;
-      
+
       case "RESULT":
         //show msg.data
         break;
@@ -94,8 +94,8 @@ window.addEventListener('load', function () {
       case "UPDATE-TIMER":
         var color = msg.data[0];
         var time = msg.data[1];
-        if (color == activeMatch.myColor){myTimer.innerHTML = time;}
-        else {enemyTimer.innerHTML = time;}
+        if (color == activeMatch.myColor) { myTimer.innerHTML = time; }
+        else { enemyTimer.innerHTML = time; }
         break;
       default:
         console.log("error?");
@@ -170,46 +170,61 @@ function drawGameStart(match) {
 
         // Only active pieces get listeners
         if (column.color == match.myColor) {
-          if(options.clickMove) {
-            htmlImage.addEventListener("onclick", )
 
-          } else {
-            
-            htmlImage.addEventListener("mousedown", mouseDownFun(match, htmlImage), true)
-  
-            // let go of click
-            htmlImage.addEventListener("mouseup", mouseUpFun(match, event, htmlBoard, htmlImage), true)
-  
-            // move around while holding
-            htmlImage.addEventListener('mousemove', function (event) {
-              if (match.myMove) {
-  
-                event.preventDefault();
-                const offset = htmlBoard.getBoundingClientRect();
-                // Checks correspondence
-                if (match.pieceHeld == htmlImage.classList[1]) {
-                  const xCord = event.clientX - offset.left - 37;
-                  const yCord = event.clientY - offset.top - 45;
-                  // Removes the move if it goes out of focus
-                  if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
-                    const piece = match.myPieces.find((x) => {
-                      return x.name == htmlImage.classList[1];
-                    })
-                    htmlImage.style.zIndex = "10"
-                    match.pieceHeld = "";
-                    htmlImage.style.left = piece.htmlPosition[0];
-                    htmlImage.style.top = piece.htmlPosition[1];
-                    match.pieceHTML = null;
-                  } else {
-                    htmlImage.style.left = xCord + "px";
-                    htmlImage.style.top = yCord + "px";
-                  }
+          // Click and hold
+          htmlImage.addEventListener("mousedown", function () {
+              mouseDownFun(match, htmlImage);
+          }, true)
+
+          // Click
+          htmlImage.addEventListener("click", function (event) {
+            if(options.clickMove) {
+              if(match.clickCounter > 0) {
+                match.clickCounter = 0;
+                mouseUpFun(match, event, htmlBoard, htmlImage);
+              } else {
+                match.clickCounter++;
+              }
+            } 
+        }, true)
+
+          // let go of click
+          htmlImage.addEventListener("mouseup", function (event) {
+            if(!options.clickMove) {
+              mouseUpFun(match, event, htmlBoard, htmlImage);
+            }
+
+          }, true)
+
+          // move around while holding
+          htmlImage.addEventListener('mousemove', function (event) {
+            if (match.myMove) {
+
+              event.preventDefault();
+              const offset = htmlBoard.getBoundingClientRect();
+              // Checks correspondence
+              if (match.pieceHeld == htmlImage.classList[1]) {
+                const xCord = event.clientX - offset.left - 37;
+                const yCord = event.clientY - offset.top - 45;
+                // Removes the move if it goes out of focus
+                if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+                  const piece = match.myPieces.find((x) => {
+                    return x.name == htmlImage.classList[1];
+                  })
+                  htmlImage.style.zIndex = "10"
+                  match.pieceHeld = "";
+                  htmlImage.style.left = piece.htmlPosition[0];
+                  htmlImage.style.top = piece.htmlPosition[1];
+                  match.pieceHTML = null;
+                } else {
+                  htmlImage.style.left = xCord + "px";
+                  htmlImage.style.top = yCord + "px";
                 }
               }
-            }, true);
-          }
-          // Click and hold
-          
+            }
+          }, true);
+
+
 
         }
 
@@ -254,11 +269,11 @@ function Match(color, socket) {
   this.board = color == "white" ? createBoard(this.myPieces, this.opponentPieces) : createBoard(this.opponentPieces, this.myPieces);
   setupPieces(this.board);
 
-  
+
   this.getPiece = function (coords) {
     return this.board[coords[0]][coords[1]];
   }
-  
+
   this.moveHistory = [];
   this.currentMove = 0;
 
@@ -266,5 +281,7 @@ function Match(color, socket) {
 
   this.pieceHeld = "";
   this.pieceHTML = null;
+
+  this.clickCounter = 0;
 
 }
