@@ -37,6 +37,21 @@ button {
   transition: background-color 0.2s;
   
 }
+.question::after {
+  content:'';
+  position: absolute;
+  
+  top:30px;
+  left:5px;
+  width:15px;
+  height:10px;
+  background-color: #4997FF;
+  transition: background-color 0.2s;
+}
+
+.question:hover::after {
+  background-color: #368af8;
+}
 
 .question:hover {
   
