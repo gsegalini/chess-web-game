@@ -62,6 +62,7 @@ window.addEventListener('load', function () {
         activeMatch.currentMove++;
         const whoMoved = didEnemyMove(msg.data[0], activeMatch);
         if (whoMoved) {
+          activeMatch.premovePossible = true;
           activeMatch.myMove = true;
           renderEnemyMove(msg.data[0], msg.data[1], activeMatch);
         }
@@ -283,5 +284,6 @@ function Match(color, socket) {
   this.pieceHTML = null;
 
   this.clickCounter = 0;
+  this.premovePossible = true;
 
 }

@@ -333,7 +333,7 @@ function setupPieces(board) {
 
 
 function mouseDownFun(match, htmlImage) {
-  if (match.myMove || options.premove) {
+  if (match.myMove) {
     // Finds piece
     const piece = match.myPieces.find((index) => {
       return index.name == htmlImage.classList[1];
@@ -363,11 +363,14 @@ function mouseDownFun(match, htmlImage) {
       document.getElementById(id).appendChild(container);
     }
 
+
     // Adds focus attributes
     const currentLoc = String(piece.position[0]) + String(piece.position[1])
     document.getElementById(currentLoc).classList.add("focused");
     htmlImage.style.zIndex = "1000"
     match.pieceHeld = htmlImage.classList[1];
+  } else if(options.premove && match.premovePossible) {
+    console.log("sfsdfsdfds");
   }
 }
 
