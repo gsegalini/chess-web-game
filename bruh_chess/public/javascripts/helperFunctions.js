@@ -57,7 +57,7 @@ function renderBoardState(match) {
 
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
-            moveDownFun(match, event, document.getElementById("chess-board"), htmlImage);
+            mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
           }, true)
 
           // move around while holding
@@ -372,7 +372,7 @@ function mouseDownFun(match, htmlImage) {
 }
 
 
-function moveDownFun(match, event, htmlBoard, htmlImage) {
+function mouseUpFun(match, event, htmlBoard, htmlImage) {
   if (match.myMove) {
     match.pieceHTML = null;
     const piece = match.myPieces.find((x) => {

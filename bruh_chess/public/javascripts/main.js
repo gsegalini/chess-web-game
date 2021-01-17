@@ -170,45 +170,47 @@ function drawGameStart(match) {
 
         // Only active pieces get listeners
         if (column.color == match.myColor) {
+          if(options.clickMove) {
+            htmlImage.addEventListener("onclick", )
 
-          // Click and hold
-          htmlImage.addEventListener("mousedown", function () {
-            mouseDownFun(match, htmlImage);
-          }, true)
-
-
-          // let go of click
-          htmlImage.addEventListener("mouseup", function (event) {
-            moveDownFun(match, event, htmlBoard, htmlImage);
-          }, true)
-
-          // move around while holding
-          htmlImage.addEventListener('mousemove', function (event) {
-            if (match.myMove) {
-
-              event.preventDefault();
-              const offset = htmlBoard.getBoundingClientRect();
-              // Checks correspondence
-              if (match.pieceHeld == htmlImage.classList[1]) {
-                const xCord = event.clientX - offset.left - 37;
-                const yCord = event.clientY - offset.top - 45;
-                // Removes the move if it goes out of focus
-                if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
-                  const piece = match.myPieces.find((x) => {
-                    return x.name == htmlImage.classList[1];
-                  })
-                  htmlImage.style.zIndex = "10"
-                  match.pieceHeld = "";
-                  htmlImage.style.left = piece.htmlPosition[0];
-                  htmlImage.style.top = piece.htmlPosition[1];
-                  match.pieceHTML = null;
-                } else {
-                  htmlImage.style.left = xCord + "px";
-                  htmlImage.style.top = yCord + "px";
+          } else {
+            
+            htmlImage.addEventListener("mousedown", mouseDownFun(match, htmlImage), true)
+  
+            // let go of click
+            htmlImage.addEventListener("mouseup", mouseUpFun(match, event, htmlBoard, htmlImage), true)
+  
+            // move around while holding
+            htmlImage.addEventListener('mousemove', function (event) {
+              if (match.myMove) {
+  
+                event.preventDefault();
+                const offset = htmlBoard.getBoundingClientRect();
+                // Checks correspondence
+                if (match.pieceHeld == htmlImage.classList[1]) {
+                  const xCord = event.clientX - offset.left - 37;
+                  const yCord = event.clientY - offset.top - 45;
+                  // Removes the move if it goes out of focus
+                  if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+                    const piece = match.myPieces.find((x) => {
+                      return x.name == htmlImage.classList[1];
+                    })
+                    htmlImage.style.zIndex = "10"
+                    match.pieceHeld = "";
+                    htmlImage.style.left = piece.htmlPosition[0];
+                    htmlImage.style.top = piece.htmlPosition[1];
+                    match.pieceHTML = null;
+                  } else {
+                    htmlImage.style.left = xCord + "px";
+                    htmlImage.style.top = yCord + "px";
+                  }
                 }
               }
-            }
-          }, true);
+            }, true);
+          }
+          // Click and hold
+          
+
         }
 
         htmlColumn.appendChild(htmlImage);
