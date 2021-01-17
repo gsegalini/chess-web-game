@@ -92,9 +92,10 @@ wss.on("connection", function connection(ws, req) {
     currentGame.setStatus("STARTED");
     f.sendStart(currentGame.whiteWebSocket);
     f.sendStart(currentGame.blackWebSocket);
+    f.sendTimer(currentGame.whiteWebSocket, "black", currentGame.times["black"]);
+    f.sendTimer(currentGame.blackWebSocket, "black", currentGame.times["black"]); //send black separately as it isn't send until its turn
     
     currentGame.timer = setInterval(function(game){
-        console.log(game);
         game.times[game.turn]--;
         console.log(game.whiteWebSocket);
         f.sendTimer(game.whiteWebSocket, game.turn, game.times[game.turn]);
