@@ -8,3 +8,4 @@ Repository for the WDT course @TUDelft Assignments for the web development part
 - Checks and impossible king moves
 - Redirect to / if no cookie is present in /game
 - Fix player counts
+- Premoves broken (piece captured while premoving, someone moved where pieace wanted to move, prob more)
