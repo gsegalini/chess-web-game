@@ -9,7 +9,7 @@ window.addEventListener('load', function () {
   const v5 = document.getElementById("5v5");
   const min10 = document.getElementById("10min");
   const v10 = document.getElementById("10v10");
-  const play = document.getElementById("play-button");
+  const play = document.getElementById("play-button-real");
 
   min1.addEventListener("click", function(){setRule("1min")});
   v1.addEventListener("click", function(){setRule("1v1")});
