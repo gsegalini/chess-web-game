@@ -132,8 +132,19 @@ window.addEventListener('load', function () {
       case "UPDATE-TIMER":
         var color = msg.data[0];
         var time = msg.data[1];
-        if (color == activeMatch.myColor) { myTimer.innerHTML = time; }
-        else { enemyTimer.innerHTML = time; }
+        let seconds = time % 60 + "";
+        const min = Math.floor(time / 60);
+
+        if(seconds.length < 2) {
+          seconds = "0" + seconds;
+        }
+
+        if (color == activeMatch.myColor) { 
+          myTimer.innerHTML = min + ":" + seconds; 
+        }
+        else { 
+          enemyTimer.innerHTML = min + ":" + seconds; 
+        }
         break;
       default:
         console.log("error?");

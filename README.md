@@ -3,9 +3,6 @@ Repository for the WDT course @TUDelft Assignments for the web development part
 
 # TODO:
 Client
-- Messaged for WIN/LOSS/DRAW, possibility to accept/reject draws
-- Waiting screen while match not found
-- Media queries for screen resolution
 - Premoves broken (piece captured while premoving, someone moved where pieace wanted to move, prob more)
 
 Server

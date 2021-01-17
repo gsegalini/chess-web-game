@@ -89,6 +89,7 @@ img {
 }
 /**************   Right side  ************/
 
+
 .player {
   height:7%;
   display:flex;
@@ -97,8 +98,11 @@ img {
 
 .timer {
   margin-top:10px;
+  text-align: right;
+  font-size: 1.3rem;
+  padding-right:10px;
   height:60%;
-  width:16%;
+  width:12%;
   background: #F0F2F4;
 }
 .deadPieces {
