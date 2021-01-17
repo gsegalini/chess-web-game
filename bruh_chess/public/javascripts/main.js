@@ -44,15 +44,23 @@ window.addEventListener('load', function () {
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
-    // console.log(msg);
+    console.log(msg);
     switch (msg.type) {
 
       case "START":
-        //console.log(activeMatch.myMove);
+        document.getElementById("end-screen").classList.toggle("show")
+        
         activeMatch.myMove = (activeMatch.myColor == "white");
         break;
 
       case "PLAYER-COLOR":
+        document.getElementById("end-screen").classList.toggle("show")
+        document.getElementById("end-title").innerHTML="Waiting for opponent";
+        document.getElementById("go-to-splash").innerHTML="Go back";
+        document.getElementById("go-to-splash").addEventListener("click", function () {
+          location.href = "/";
+        }, true)
+
         resign.addEventListener("click", () => sendResign(socket));
         draws.addEventListener("click", () => sendDraw(socket));
         renderGameStart(msg, socket);
@@ -108,15 +116,17 @@ window.addEventListener('load', function () {
         break;
 
       case "GAME-ABORTED":
-        //show message
+        document.getElementById("end-screen").classList.toggle("show")
+        document.getElementById("end-title").innerHTML="Aborted";
         break;
 
       case "RESULT":
-        //show msg.data
+        document.getElementById("end-screen").classList.toggle("show")
+        document.getElementById("end-title").innerHTML=msg.data;
         break;
 
       case "OFFER-DRAW":
-        //ask for draw and send it back
+        document.getElementById("askForDraw").classList.toggle("show");
         break;
 
       case "UPDATE-TIMER":

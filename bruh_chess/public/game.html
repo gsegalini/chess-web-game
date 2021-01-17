@@ -15,7 +15,7 @@
 </head>
 
 <body>
-
+<div class="alert-screen">Please make your screen at least 1366px wide for optimal gameplay</div>
 
 <section class="left-block">
   
@@ -82,11 +82,25 @@
         <div class="rules-block"><strong>Sound</strong> - toggles sound</div>
       </div>
     </div>
+
+
+    <div id="end-screen">
+      <div id="end-title"> Wut?</div>
+      <button id="go-to-splash">Accept</button>
+    </div>
   </div>
 
   <div class="player bottom-player">
     <div class="timer" id ="myTimer"></div>
     <div id="enemyPieces" class="deadPieces"></div>
+  </div>
+</div>
+
+<div id="askForDraw" class="askForDraw">
+  <div class="draw-text">Do you accept draw?</div>
+  <div class="draw-button-container">
+    <button id="draw-button-yes">Yes</button>
+    <button id="draw-button-no">No</button>
   </div>
 </div>
 </body>

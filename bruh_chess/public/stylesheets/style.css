@@ -8,6 +8,7 @@
 body {
   padding-top: 20px;
   padding-left:50px;
+  
   background: #343434;
   display:flex;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -184,14 +185,15 @@ input:checked + .slider:before {
 .rules-text {
   margin-top:30px;
   width:90%;
+  display:grid;
 }
 .rules-block {
-  padding-top:15px;
+  padding-top:5px;
   font-size: 1.4rem;
 }
 
 .show {
-  visibility: visible;
+  visibility: visible !important;
   -webkit-animation: fadeIn 0.5s;
   animation: fadeIn 0.5s;
 
@@ -253,3 +255,24 @@ user-select: none;
 
 }
 
+
+.alert-screen {
+  visibility: hidden;
+  z-index: 1000;
+  position:absolute;
+  left:50%;
+  height:80px;
+  width:400px;
+  background-color: #2a2929;
+  opacity: 0.95;
+  color:white;
+  font-size: 1.5rem;
+  text-align: center;
+  padding:50px;
+}
+
+@media (max-width: 1300px) { 
+  .alert-screen {
+    visibility: visible;
+  }
+ }
