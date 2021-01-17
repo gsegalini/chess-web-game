@@ -21,7 +21,7 @@ app.set('view engine', 'ejs')
 app.get("/game", indexRouter);
 
 app.get('/', function (req, res) {
-  var ingame = 2 * (gameStats.startedGames - gameStats.abortedGames - 1);
+  var ingame = 2 * (gameStats.startedGames - gameStats.abortedGames - 6);
   var onlinePlayers = ingame + gameStats.playerWaiting;
   res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
 })
@@ -51,19 +51,42 @@ setInterval(function () {
   }
 }, 50000);
 
-let currentGame = new gameObject(gameStats.startedGames++);   //startedGames will come from the stats tracker
+let currentGames = {"1min" : null, 
+                    "1v1" : null, 
+                    "5min" : null, 
+                    "5v5" : null, 
+                    "10min" : null, 
+                    "10v10" : null,}
+
+currentGames["1min"] = new gameObject(gameStats.startedGames++, 1, false);   //startedGames will come from the stats tracker
+currentGames["1v1"] = new gameObject(gameStats.startedGames++, 1, true);
+currentGames["5min"] = new gameObject(gameStats.startedGames++, 5, false);
+currentGames["5v5"] = new gameObject(gameStats.startedGames++, 5, true);
+currentGames["10min"] = new gameObject(gameStats.startedGames++, 10, false);
+currentGames["10v10"] = new gameObject(gameStats.startedGames++, 10, true);
+
 let socketID = 0;
 
 wss.on("connection", function connection(ws, req) {
 
   gameStats.onlinePlayers++;
-  /**
-   * check if we are coming from splash, in that case we return and increase online players
-   */
 
   /**
-   * two-player game: every two players are added to the same game
+   * two-player game: every two players are added to the same game with same rules, so first check rules and then add to it
    */
+
+  let cookies = req.headers.cookie.split(";");
+  let rules = "";
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].startsWith("rules=")){rules = cookies[i].slice(6); break}
+  }
+  if (rules == "") {console.log("No rules cookie")};
+  /**
+   * get correct currentGame
+   */
+  let currentGame = currentGames[rules];
+  if (currentGame == undefined) return; //shit happened
+  
   let con = ws;
   con.id = socketID++;
   let playerType = currentGame.addPlayer(con);
@@ -87,8 +110,6 @@ wss.on("connection", function connection(ws, req) {
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
   if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
-    currentGame.times["white"] = 120;
-    currentGame.times["black"] = 120; //placeholder
     currentGame.setStatus("STARTED");
     f.sendStart(currentGame.whiteWebSocket);
     f.sendStart(currentGame.blackWebSocket);
@@ -98,12 +119,11 @@ wss.on("connection", function connection(ws, req) {
     currentGame.timer = setInterval(function(game){
       if (game.whiteWebSocket == "placeholder" || game.blackWebSocket == "placeholder") return;
       game.times[game.turn]--;
-      console.log(game.whiteWebSocket);
       f.sendTimer(game.whiteWebSocket, game.turn, game.times[game.turn]);
       f.sendTimer(game.blackWebSocket, game.turn, game.times[game.turn]);
     }, 1000, currentGame);
 
-    currentGame = new gameObject(gameStats.startedGames++);
+    currentGame[rules] = new gameObject(gameStats.startedGames++);
     gameStats.playerWaiting -= 2;
   }
 
@@ -122,7 +142,6 @@ wss.on("connection", function connection(ws, req) {
     console.log(oMsg);
     switch (oMsg.type) {
       case messages.T_OFFER_DRAW:
-        console.log(gameObj.whiteTime);
         if (gameObj.status == "WAITING") break;
         if (isWhite) {
           f.sendDraw(gameObj.blackWebSocket);
@@ -165,6 +184,8 @@ wss.on("connection", function connection(ws, req) {
             gameObj.movePiece(start, end);
             f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
+            if (isWhite && gameObj.isV) gameObj.times["white"]+=gameObj.time;
+            if (!isWhite && gameObj.isV) gameObj.times["black"]+=gameObj.time;
             gameObj.changeTurn();
             if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");

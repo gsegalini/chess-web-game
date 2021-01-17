@@ -12,6 +12,12 @@ const moveAudio = new Audio("./files/move.mp3");
 const captureAudio = new Audio("./files/capture.wav"); 
 var url = "ws://" + location.host;
 
+
+window.onunload = () => {
+  // Clear the local storage
+  window.localStorage.clear();
+}
+
 // Setup
 window.addEventListener('load', function () {
   const socket = new WebSocket(url);

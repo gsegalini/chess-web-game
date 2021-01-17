@@ -3,7 +3,7 @@ var websocketFunction = require("./websocketsFunctionsServer");
 
 module.exports = gameObject;
 
-function gameObject(id){
+function gameObject(id, time, isV){
     let f = new websocketFunction();
     this.id = id;
     this.boardObj = new bObject();
@@ -15,8 +15,10 @@ function gameObject(id){
     this.blackWebSocket = "placeholder";
     this.turn = "white";
     this.draws = 0;
-    this.times = {"white": 0, "black": 0};
+    this.times = {"white": time*60, "black": time*60};
     this.timer = null;
+    this.isV = isV;
+    this.time = time;
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){

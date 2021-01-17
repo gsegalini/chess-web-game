@@ -2,7 +2,29 @@
 window.addEventListener('load', function () {
   drawGameStart();
 
+  let storage = window.localStorage;
+  const min1 = document.getElementById("1min");
+  const v1 = document.getElementById("1v1");
+  const min5 = document.getElementById("5min");
+  const v5 = document.getElementById("5v5");
+  const min10 = document.getElementById("10min");
+  const v10 = document.getElementById("10v10");
+  const play = document.getElementById("play-button");
+
+  min1.addEventListener("click", function(){setRule("1min")});
+  v1.addEventListener("click", function(){setRule("1v1")});
+  min5.addEventListener("click", function(){setRule("5min")});
+  v5.addEventListener("click", function(){setRule("5v5")});
+  min10.addEventListener("click", function(){setRule("10min")});
+  v10.addEventListener("click", function(){setRule("10v10")});
+  play.addEventListener("click", checkAndPlay)
 });
+
+
+window.onunload = () => {
+  // Clear the local storage
+  window.localStorage.clear();
+}
 
 // Puts the visual pieces on the board
 function drawGameStart() {
@@ -69,4 +91,19 @@ function drawGameStart() {
   }
 
 
+}
+
+function setRule(rule) {
+  var d = new Date();
+  d.setTime(d.getTime() + (10*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = "rules=" + rule + ";" + expires + ";path=/;SameSite=Lax";
+}
+
+function checkAndPlay(){
+  let cookieV = document.cookie.split('; ');
+  cookieV = cookieV.find(row => row.startsWith('rules='));
+  if (cookieV == undefined) return;
+  console.log(cookieV);
+  location.href = "game";
 }
