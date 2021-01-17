@@ -93,7 +93,13 @@ function drawGameStart() {
 
 }
 
+
 function setRule(rule) {
+  // removes the other border
+  document.querySelectorAll(".focused-button").forEach(e => e.classList.remove("focused-button"));
+  // adds border
+  document.getElementById(rule).classList.add("focused-button");
+
   var d = new Date();
   d.setTime(d.getTime() + (10*1000));
   var expires = "expires="+ d.toUTCString();
