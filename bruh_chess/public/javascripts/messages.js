@@ -105,4 +105,14 @@
     };
     exports.S_REJECT_DRAW = JSON.stringify(exports.O_REJECT_DRAW);
 
+    /**
+     * server to clients: update timers
+     */
+    exports.T_UPDATE_TIMER = "UPDATE-TIMER";
+    exports.O_UPDATE_TIMER = {
+        type: exports.T_UPDATE_TIMER,
+        data: null
+    }
+    //data is player color and remaining time
+
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);

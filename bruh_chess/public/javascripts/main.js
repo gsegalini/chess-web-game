@@ -22,6 +22,9 @@ window.addEventListener('load', function () {
   const clicks = document.getElementById("clicks");
   const sound = document.getElementById("sound");
   
+  const myTimer = document.getElementById("myTimer");
+  const enemyTimer = document.getElementById("enemyTimer");
+
   //Bug: the options reset on refresh, but the visuals stay the same. (seems to happen only on firefox)
   premoves.addEventListener("change", changePremove);
   clicks.addEventListener("change", changeClick);
@@ -31,6 +34,7 @@ window.addEventListener('load', function () {
   document.addEventListener('dragstart', function (e) {
     e.preventDefault();
   });
+
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
@@ -79,6 +83,13 @@ window.addEventListener('load', function () {
 
       case "OFFER-DRAW":
         //ask for draw and send it back
+        break;
+
+      case "UPDATE-TIMER":
+        var color = msg.data[0];
+        var time = msg.data[1];
+        if (color == activeMatch.myColor){myTimer.innerHTML = time;}
+        else {enemyTimer.innerHTML = time;}
         break;
       default:
         console.log("error?");
@@ -249,6 +260,3 @@ function Match(color, socket) {
   this.pieceHTML = null;
 
 }
-
-
-

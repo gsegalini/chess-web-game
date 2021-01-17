@@ -1,8 +1,10 @@
 const bObject = require("./piecesBoard");
+var websocketFunction = require("./websocketsFunctionsServer");
 
 module.exports = gameObject;
 
 function gameObject(id){
+    let f = new websocketFunction();
     this.id = id;
     this.boardObj = new bObject();
     this.whiteAlive = [];
@@ -13,6 +15,8 @@ function gameObject(id){
     this.blackWebSocket = "placeholder";
     this.turn = "white";
     this.draws = 0;
+    this.times = {"white": 0, "black": 0};
+    this.timer = null;
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){
@@ -79,6 +83,8 @@ function gameObject(id){
         else if (b != undefined) return "white";
         else return false;
     }
+
+    //initalize pieces
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){
             if (this.board()[x][y] != undefined && this.board()[x][y] != ""){

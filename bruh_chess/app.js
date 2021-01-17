@@ -87,9 +87,20 @@ wss.on("connection", function connection(ws, req) {
    * if a player now leaves, the game is aborted (player is not preplaced)
    */
   if (currentGame.whiteWebSocket != "placeholder" && currentGame.blackWebSocket != "placeholder") {
+    currentGame.times["white"] = 120;
+    currentGame.times["black"] = 120; //placeholder
     currentGame.setStatus("STARTED");
     f.sendStart(currentGame.whiteWebSocket);
     f.sendStart(currentGame.blackWebSocket);
+    
+    currentGame.timer = setInterval(function(game){
+        console.log(game);
+        game.times[game.turn]--;
+        console.log(game.whiteWebSocket);
+        f.sendTimer(game.whiteWebSocket, game.turn, game.times[game.turn]);
+        f.sendTimer(game.blackWebSocket, game.turn, game.times[game.turn]);
+    }, 1000, currentGame);
+
     currentGame = new gameObject(gameStats.startedGames++);
     gameStats.playerWaiting -= 2;
   }
@@ -97,8 +108,8 @@ wss.on("connection", function connection(ws, req) {
   /*
    * message coming in from a player:
    *  1. determine the game object
-   *  2. determine the opposing player OP
-   *  3. send the message to OP
+   *  2. determine the 2 players
+   *  3. send the message to player[s]
    */
   con.on("message", function incoming(message) {
     let oMsg = JSON.parse(message);
@@ -109,6 +120,7 @@ wss.on("connection", function connection(ws, req) {
     console.log(oMsg);
     switch (oMsg.type) {
       case messages.T_OFFER_DRAW:
+        console.log(gameObj.whiteTime);
         if (gameObj.status == "WAITING") break;
         if (isWhite) {
           f.sendDraw(gameObj.blackWebSocket);
@@ -149,9 +161,9 @@ wss.on("connection", function connection(ws, req) {
 
           if (gameObj.validateMove(start, end)) {
             gameObj.movePiece(start, end);
-            gameObj.changeTurn();
             f.sendConfirmedMove(gameObj.whiteWebSocket, start, end);
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
+            gameObj.changeTurn();
             if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");
               f.sendResult(gameObj.whiteWebSocket, "LOSS");

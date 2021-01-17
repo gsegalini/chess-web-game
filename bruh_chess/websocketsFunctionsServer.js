@@ -5,6 +5,7 @@ var messages = require("./public/javascripts/messages");
 
 function functions(){
     this.sendmessage = function(socket, message){
+        console.log(socket);
         socket.send(JSON.stringify(message));
     }
 
@@ -39,5 +40,11 @@ function functions(){
 
     this.sendStart = function(socket){
         this.sendmessage(socket, messages.O_START);
+    }
+
+    this.sendTimer = function(socket, color, time){
+        let object = messages.O_UPDATE_TIMER;
+        object.data = [color, time];
+        this.sendmessage(socket, object);
     }
 }
