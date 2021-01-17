@@ -7,3 +7,4 @@ Repository for the WDT course @TUDelft Assignments for the web development part
 - Media queries for screen resolution
 - Checks and impossible king moves
 - Redirect to / if no cookie is present in /game
+- Fix player counts
