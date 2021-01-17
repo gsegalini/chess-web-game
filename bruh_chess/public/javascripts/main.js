@@ -44,7 +44,7 @@ window.addEventListener('load', function () {
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
-    console.log(msg);
+    // console.log(msg);
     switch (msg.type) {
 
       case "START":
@@ -65,19 +65,46 @@ window.addEventListener('load', function () {
           activeMatch.premovePossible = true;
           activeMatch.myMove = true;
           renderEnemyMove(msg.data[0], msg.data[1], activeMatch);
+
+          if(activeMatch.premoveQueue != null) {
+            // disables focus for all
+            document.querySelectorAll(".focused-premove").forEach(e => {
+              e.classList.remove("focused-premove")
+              e.classList.add("focused");
+            });
+            sendMove(activeMatch.premoveQueue.socket, activeMatch.premoveQueue.start, activeMatch.premoveQueue.end);
+            activeMatch.unsureIfRejected = true;
+            activeMatch.premoveQueue = null;
+          }
+
         }
         break;
 
       case "REJECTED-MOVE":
-        var previous = activeMatch.moveHistory.slice(-1)[0];
-        var start = previous.startPos;
-        var end = previous.endPos;
-        activeMatch.board[start[0]][start[1]] = previous.piece;
-        previous.piece.position = start;
-        activeMatch.board[end[0]][end[1]] = previous.endPiece;
-        activeMatch.moveHistory.pop();
-        console.log(activeMatch.moveHistory);
+        let previous = activeMatch.moveHistory.slice(-1)[0];
+        
+        console.log(previous);
+        historyHelper(previous, activeMatch);
+        let reverter = activeMatch.moveHistory.pop();
+        renderBoardState(activeMatch);
         activeMatch.myMove = true;
+        
+        if(activeMatch.unsureIfRejected) {
+          activeMatch.unsureIfRejected = false;
+          let previous = activeMatch.moveHistory.slice(-1)[0];
+          console.log(previous);
+          historyHelper(previous, activeMatch)
+          activeMatch.moveHistory.push(reverter);
+
+          previous = reverter;
+          console.log(previous);
+          let start = previous.startPos;
+          let end = previous.endPos;
+          activeMatch.board[end[0]][end[1]] = previous.piece;
+          activeMatch.board[start[0]][start[1]] = "";
+          previous.piece.position = end;
+          renderBoardState(activeMatch);
+        }
         break;
 
       case "GAME-ABORTED":
@@ -107,6 +134,13 @@ window.addEventListener('load', function () {
 
 });
 
+function historyHelper(previous, match) {
+  let start = previous.startPos;
+  let end = previous.endPos;
+  match.board[start[0]][start[1]] = previous.piece;
+  previous.piece.position = start;
+  match.board[end[0]][end[1]] = previous.endPiece;
+}
 
 
 // Puts the visual pieces on the board
@@ -174,7 +208,8 @@ function drawGameStart(match) {
 
           // Click and hold
           htmlImage.addEventListener("mousedown", function () {
-              mouseDownFun(match, htmlImage);
+            activeMatch.unsureIfRejected = false;
+            mouseDownFun(match, htmlImage);
           }, true)
 
           // Click
@@ -285,5 +320,6 @@ function Match(color, socket) {
 
   this.clickCounter = 0;
   this.premovePossible = true;
-
+  this.premoveQueue = null;
+  this.unsureIfRejected = false;
 }

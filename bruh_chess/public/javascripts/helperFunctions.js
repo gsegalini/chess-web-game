@@ -88,7 +88,7 @@ function renderBoardState(match) {
             }
           }, true);
         }
-        
+
         htmlBlock.innerHTML = "";
         htmlBlock.appendChild(htmlImage);
       }
@@ -109,16 +109,17 @@ function renderBoardState(match) {
 
 function clearBoard() {
   const htmlKids = document.getElementsByClassName("column");
-  for(let index = 0; index < htmlKids.length; index++) {
+  for (let index = 0; index < htmlKids.length; index++) {
     htmlKids[index].innerHTML = "";
   }
 }
 
 
 function renderEnemyMove(start, end, match) {
-  if(match.currentMove < match.moveHistory.length) {
+  // skips to current state if watching history
+  if (match.currentMove < match.moveHistory.length) {
     match.currentMove--;
-    while(match.currentMove < match.moveHistory.length) {
+    while (match.currentMove < match.moveHistory.length) {
       goForwardHistory(match);
     }
   }
@@ -148,30 +149,33 @@ function renderEnemyMove(start, end, match) {
 
   // Records history 
   const startPos = [piece.position[0], piece.position[1]];
-  const endPos =[end[0], end[1]];
+  const endPos = [end[0], end[1]];
   match.moveHistory.push({
     piece: piece,
     startPos,
     endPos,
     endPiece: checkBlock
   });
-  renderTable(startPos,endPos, piece);
-  
+  renderTable(startPos, endPos, piece);
+
 
   // makes the positional change
   match.board[piece.position[0]][piece.position[1]] = "";
   piece.setPosition(end[0], end[1]);
-  match.board[piece.position[0]][piece.position[1]] = piece; 
+  match.board[piece.position[0]][piece.position[1]] = piece;
 
   // focuses the move
   const currentLoc = String(piece.position[0]) + String(piece.position[1])
   document.getElementById(currentLoc).classList.add("focused");
 
+  const pastLoc = String(start[0]) + String(start[1]);
+  document.getElementById(pastLoc).classList.add("focused");
+
 
   // Render the move
   const htmlImage = piece.htmlRef;
   htmlImage.style.left = piece.htmlPosition[0];
-  htmlImage.style.top = piece.htmlPosition[1];  
+  htmlImage.style.top = piece.htmlPosition[1];
 }
 
 
@@ -181,18 +185,18 @@ function didEnemyMove(start, match) {
 
 function findHTMLLocation(loc, color) {
   const htmlLoc = [];
-  if(color == "white") {
-    htmlLoc.push(loc[0]*75 + "px");
-    htmlLoc.push(loc[1]*75 + "px");
+  if (color == "white") {
+    htmlLoc.push(loc[0] * 75 + "px");
+    htmlLoc.push(loc[1] * 75 + "px");
   } else {
-    htmlLoc.push((525-loc[0]*75) + "px");
-    htmlLoc.push((525-loc[1]*75) + "px");
+    htmlLoc.push((525 - loc[0] * 75) + "px");
+    htmlLoc.push((525 - loc[1] * 75) + "px");
   }
 
   return htmlLoc;
 }
 
-function renderTable(start,end, piece) {
+function renderTable(start, end, piece) {
   const tBod = document.getElementById('moveTable').getElementsByTagName('tbody')[0];
   const row = tBod.insertRow();
   const cell1 = row.insertCell();
@@ -201,8 +205,8 @@ function renderTable(start,end, piece) {
 
   const pieceInit = letterLookup[piece.name];
   const newText1 = document.createTextNode(activeMatch.tableIndex + ".");
-  const newText2 = document.createTextNode(pieceInit + xLookup[start[0]] + (8 -start[1]));
-  const newText3 = document.createTextNode(pieceInit + xLookup[end[0]] + (8 -end[1]));
+  const newText2 = document.createTextNode(pieceInit + xLookup[start[0]] + (8 - start[1]));
+  const newText3 = document.createTextNode(pieceInit + xLookup[end[0]] + (8 - end[1]));
 
   cell1.appendChild(newText1);
   cell2.appendChild(newText2);
@@ -236,11 +240,12 @@ function renderGameStart(msg, socket) {
         activeMatch.pieceHTML.style.top = yCord + "px";
       }
     }
-  }) 
+  })
 }
 
 function goBackHistory(match) {
-  if(match.currentMove > 0) {
+  if (match.currentMove > 0) {
+    match.premovePossible = false;
     match.myMove = false;
     match.currentMove--;
     var previous = match.moveHistory[match.currentMove];
@@ -256,7 +261,7 @@ function goBackHistory(match) {
 function goForwardHistory(match) {
   console.log(match.currentMove);
   console.log(match.moveHistory);
-  if(match.currentMove < match.moveHistory.length) {
+  if (match.currentMove < match.moveHistory.length) {
     match.currentMove++;
     var previous = match.moveHistory[match.currentMove - 1];
     var start = previous.startPos;
@@ -265,8 +270,12 @@ function goForwardHistory(match) {
     previous.piece.position = end;
     match.board[start[0]][start[1]] = "";
     renderBoardState(match);
-    
-    if(match.currentMove == match.moveHistory.length && previous.piece.color != match.myColor) {
+    if (match.currentMove == match.moveHistory.length) {
+      match.premovePossible = true;
+    }
+
+    if (match.currentMove == match.moveHistory.length && previous.piece.color != match.myColor) {
+
       match.myMove = true;
     }
   }
@@ -289,7 +298,7 @@ function drawDeadPieces(piece) {
   deadContainer.classList.add("deadcontainer");
   deadContainer.appendChild(htmlImage)
 
-  if(color == activeMatch.myColor) {
+  if (color == activeMatch.myColor) {
     document.getElementById("myPieces").appendChild(deadContainer);
   } else {
     document.getElementById("enemyPieces").appendChild(deadContainer);
@@ -334,127 +343,161 @@ function setupPieces(board) {
 
 function mouseDownFun(match, htmlImage) {
   if (match.myMove) {
-    // Finds piece
-    const piece = match.myPieces.find((index) => {
-      return index.name == htmlImage.classList[1];
-    })
-    match.pieceHTML = htmlImage;
-    
-    // disables focus for all
-    document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"));
-
-    // deletes movable
-    document.querySelectorAll(".container-movable").forEach(e => e.remove());
-
-    // Draws points to which the piece can move
-    const moves = piece.getMoves();
-    // console.table(moves);
-    for (let index = 0; index < moves.length; index++) {
-
-      const container = document.createElement("div");
-      container.classList.add("container-movable");
-
-      const movable = document.createElement("div");
-      movable.classList.add("movable");
-      container.appendChild(movable);
-
-      const id = String(moves[index][0]) + String(moves[index][1]);
-
-      document.getElementById(id).appendChild(container);
-    }
-
-
-    // Adds focus attributes
-    const currentLoc = String(piece.position[0]) + String(piece.position[1])
-    document.getElementById(currentLoc).classList.add("focused");
-    htmlImage.style.zIndex = "1000"
-    match.pieceHeld = htmlImage.classList[1];
-  } else if(options.premove && match.premovePossible) {
-    console.log("sfsdfsdfds");
+    mouseDownFunHelper(match, htmlImage, false);
+  } else if (options.premove && match.premovePossible) {
+    mouseDownFunHelper(match, htmlImage, true);
   }
+
 }
+
+function mouseDownFunHelper(match, htmlImage, pre) {
+  // Finds piece
+  const piece = match.myPieces.find((index) => {
+    return index.name == htmlImage.classList[1];
+  })
+  match.pieceHTML = htmlImage;
+
+  // disables focus for all
+  document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"));
+
+  // deletes movable
+  document.querySelectorAll(".container-movable").forEach(e => e.remove());
+
+  // Draws points to which the piece can move
+  const moves = piece.getMoves();
+  // console.table(moves);
+  for (let index = 0; index < moves.length; index++) {
+
+    const container = document.createElement("div");
+    container.classList.add("container-movable");
+
+    const movable = document.createElement("div");
+    movable.classList.add("movable");
+    container.appendChild(movable);
+
+    const id = String(moves[index][0]) + String(moves[index][1]);
+
+    document.getElementById(id).appendChild(container);
+  }
+
+
+  // Adds focus attributes
+  const currentLoc = String(piece.position[0]) + String(piece.position[1])
+  if (pre) {
+    document.getElementById(currentLoc).classList.add("focused-premove");
+  } else {
+    document.getElementById(currentLoc).classList.add("focused");
+  }
+
+  htmlImage.style.zIndex = "1000"
+  match.pieceHeld = htmlImage.classList[1];
+}
+
+
 
 
 function mouseUpFun(match, event, htmlBoard, htmlImage) {
   if (match.myMove) {
-    match.pieceHTML = null;
-    const piece = match.myPieces.find((x) => {
-      return x.name == htmlImage.classList[1];
-    })
+    mouseUpFunHelper(match, event, htmlBoard, htmlImage, false);
+  } else if (options.premove && match.premovePossible) {
+    mouseUpFunHelper(match, event, htmlBoard, htmlImage, true);
+  }
+}
 
-    const offset = htmlBoard.getBoundingClientRect();
-    const xCord = event.clientX - offset.left;
-    const yCord = event.clientY - offset.top;
-    // Find position based on pov
-    const position = match.myColor == "white" ? getBoardPositionWhite(xCord, yCord) : getBoardPositionBlack(xCord, yCord);
+function mouseUpFunHelper(match, event, htmlBoard, htmlImage, pre) {
+  match.pieceHTML = null;
+  const piece = match.myPieces.find((x) => {
+    return x.name == htmlImage.classList[1];
+  })
 
-    // Check if the move was valid
-    const moves = piece.getMoves();
-    for (let index = 0; index < moves.length; index++) {
-      const id = String(moves[index][0]) + String(moves[index][1]);
+  const offset = htmlBoard.getBoundingClientRect();
+  const xCord = event.clientX - offset.left;
+  const yCord = event.clientY - offset.top;
+  // Find position based on pov
+  const position = match.myColor == "white" ? getBoardPositionWhite(xCord, yCord) : getBoardPositionBlack(xCord, yCord);
 
-      // Confirms move
-      if (id == position) {
-        document.querySelectorAll(".container-movable").forEach(e => e.remove());
-        
-        const normalCord = normalizeCoordinates(xCord, yCord);
-        piece.htmlPosition = normalCord;
-        piece.increaseMoved();
+  // Check if the move was valid
+  const moves = piece.getMoves();
+  for (let index = 0; index < moves.length; index++) {
+    const id = String(moves[index][0]) + String(moves[index][1]);
 
-        // Checks for capturing piece
-        const checkBlock = match.board[moves[index][0]][moves[index][1]];
-        if (checkBlock != "") {
-          if (options.sound)
-            captureAudio.play();
-          match.opponentDeadPieces.push(checkBlock);
-          drawDeadPieces(checkBlock);
-          const nameOfRemoved = checkBlock.name;
-          document.querySelectorAll("." + nameOfRemoved).forEach(e => e.remove());
-          match.opponentPieces.filter((elem) => {
-            return elem != checkBlock
-          });
-          match.board[moves[index][0]][moves[index][1]] = "";
-        } else {
-          if (options.sound)
-            moveAudio.play();
-        }
+    // Confirms move
+    if (id == position) {
+      if(pre) {
+        match.premovePossible = false;
+      }
+      document.querySelectorAll(".container-movable").forEach(e => e.remove());
 
-        // Records history 
-        const startPos = [piece.position[0], piece.position[1]];
-        const endPos =[moves[index][0], moves[index][1]];
-        match.moveHistory.push({
-          piece: piece,
-          startPos,
-          endPos,
-          endPiece: checkBlock
+      const normalCord = normalizeCoordinates(xCord, yCord);
+      piece.htmlPosition = normalCord;
+      piece.increaseMoved();
+
+      // Checks for capturing piece
+      const checkBlock = match.board[moves[index][0]][moves[index][1]];
+      if (checkBlock != "") {
+        if (options.sound)
+          captureAudio.play();
+        match.opponentDeadPieces.push(checkBlock);
+        drawDeadPieces(checkBlock);
+        const nameOfRemoved = checkBlock.name;
+        document.querySelectorAll("." + nameOfRemoved).forEach(e => e.remove());
+        match.opponentPieces.filter((elem) => {
+          return elem != checkBlock
         });
-
-        renderTable(startPos, endPos, piece);
-
-        // makes the positional change
-        match.board[piece.position[0]][piece.position[1]] = "";
-        piece.setPosition(moves[index][0], moves[index][1])
-        match.board[piece.position[0]][piece.position[1]] = piece; //it is not piece.name, but piece
-
-        // focuses the move
-        const currentLoc = String(piece.position[0]) + String(piece.position[1])
-        document.getElementById(currentLoc).classList.add("focused");
-
-        match.myMove = false;
-        // Send Server
-        
-        sendMove(match.socket,startPos, endPos);
-        
-        break;
+        match.board[moves[index][0]][moves[index][1]] = "";
+      } else {
+        if (options.sound)
+          moveAudio.play();
       }
 
+      // Records history 
+      const startPos = [piece.position[0], piece.position[1]];
+      const endPos = [moves[index][0], moves[index][1]];
+      match.moveHistory.push({
+        piece: piece,
+        startPos,
+        endPos,
+        endPiece: checkBlock
+      });
+
+      renderTable(startPos, endPos, piece);
+
+      // makes the positional change
+      match.board[piece.position[0]][piece.position[1]] = "";
+      piece.setPosition(moves[index][0], moves[index][1])
+      match.board[piece.position[0]][piece.position[1]] = piece; //it is not piece.name, but piece
+
+      // focuses the move
+      const currentLoc = String(piece.position[0]) + String(piece.position[1])
+      
+      if(pre) {
+        document.getElementById(currentLoc).classList.add("focused-premove");
+      } else {
+        document.getElementById(currentLoc).classList.add("focused");
+      }
+
+      match.myMove = false;
+      // Send Server
+      if(pre) {
+        match.premoveQueue = {
+          socket: match.socket,
+          start: startPos,
+          end: endPos,
+        }
+      } else {
+        sendMove(match.socket, startPos, endPos);
+
+      }
+
+      break;
     }
 
-    // Resets defaults
-    htmlImage.style.zIndex = "10"
-    match.pieceHeld = "";
-    htmlImage.style.left = piece.htmlPosition[0];
-    htmlImage.style.top = piece.htmlPosition[1];
   }
+
+  // Resets defaults
+  htmlImage.style.zIndex = "10"
+  match.pieceHeld = "";
+  htmlImage.style.left = piece.htmlPosition[0];
+  htmlImage.style.top = piece.htmlPosition[1];
 }
 

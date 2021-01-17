@@ -111,7 +111,10 @@ img {
 
 
 .focused {
-  background-color: #A0C9FF;
+  background-color: #A0C9FF !important;
+}
+.focused-premove {
+  background-color: #FF6F6F!important;
 }
 
 .container-movable {
