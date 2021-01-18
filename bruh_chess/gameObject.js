@@ -19,6 +19,7 @@ function gameObject(id, time, isV){
     this.timer = null;
     this.isV = isV;
     this.time = time;
+    this.joined = 0;
 
     this.board = function(){return this.boardObj.board};
     this.addPlayer = function(socket){

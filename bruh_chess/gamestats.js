@@ -1,7 +1,7 @@
 const gameStats = {
-    startedGames: 0,
-    abortedGames: 0,
-    playerWaiting: 0
+    totalPlayer: 0,
+    playerWaiting: 0,
+    startedGames: 0
 }   
 
 module.exports = gameStats;

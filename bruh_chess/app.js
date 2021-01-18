@@ -21,8 +21,8 @@ app.set('view engine', 'ejs')
 app.get("/game", indexRouter);
 
 app.get('/', function (req, res) {
-  var ingame = 2 * (gameStats.startedGames - gameStats.abortedGames - 6);
-  var onlinePlayers = ingame + gameStats.playerWaiting;
+  var ingame = gameStats.totalPlayer - gameStats.playerWaiting;
+  var onlinePlayers = gameStats.totalPlayer;
   res.render('splash.ejs', { online: onlinePlayers, ingame: ingame, waiting: gameStats.playerWaiting });
 })
 app.get('/*', function (req, res) {
@@ -44,12 +44,13 @@ setInterval(function () {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
       if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED" || gameObj.status == "DRAW") {
-        gameStats.abortedGames++;
+        gameStats.totalPlayer -= gameObj.joined;
+        if (gameObj.joined == 1) gameStats.playerWaiting--;
         delete websockets[i];
       }
     }
   }
-}, 50000);
+}, 10000);
 
 let currentGames = {"1min" : null, 
                     "1v1" : null, 
@@ -83,7 +84,7 @@ wss.on("connection", function connection(ws, req, res) {
   /**
    * get correct currentGame
    */
-  gameStats.onlinePlayers++;
+  gameStats.totalPlayer++;
   let currentGame = currentGames[rules];
   if (currentGame == undefined) return; //shit happened
   
@@ -103,7 +104,7 @@ wss.on("connection", function connection(ws, req, res) {
    */
   con.send(playerType == "white" ? messages.S_PLAYER_WHITE : messages.S_PLAYER_BLACK);
   gameStats.playerWaiting++;
-
+  currentGame.joined++;
   /*
    * once we have two players, there is no way back;
    * a new game object is created;
@@ -235,12 +236,19 @@ wss.on("connection", function connection(ws, req, res) {
       let gameObj = websockets[con.id];
 
       gameObj.status = "ABORTED";
-      gameStats.gamesAborted++;
       gameStats.onlinePlayers--;
       /*
         * determine whose connection remains open;
         * close it
         */
+      if (con == gameObj.whiteWebSocket){
+        f.sendResult(gameObj.blackWebSocket, "WIN");
+        //f.sendResult(gameObj.whiteWebSocket, "LOSS");
+      }
+      else{
+        //f.sendResult(gameObj.blackWebSocket, "LOSS");
+        f.sendResult(gameObj.whiteWebSocket, "WIN");
+      } 
       try {
         gameObj.whiteWebSocket.close();
         gameObj.whiteWebSocket = "placeholder";
