@@ -87,6 +87,22 @@ function gameObject(id, time, isV){
         else return false;
     }
 
+    this.checkTimes =  setInterval(function(game){
+        if (game.times["white"] < 0 && game.times["white"] != -42){
+            game.times["white"] = -42;
+            game.setStatus("B-WIN");
+            if (game.blackWebSocket != "placeholder") f.sendResult(game.blackWebSocket, "WIN");
+            if (game.whiteWebSocket != "placeholder") f.sendResult(game.whiteWebSocket, "LOSS");
+            
+        }
+        else if (game.times["black"] < 0 && game.times["black"] != -42){
+            game.times["black"] = -42;
+            game.setStatus("W-WIN");
+            if (game.blackWebSocket != "placeholder") f.sendResult(game.blackWebSocket, "LOSS");
+            if (game.whiteWebSocket != "placeholder") f.sendResult(game.whiteWebSocket, "WIN");
+        }
+    }, 1000, this)
+
     //initalize pieces
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){

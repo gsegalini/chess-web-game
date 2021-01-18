@@ -39,18 +39,21 @@ let f = new websocketFunction();
  * TODO create websockets helper functions, put them everywhere we need them.
  */
 setInterval(function () {
+  //console.table(gameStats);
   for (let i in websockets) {
     if (Object.prototype.hasOwnProperty.call(websockets, i)) {
       let gameObj = websockets[i];
       //if the gameObj has a final status, the game is complete/aborted
       if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED" || gameObj.status == "DRAW") {
         gameStats.totalPlayer -= gameObj.joined;
+        //console.log(gameObj.joined);
         if (gameObj.joined == 1) gameStats.playerWaiting--;
+        gameObj.joined = 0;
         delete websockets[i];
       }
     }
   }
-}, 10000);
+}, 20000);
 
 let currentGames = {"1min" : null, 
                     "1v1" : null, 
@@ -124,7 +127,13 @@ wss.on("connection", function connection(ws, req, res) {
       f.sendTimer(game.blackWebSocket, game.turn, game.times[game.turn]);
     }, 1000, currentGame);
 
-    currentGame[rules] = new gameObject(gameStats.startedGames++);
+    
+    if (rules == "1min") currentGames["1min"] = new gameObject(gameStats.startedGames++, 1, false);   //startedGames will come from the stats tracker
+    else if (rules == "1v1") currentGames["1v1"] = new gameObject(gameStats.startedGames++, 1, true);
+    else if (rules == "5min") currentGames["5min"] = new gameObject(gameStats.startedGames++, 5, false);
+    else if (rules == "5v5") currentGames["5v5"] = new gameObject(gameStats.startedGames++, 5, true);
+    else if (rules == "10min") currentGames["10min"] = new gameObject(gameStats.startedGames++, 10, false);
+    else if (rules == "10v10") currentGames["10v10"] = new gameObject(gameStats.startedGames++, 10, true);
     gameStats.playerWaiting -= 2;
   }
 
@@ -234,21 +243,24 @@ wss.on("connection", function connection(ws, req, res) {
        * if possible, abort the game; if not, the game is already completed
        */
       let gameObj = websockets[con.id];
+      if (gameObj == undefined) return;
 
       gameObj.status = "ABORTED";
-      gameStats.onlinePlayers--;
+      //gameStats.onlinePlayers--;
       /*
         * determine whose connection remains open;
         * close it
         */
-      if (con == gameObj.whiteWebSocket){
-        f.sendResult(gameObj.blackWebSocket, "WIN");
-        //f.sendResult(gameObj.whiteWebSocket, "LOSS");
+      if (gameObj.joined > 1){
+        if (con == gameObj.whiteWebSocket){
+          f.sendResult(gameObj.blackWebSocket, "WIN");
+          //f.sendResult(gameObj.whiteWebSocket, "LOSS");
+        }
+        else{
+          //f.sendResult(gameObj.blackWebSocket, "LOSS");
+          f.sendResult(gameObj.whiteWebSocket, "WIN");
+        } 
       }
-      else{
-        //f.sendResult(gameObj.blackWebSocket, "LOSS");
-        f.sendResult(gameObj.whiteWebSocket, "WIN");
-      } 
       try {
         gameObj.whiteWebSocket.close();
         gameObj.whiteWebSocket = "placeholder";

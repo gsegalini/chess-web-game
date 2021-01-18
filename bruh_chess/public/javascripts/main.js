@@ -150,10 +150,15 @@ window.addEventListener('load', function () {
         var color = msg.data[0];
         var time = msg.data[1];
         let seconds = time % 60 + "";
-        const min = Math.floor(time / 60);
-
-        if(seconds.length < 2) {
-          seconds = "0" + seconds;
+        var min = Math.floor(time / 60);
+        if (time > 0){
+            if(seconds.length < 2) {
+            seconds = "0" + seconds;
+          }
+        }
+        else{
+          min = "00";
+          seconds = "00";
         }
 
         if (color == activeMatch.myColor) { 
