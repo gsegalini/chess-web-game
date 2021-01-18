@@ -230,19 +230,30 @@ function boardObject() {
             }
         }
         //remove from possibles all enemy moves
-        /**
-        var enemy = []
+
+        var enemy = new Set()
         for (var x = 0;x<8;x++){
             for (var y = 0;y<8;y++){
                 var p = this.board[x][y];
                 if (p != "" && p != undefined && p.color != this.color){
-                    console.table(p);
-                    enemy = [...new Set([...enemy, ...p.getMoves()])];
+                    if (p.name.startsWith("k")){
+                        enemy.add([x+1,y])
+                        enemy.add([x+1,y+1])
+                        enemy.add([x,y+1])
+                        enemy.add([x-1,y+1])
+                        enemy.add([x-1,y])
+                        enemy.add([x-1,y-1])
+                        enemy.add([x,y-1])
+                        enemy.add([x+1,y-1])
+                    }
+                    else
+                        enemy.add(p.getMoves());
                 }
             }
         }
+        enemy = [...enemy]
         possibles = possibles.filter(x => !enemy.includes(x));
-        */
+
         return possibles;
     }
 
