@@ -39,11 +39,11 @@ window.addEventListener('load', function () {
   const drawYes = document.getElementById("draw-button-yes");
   const drawNo = document.getElementById("draw-button-no");
 
-  document.getElementById("askForDraw").classList.toggle("fade-out"); //we need to hide it as first thing
+  // document.getElementById("askForDraw").classList.toggle("fade-out"); //we need to hide it as first thing
 
   drawYes.addEventListener("click", function(){sendAcceptDraw(socket)})
   drawNo.addEventListener("click", function(){
-    document.getElementById("askForDraw").classList.toggle("fade-out");
+    // document.getElementById("askForDraw").classList.toggle("fade-out");
     document.getElementById("askForDraw").classList.toggle("show");
     })
 
@@ -143,7 +143,7 @@ window.addEventListener('load', function () {
 
       case "OFFER-DRAW":
         document.getElementById("askForDraw").classList.toggle("show");
-        document.getElementById("askForDraw").classList.toggle("fade-out");
+        // document.getElementById("askForDraw").classList.toggle("fade-out");
         break;
 
       case "UPDATE-TIMER":

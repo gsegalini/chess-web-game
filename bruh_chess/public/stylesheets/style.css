@@ -198,11 +198,7 @@ input:checked + .slider:before {
   animation: fadeIn 0.5s;
 }
 
-.fade-out{
-  visibility: hidden !important;
-  -webkit-animation: fadeOut 0.5s;
-  animation: fadeOut 0.5s; 
-}
+
 
 @-webkit-keyframes fadeIn {
   from {opacity: 0;} 
@@ -213,6 +209,27 @@ input:checked + .slider:before {
   from {opacity: 0;}
   to {opacity:0.95 ;}
 }
+/* 
+.fade-out{
+  visibility: visible;
+  -webkit-animation: fadeOut 0.5s;
+  animation: fadeOut 0.5s; 
+}
+
+@-webkit-keyframes fadeOut {
+  from {opacity: 0.95;} 
+  to {
+    opacity: 0;
+    visibility: hidden;}
+}
+
+@keyframes fadeOut {
+  from {opacity: 0.95;}
+  to {
+    opacity:0 ;
+    visibility: hidden;}
+} */
+
 
 
 .rules-title {
