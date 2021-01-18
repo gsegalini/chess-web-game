@@ -196,7 +196,12 @@ input:checked + .slider:before {
   visibility: visible !important;
   -webkit-animation: fadeIn 0.5s;
   animation: fadeIn 0.5s;
+}
 
+.fade-out{
+  visibility: hidden !important;
+  -webkit-animation: fadeOut 0.5s;
+  animation: fadeOut 0.5s; 
 }
 
 @-webkit-keyframes fadeIn {

@@ -67,14 +67,13 @@ currentGames["10v10"] = new gameObject(gameStats.startedGames++, 10, true);
 
 let socketID = 0;
 
-wss.on("connection", function connection(ws, req) {
+wss.on("connection", function connection(ws, req, res) {
 
-  gameStats.onlinePlayers++;
 
   /**
    * two-player game: every two players are added to the same game with same rules, so first check rules and then add to it
    */
-
+  if (req.headers.cookie == undefined) {return;}
   let cookies = req.headers.cookie.split(";");
   let rules = "";
   for (var i = 0; i < cookies.length; i++) {
@@ -84,6 +83,7 @@ wss.on("connection", function connection(ws, req) {
   /**
    * get correct currentGame
    */
+  gameStats.onlinePlayers++;
   let currentGame = currentGames[rules];
   if (currentGame == undefined) return; //shit happened
   

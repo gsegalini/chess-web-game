@@ -20,6 +20,11 @@ window.onunload = () => {
 
 // Setup
 window.addEventListener('load', function () {
+  if( document.cookie.indexOf("rules=") < 0) {
+    alert("Rules cookie not found, redirecting you.");
+    location.href = "../";
+  }
+
   const socket = new WebSocket(url);
   const resign = document.getElementById("resign");
   const draws = document.getElementById("draw");
@@ -33,9 +38,14 @@ window.addEventListener('load', function () {
 
   const drawYes = document.getElementById("draw-button-yes");
   const drawNo = document.getElementById("draw-button-no");
-  
+
+  document.getElementById("askForDraw").classList.toggle("fade-out"); //we need to hide it as first thing
+
   drawYes.addEventListener("click", function(){sendAcceptDraw(socket)})
-  drawNo.addEventListener("click", function(){document.getElementById("askForDraw").classList.toggle("show");})
+  drawNo.addEventListener("click", function(){
+    document.getElementById("askForDraw").classList.toggle("fade-out");
+    document.getElementById("askForDraw").classList.toggle("show");
+    })
 
   //Bug: the options reset on refresh, but the visuals stay the same. (seems to happen only on firefox)
   premoves.addEventListener("change", changePremove);
@@ -133,6 +143,7 @@ window.addEventListener('load', function () {
 
       case "OFFER-DRAW":
         document.getElementById("askForDraw").classList.toggle("show");
+        document.getElementById("askForDraw").classList.toggle("fade-out");
         break;
 
       case "UPDATE-TIMER":
