@@ -1,63 +1,83 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>BruhChess</title>
-  <link rel="stylesheet" href="stylesheets/style.css">
 </head>
 
 <body>
-
-<section class="left-block">
-  <div class="title">
-    <img class="logo" src="images/BruhChess.svg"/>
-  </div>
-
-
-  <section id="play-button" >
-    <form action="/game" method="get">
-            <button type="submit">PLAY</button>
-    </form>
-
-  <div class="times-grid">
-    <div class="time"><button id="1min">1 min</button></div> 
-    <div class="time"><button id="1v1">1 | 1</button></div>
-    <div class="time"><button id="5min">5 min</button></div>
-    <div class="time"><button id="5v5">5 | 5</button></div>
-    <div class="time"><button id="10 min">10 min</button></div>
-    <div class="time"><button id="10v10">10 | 10</button></div>
-  </div>
-
-  <div class="settings">
-
-    <div class="premoves">
-      Premoves
-      <label class="switch">
-        <input type="checkbox">
-        <span class="slider round"></span>
-      </label>
+  <div class="alert-screen">Please make your screen at least 1366px wide for optimal gameplay</div>
+  <section class="left-block">
+    <div class="title">
+      <img class="logo" src="images/BruhChess.svg"/>
     </div>
 
-    <div class="click-move">
-      Click move
-      <label class="switch">
-        <input type="checkbox">
-        <span class="slider round"></span>
-      </label>
+    <div class="left-container">
+      <button class="question">?</button>
+      <section id="play-button">
+        <form>
+          <button id="play-button-real" type="button">PLAY</button>
+        </form>
+      </section>
+  
+        <div class="times-grid">
+          <div class="time"><button id="1min">1 min</button></div>
+          <div class="time"><button id="1v1">1 | 1</button></div>
+          <div class="time"><button id="5min">5 min</button></div>
+          <div class="time"><button id="5v5">5 | 5</button></div>
+          <div class="time"><button id="10min">10 min</button></div>
+          <div class="time"><button id="10v10">10 | 10</button></div>
+        </div>
+  
+        <p class="server-info">Online players: X
+        </p>
+        <p class="server-info">In game: X
+        </p>
+        <p class="server-info">Waiting: X
+        </p>
+  
+
+        <div class="settings">
+          <div class="option">Premoves<!-- Rounded switch -->
+            <label class="switch">
+              <input type="checkbox" id="premoves">
+              <span class="slider round"></span>
+            </label></div>
+          <br>
+          <div class="option">Click move<!-- Rounded switch -->
+            <label class="switch">
+              <input type="checkbox" id="clicks">
+              <span class="slider round"></span>
+            </label></div>
+          <br>
+          <div class="option">Sound<!-- Rounded switch -->
+            <label class="switch">
+              <input type="checkbox" id="sound">
+              <span class="slider round"></span>
+            </label></div>
+        </div>
+        <br>
 
     </div>
-    <div class="sound-toggle">
-      Sound
-      <label class="switch">
-        <input type="checkbox">
-        <span class="slider round"></span>
-      </label>
+  </section>
+
+  
+  <div class="right-block">
+    <div id="chess-board" class="splash-chess" >
+      <div class="rules" id="questionPopup">
+        <div class="rules-title">Rules</div>
+        <div class="rules-text">
+          <div class="rules-block">Chess is played according to the classical rules.</div>
+          <div class="rules-block"><strong>x min</strong> - both players have a x minute timer</div>
+          <div class="rules-block"><strong>x | x</strong> - both players have a x minute timer with x second increment</div>
+          <div class="rules-block"><strong>Premoves</strong> - allows the player to play 1 move ahead</div>
+          <div class="rules-block"><strong>Click move</strong> - allows the player to click pieces instead of dragging them</div>
+          <div class="rules-block"><strong>Sound</strong> - toggles sound</div>
+        </div>
+      </div>
     </div>
   </div>
-</section>
-
-<div class="right-block">
-  <div id="chess-board" ></div>
-</div>
-
+ 
 </body>
+
 </html>
