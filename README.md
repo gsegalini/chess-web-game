@@ -8,8 +8,7 @@ Client
 
 Server
 - Checks and impossible king moves
-- Redirect to / if no cookie is present in /game
-- Fix player counts
+
 
 
 # Important checks before submit:

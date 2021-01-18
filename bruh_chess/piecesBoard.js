@@ -229,8 +229,20 @@ function boardObject() {
                 }
             }
         }
-
-
+        //remove from possibles all enemy moves
+        /**
+        var enemy = []
+        for (var x = 0;x<8;x++){
+            for (var y = 0;y<8;y++){
+                var p = this.board[x][y];
+                if (p != "" && p != undefined && p.color != this.color){
+                    console.table(p);
+                    enemy = [...new Set([...enemy, ...p.getMoves()])];
+                }
+            }
+        }
+        possibles = possibles.filter(x => !enemy.includes(x));
+        */
         return possibles;
     }
 
