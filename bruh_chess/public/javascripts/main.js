@@ -31,6 +31,12 @@ window.addEventListener('load', function () {
   const myTimer = document.getElementById("myTimer");
   const enemyTimer = document.getElementById("enemyTimer");
 
+  const drawYes = document.getElementById("draw-button-yes");
+  const drawNo = document.getElementById("draw-button-no");
+  
+  drawYes.addEventListener("click", function(){sendAcceptDraw(socket)})
+  drawNo.addEventListener("click", function(){document.getElementById("askForDraw").classList.toggle("show");})
+
   //Bug: the options reset on refresh, but the visuals stay the same. (seems to happen only on firefox)
   premoves.addEventListener("change", changePremove);
   clicks.addEventListener("change", changeClick);

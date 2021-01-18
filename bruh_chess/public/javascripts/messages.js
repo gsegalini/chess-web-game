@@ -96,14 +96,6 @@
     };
     exports.S_ACCEPT_DRAW = JSON.stringify(exports.O_ACCEPT_DRAW);
 
-    /**
-     * client to server and server to other client: reject draw
-     */
-    exports.T_REJECT_DRAW = "ACCEPT-DRAW";
-    exports.O_REJECT_DRAW = {
-        type: exports.T_REJECT_DRAW,
-    };
-    exports.S_REJECT_DRAW = JSON.stringify(exports.O_REJECT_DRAW);
 
     /**
      * server to clients: update timers

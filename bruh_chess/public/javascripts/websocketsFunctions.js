@@ -22,7 +22,3 @@ function sendResign(socket){
 function sendAcceptDraw(socket){
     socket.send(Messages.S_ACCEPT_DRAW);
 }
-
-function sendRejectDraw(socket){
-    socket.send(Messages.S_REJECT_DRAW);
-}
