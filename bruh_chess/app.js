@@ -245,13 +245,12 @@ wss.on("connection", function connection(ws, req, res) {
       let gameObj = websockets[con.id];
       if (gameObj == undefined) return;
 
-      gameObj.status = "ABORTED";
       //gameStats.onlinePlayers--;
       /*
         * determine whose connection remains open;
         * close it
         */
-      if (gameObj.joined > 1){
+      if (gameObj.joined > 1 && gameObj.status != "W-WIN" && gameObj.status != "B-WIN"){
         if (con == gameObj.whiteWebSocket){
           f.sendResult(gameObj.blackWebSocket, "WIN");
           //f.sendResult(gameObj.whiteWebSocket, "LOSS");
@@ -261,6 +260,7 @@ wss.on("connection", function connection(ws, req, res) {
           f.sendResult(gameObj.whiteWebSocket, "WIN");
         } 
       }
+      gameObj.status = "ABORTED";
       try {
         gameObj.whiteWebSocket.close();
         gameObj.whiteWebSocket = "placeholder";
