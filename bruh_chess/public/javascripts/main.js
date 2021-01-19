@@ -27,7 +27,7 @@ window.addEventListener('load', function () {
   else{
     let cookie = getCookie("rules");
     let valids = ["1min", "1v1", "5min", "5v5", "10min", "10v10"];
-    if (!(cookie in valids)){
+    if (!(valids.includes(cookie))){
       alert("Rules cookie has wrong format, redirecting you");
     location.href = "../";
     }
