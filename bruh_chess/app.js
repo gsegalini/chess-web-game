@@ -264,7 +264,9 @@ wss.on("connection", function connection(ws, req, res) {
         } 
       }
       gameObj.status = "ABORTED";
+      if (gameObj.joined == 1) gameStats.playerWaiting--;
       gameObj.joined--;
+      gameStats.totalPlayer--;
       try {
         gameObj.whiteWebSocket.close();
         gameObj.whiteWebSocket = "placeholder";
