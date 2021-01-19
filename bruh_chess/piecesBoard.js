@@ -231,29 +231,47 @@ function boardObject() {
         }
         //remove from possibles all enemy moves
 
-        var enemy = new Set()
+        var enemy = []
         for (var x = 0;x<8;x++){
             for (var y = 0;y<8;y++){
                 var p = this.board[x][y];
                 if (p != "" && p != undefined && p.color != this.color){
+
                     if (p.name.startsWith("k")){
-                        enemy.add([x+1,y])
-                        enemy.add([x+1,y+1])
-                        enemy.add([x,y+1])
-                        enemy.add([x-1,y+1])
-                        enemy.add([x-1,y])
-                        enemy.add([x-1,y-1])
-                        enemy.add([x,y-1])
-                        enemy.add([x+1,y-1])
+                        enemy.push([x+1,y])
+                        enemy.push([x+1,y+1])
+                        enemy.push([x,y+1])
+                        enemy.push([x-1,y+1])
+                        enemy.push([x-1,y])
+                        enemy.push([x-1,y-1])
+                        enemy.push([x,y-1])
+                        enemy.push([x+1,y-1])
                     }
-                    else
-                        enemy.add(p.getMoves());
+                    else if (p.name.startsWith("p")){
+                        if (p.color == "black"){
+                            enemy.push([x+1, y+1]);
+                            enemy.push([x-1, y+1]);
+                        }
+                        else{
+                            enemy.push([x+1, y-1]);
+                            enemy.push([x-1, y-1]);                            
+                        }
+                    }
+                    else{
+                        enemy.push(...p.getMoves());
+                    }
                 }
             }
         }
-        enemy = [...enemy]
-        possibles = possibles.filter(x => !enemy.includes(x));
-
+        //console.log(enemy);
+        //console.log(enemy.includes([4, 2]))
+        for (var i = 0;i<enemy.length;i++){
+            for (var j = 0;j<possibles.length;j++){
+                if (enemy[i][0] == possibles[j][0] && enemy[i][1] == possibles[j][1]){
+                    possibles.splice(j,1);
+                }
+            }
+        }
         return possibles;
     }
 

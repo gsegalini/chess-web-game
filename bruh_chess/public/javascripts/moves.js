@@ -123,53 +123,94 @@ function kingMove(x, y, color, _moved) {
   let possibles = [];
   let pairs = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
   for (var i = 0; i < 8; i++) {
-    let actual = [x + pairs[i][0], y + pairs[i][1]];
-    if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0) { //on the grid, check color
-      var rx = actual[0];
-      var ry = actual[1];
-      if (this.board[rx][ry] != undefined && this.board[rx][ry] != "") { //color check
-        if (this.board[rx][ry].color === color) { continue; }
+      let actual = [x + pairs[i][0], y + pairs[i][1]];
+      if (actual[0] < 8 && actual[0] >= 0 && actual[1] < 8 && actual[1] >= 0) { //on the grid, check color
+          var rx = actual[0];
+          var ry = actual[1];
+          if (this.board[rx][ry] != undefined && this.board[rx][ry] != "") { //color check
+              if (this.board[rx][ry].color === color) { continue; }
+          }
+          possibles.push(actual);
       }
-      possibles.push(actual);
-    }
   }
 
   if (_moved === 0) {
-    if (color === "white") {
-      if (x == 4 && y == 7) {
-        if (this.board[7][7].name === "rw1" && this.board[7][7].moved === 0) {
-          if (this.board[6][7] == "" && this.board[5][7] == "") {
-            console.log("castle kingside!");
-            possibles.push([6, 7]);
+      if (color === "white") {
+          if (x == 4 && y == 7) {
+              if (this.board[7][7].name === "rw1" && this.board[7][7].moved === 0) {
+                  if (this.board[6][7] == "" && this.board[5][7] == "") {
+                      console.log("castle kingside!");
+                      possibles.push([6, 7]);
+                  }
+              }
+              if (this.board[0][7].name === "rw0" && this.board[0][7].moved === 0) {
+                  if (this.board[1][7] == "" && this.board[2][7] == "" && this.board[3][7] == "") {
+                      console.log("castle queenside!");
+                      possibles.push([2, 7]);
+                  }
+              }
           }
-        }
-        if (this.board[0][7].name === "rw0" && this.board[0][7].moved === 0) {
-          if (this.board[1][7] == "" && this.board[2][7] == "" && this.board[3][7] == "") {
-            console.log("castle queenside!");
-            possibles.push([2, 7]);
-          }
-        }
-      }
 
-    } else {
-      if (x == 4 && y == 0) {
-        if (this.board[7][0].name === "rb0" && this.board[7][0].moved === 0) {
-          if (this.board[6][0] == "" && this.board[5][0] == "") {
-            console.log("castle kingside!");
-            possibles.push([6, 0]);
+      } else {
+          if (x == 4 && y == 0) {
+              if (this.board[7][0].name === "rb0" && this.board[7][0].moved === 0) {
+                  if (this.board[6][0] == "" && this.board[5][0] == "") {
+                      console.log("castle kingside!");
+                      possibles.push([6, 0]);
+                  }
+              }
+              if (this.board[0][0].name === "rb1" && this.board[0][0].moved === 0) {
+                  if (this.board[1][0] == "" && this.board[2][0] == "" && this.board[3][0] == "") {
+                      console.log("castle queenside!");
+                      possibles.push([2, 0]);
+                  }
+              }
           }
-        }
-        if (this.board[0][0].name === "rb1" && this.board[0][0].moved === 0) {
-          if (this.board[1][0] == "" && this.board[2][0] == "" && this.board[3][0] == "") {
-            console.log("castle queenside!");
-            possibles.push([2, 0]);
-          }
-        }
       }
-    }
   }
+  //remove from possibles all enemy moves
 
+  var enemy = []
+  for (var x = 0;x<8;x++){
+      for (var y = 0;y<8;y++){
+          var p = this.board[x][y];
+          if (p != "" && p != undefined && p.color != this.color){
 
+              if (p.name.startsWith("k")){
+                  enemy.push([x+1,y])
+                  enemy.push([x+1,y+1])
+                  enemy.push([x,y+1])
+                  enemy.push([x-1,y+1])
+                  enemy.push([x-1,y])
+                  enemy.push([x-1,y-1])
+                  enemy.push([x,y-1])
+                  enemy.push([x+1,y-1])
+              }
+              else if (p.name.startsWith("p")){
+                  if (p.color == "black"){
+                      enemy.push([x+1, y+1]);
+                      enemy.push([x-1, y+1]);
+                  }
+                  else{
+                      enemy.push([x+1, y-1]);
+                      enemy.push([x-1, y-1]);                            
+                  }
+              }
+              else{
+                  enemy.push(...p.getMoves());
+              }
+          }
+      }
+  }
+  //console.log(enemy);
+  //console.log(enemy.includes([4, 2]))
+  for (var i = 0;i<enemy.length;i++){
+      for (var j = 0;j<possibles.length;j++){
+          if (enemy[i][0] == possibles[j][0] && enemy[i][1] == possibles[j][1]){
+              possibles.splice(j,1);
+          }
+      }
+  }
   return possibles;
 }
 
