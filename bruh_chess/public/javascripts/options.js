@@ -89,17 +89,17 @@ const lookup = {
 
 function changeSound(){
   options.sound = !options.sound; 
-  console.log(options);
+  window.localStorage.setItem('optionsGame', JSON.stringify(options));
 }
 
 function changePremove(){
   options.premove = !options.premove; 
-  console.log(options);
+  window.localStorage.setItem('optionsGame', JSON.stringify(options));
 }
 
 function changeClick(){
-  options.clickMove = !options.clickMove; 
-  console.log(options);
+  options.clickMove = !options.clickMove;
+  window.localStorage.setItem('optionsGame', JSON.stringify(options)); 
 }
 
 

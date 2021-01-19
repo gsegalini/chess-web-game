@@ -2,7 +2,6 @@
 window.addEventListener('load', function () {
   drawGameStart();
 
-  let storage = window.localStorage;
   const min1 = document.getElementById("1min");
   const v1 = document.getElementById("1v1");
   const min5 = document.getElementById("5min");
@@ -11,6 +10,10 @@ window.addEventListener('load', function () {
   const v10 = document.getElementById("10v10");
   const play = document.getElementById("play-button-real");
 
+  const premoves = document.getElementById("premoves");
+  const clicks = document.getElementById("clicks");
+  const sound = document.getElementById("sound");
+
   min1.addEventListener("click", function(){setRule("1min")});
   v1.addEventListener("click", function(){setRule("1v1")});
   min5.addEventListener("click", function(){setRule("5min")});
@@ -18,13 +21,27 @@ window.addEventListener('load', function () {
   min10.addEventListener("click", function(){setRule("10min")});
   v10.addEventListener("click", function(){setRule("10v10")});
   play.addEventListener("click", checkAndPlay)
+
+  premoves.addEventListener("change", changePremove);
+  clicks.addEventListener("change", changeClick);
+  sound.addEventListener("change", changeSound);
+  
+  const optionsSet = JSON.parse(window.localStorage.getItem('optionsGame'));
+
+  if(optionsSet != null) {
+    options.sound = optionsSet.sound;
+    options.premove = optionsSet.premove;
+    options.clickMove = optionsSet.clickMove;
+  
+    premoves.checked = optionsSet.premove;
+    clicks.checked = optionsSet.clickMove;
+    sound.checked = optionsSet.sound;
+  }
+
+
+  console.log(options);
 });
 
-
-window.onunload = () => {
-  // Clear the local storage
-  window.localStorage.clear();
-}
 
 // Puts the visual pieces on the board
 function drawGameStart() {

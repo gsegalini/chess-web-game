@@ -56,7 +56,6 @@ function renderBoardState(match) {
 
           // Click
           htmlImage.addEventListener("click", function (event) {
-            console.log("se" + options.clickMove);
             if(options.clickMove) {
               if(match.clickCounter > 0) {
                 match.clickCounter = 0;
@@ -274,8 +273,6 @@ function goBackHistory(match) {
 }
 
 function goForwardHistory(match) {
-  console.log(match.currentMove);
-  console.log(match.moveHistory);
   if (match.currentMove < match.moveHistory.length) {
     match.currentMove++;
     var previous = match.moveHistory[match.currentMove - 1];

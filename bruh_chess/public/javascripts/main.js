@@ -13,10 +13,6 @@ const captureAudio = new Audio("./files/capture.wav");
 var url = "ws://" + location.host;
 
 
-window.onunload = () => {
-  // Clear the local storage
-  window.localStorage.clear();
-}
 
 // Setup
 window.addEventListener('load', function () {
@@ -41,6 +37,7 @@ window.addEventListener('load', function () {
   const clicks = document.getElementById("clicks");
   const sound = document.getElementById("sound");
 
+
   const myTimer = document.getElementById("myTimer");
   const enemyTimer = document.getElementById("enemyTimer");
 
@@ -55,10 +52,22 @@ window.addEventListener('load', function () {
     document.getElementById("askForDraw").classList.toggle("show");
     })
 
-  //Bug: the options reset on refresh, but the visuals stay the same. (seems to happen only on firefox)
+
   premoves.addEventListener("change", changePremove);
   clicks.addEventListener("change", changeClick);
   sound.addEventListener("change", changeSound);
+
+    // Options set
+  const optionsSet = JSON.parse(window.localStorage.getItem('optionsGame'));
+    if(optionsSet != null) {
+      options.sound = optionsSet.sound;
+      options.premove = optionsSet.premove;
+      options.clickMove = optionsSet.clickMove;
+    
+      premoves.checked = optionsSet.premove;
+      clicks.checked = optionsSet.clickMove;
+      sound.checked = optionsSet.sound;
+    }
 
   // fixes firefox drag issue
   document.addEventListener('dragstart', function (e) {
@@ -73,6 +82,9 @@ window.addEventListener('load', function () {
 
       case "START":
         document.getElementById("end-screen").classList.toggle("show")
+
+        
+        
         
         activeMatch.myMove = (activeMatch.myColor == "white");
         break;
@@ -91,7 +103,6 @@ window.addEventListener('load', function () {
         break;
 
       case "CONFIRMED-MOVE":
-        console.log("confiremd");
         activeMatch.currentMove++;
         const whoMoved = didEnemyMove(msg.data[0], activeMatch);
         if (whoMoved) {
@@ -107,10 +118,8 @@ window.addEventListener('load', function () {
             const piece = activeMatch.myDeadPieces.find((x) => {
               return x.name == activeMatch.premoveQueue.piece.name;
             });
-            console.log(piece);
 
             if(piece == undefined ){
-              console.log("doin move");
               mouseUpFunHelper(activeMatch, activeMatch.premoveQueue.event, activeMatch.premoveQueue.htmlBoard, activeMatch.premoveQueue.htmlImage)
               renderBoardState(activeMatch);
               activeMatch.premoveQueue = null;
@@ -122,12 +131,9 @@ window.addEventListener('load', function () {
         break;
 
       case "REJECTED-MOVE":
-        console.log(msg);
         let previous = activeMatch.moveHistory.slice(-1)[0];
-        
-        console.log(previous);
         historyHelper(previous, activeMatch);
-        let reverter = activeMatch.moveHistory.pop();
+        activeMatch.moveHistory.pop();
         renderBoardState(activeMatch);
         activeMatch.myMove = true;
         
