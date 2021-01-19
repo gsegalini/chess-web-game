@@ -176,7 +176,7 @@ function kingMove(x, y, color, _moved) {
           var p = this.board[xe][ye];
           if (p != "" && p != undefined && p.color != this.color){
 
-              if (p.name.startsWith("k")){
+              if (p.name == "kw" || p.name == "kb"){
                   enemy.push([xe+1,ye])
                   enemy.push([xe+1,ye+1])
                   enemy.push([xe,ye+1])
