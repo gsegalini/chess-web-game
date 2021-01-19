@@ -88,14 +88,14 @@ function gameObject(id, time, isV){
     }
 
     this.checkTimes =  setInterval(function(game){
-        if (game.times["white"] < 0 && game.times["white"] != -42){
+        if (game.times["white"] < 0 && game.times["white"] > -42){
             game.times["white"] = -42;
             game.setStatus("B-WIN");
             if (game.blackWebSocket != "placeholder") f.sendResult(game.blackWebSocket, "WIN");
             if (game.whiteWebSocket != "placeholder") f.sendResult(game.whiteWebSocket, "LOSS");
             
         }
-        else if (game.times["black"] < 0 && game.times["black"] != -42){
+        else if (game.times["black"] < 0 && game.times["black"] > -42){
             game.times["black"] = -42;
             game.setStatus("W-WIN");
             if (game.blackWebSocket != "placeholder") f.sendResult(game.blackWebSocket, "LOSS");
