@@ -54,10 +54,25 @@ function renderBoardState(match) {
             mouseDownFun(match, htmlImage);
           }, true)
 
+          // Click
+          htmlImage.addEventListener("click", function (event) {
+            console.log("se" + options.clickMove);
+            if(options.clickMove) {
+              if(match.clickCounter > 0) {
+                match.clickCounter = 0;
+                mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
+              } else {
+                match.clickCounter++;
+              }
+            } 
+        }, true)
 
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
-            mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
+            if(!options.clickMove) {
+              mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
+            }
+
           }, true)
 
           // move around while holding
@@ -359,7 +374,7 @@ function mouseDownFunHelper(match, htmlImage, pre) {
 
   // disables focus for all
   document.querySelectorAll(".focused").forEach(e => e.classList.remove("focused"));
-
+  document.querySelectorAll(".focused-premove").forEach(e => e.classList.remove("focused-premove"));
   // deletes movable
   document.querySelectorAll(".container-movable").forEach(e => e.remove());
 
@@ -535,7 +550,7 @@ function premoveMove(match, event, htmlBoard, htmlImage) {
 
       match.myMove = false;
       // Send Server
-        
+
       match.premoveQueue = {
         piece: piece,
         startPos,

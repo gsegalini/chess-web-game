@@ -253,7 +253,6 @@ function drawGameStart(match) {
 
           // Click and hold
           htmlImage.addEventListener("mousedown", function () {
-            activeMatch.unsureIfRejected = false;
             mouseDownFun(match, htmlImage);
           }, true)
 
@@ -366,7 +365,6 @@ function Match(color, socket) {
   this.clickCounter = 0;
   this.premovePossible = true;
   this.premoveQueue = null;
-  this.unsureIfRejected = false;
 }
 
 function getCookie(name) {
