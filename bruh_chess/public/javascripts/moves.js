@@ -171,33 +171,36 @@ function kingMove(x, y, color, _moved) {
   //remove from possibles all enemy moves
 
   var enemy = []
-  for (var x = 0;x<8;x++){
-      for (var y = 0;y<8;y++){
-          var p = this.board[x][y];
+  for (var xe = 0;xe<8;xe++){
+      for (var ye = 0;ye<8;ye++){
+          var p = this.board[xe][ye];
           if (p != "" && p != undefined && p.color != this.color){
 
               if (p.name.startsWith("k")){
-                  enemy.push([x+1,y])
-                  enemy.push([x+1,y+1])
-                  enemy.push([x,y+1])
-                  enemy.push([x-1,y+1])
-                  enemy.push([x-1,y])
-                  enemy.push([x-1,y-1])
-                  enemy.push([x,y-1])
-                  enemy.push([x+1,y-1])
+                  enemy.push([xe+1,ye])
+                  enemy.push([xe+1,ye+1])
+                  enemy.push([xe,ye+1])
+                  enemy.push([xe-1,ye+1])
+                  enemy.push([xe-1,ye])
+                  enemy.push([xe-1,ye-1])
+                  enemy.push([xe,ye-1])
+                  enemy.push([xe+1,ye-1])
               }
               else if (p.name.startsWith("p")){
                   if (p.color == "black"){
-                      enemy.push([x+1, y+1]);
-                      enemy.push([x-1, y+1]);
+                      enemy.push([xe+1, ye+1]);
+                      enemy.push([xe-1, ye+1]);
                   }
                   else{
-                      enemy.push([x+1, y-1]);
-                      enemy.push([x-1, y-1]);                            
+                      enemy.push([xe+1, ye-1]);
+                      enemy.push([xe-1, ye-1]);                            
                   }
               }
               else{
+                  var temp = p.board[x][y];
+                  p.board[x][y] = "";
                   enemy.push(...p.getMoves());
+                  p.board[x][y] = temp;
               }
           }
       }
@@ -235,7 +238,7 @@ function queenMove(x, y, color, _moved) {
       }
     }
   }
-  console.log(possibles);
+  //console.log(possibles);
   return possibles;
 }
 
