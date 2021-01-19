@@ -47,7 +47,6 @@ setInterval(function () {
       if (gameObj.status === "B-WIN" || gameObj.status === "W-WIN" || gameObj.status == "ABORTED" || gameObj.status == "DRAW") {
         gameStats.totalPlayer -= gameObj.joined;
         //console.log(gameObj.joined);
-        if (gameObj.joined == 1) gameStats.playerWaiting--;
         gameObj.joined = 0;
         delete websockets[i];
       }
