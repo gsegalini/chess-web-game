@@ -10,7 +10,7 @@
  /* Fixes table stretch*/
 
 .wrapper-fix {
-  height:57%;
+  height:55%;
   overflow: auto;
 }
 
@@ -56,6 +56,7 @@ tr > td {
   display:flex;
   justify-content: space-around;
   margin-bottom:20px;
+  margin-top: 10px;
 }
 
 .c-button {
