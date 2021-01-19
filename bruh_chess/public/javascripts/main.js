@@ -68,7 +68,7 @@ window.addEventListener('load', function () {
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
-    //console.log(msg);
+    
     switch (msg.type) {
 
       case "START":
@@ -91,28 +91,38 @@ window.addEventListener('load', function () {
         break;
 
       case "CONFIRMED-MOVE":
+        console.log("confiremd");
         activeMatch.currentMove++;
         const whoMoved = didEnemyMove(msg.data[0], activeMatch);
         if (whoMoved) {
           activeMatch.premovePossible = true;
           activeMatch.myMove = true;
           renderEnemyMove(msg.data[0], msg.data[1], activeMatch);
-
+          renderBoardState(activeMatch);
           if(activeMatch.premoveQueue != null) {
-            // disables focus for all
             document.querySelectorAll(".focused-premove").forEach(e => {
               e.classList.remove("focused-premove")
               e.classList.add("focused");
             });
-            sendMove(activeMatch.premoveQueue.socket, activeMatch.premoveQueue.start, activeMatch.premoveQueue.end);
-            activeMatch.unsureIfRejected = true;
-            activeMatch.premoveQueue = null;
+            const piece = activeMatch.myDeadPieces.find((x) => {
+              return x.name == activeMatch.premoveQueue.piece.name;
+            });
+            console.log(piece);
+
+            if(piece == undefined ){
+              console.log("doin move");
+              mouseUpFunHelper(activeMatch, activeMatch.premoveQueue.event, activeMatch.premoveQueue.htmlBoard, activeMatch.premoveQueue.htmlImage)
+              renderBoardState(activeMatch);
+              activeMatch.premoveQueue = null;
+            }
+            
           }
 
         }
         break;
 
       case "REJECTED-MOVE":
+        console.log(msg);
         let previous = activeMatch.moveHistory.slice(-1)[0];
         
         console.log(previous);
@@ -121,22 +131,6 @@ window.addEventListener('load', function () {
         renderBoardState(activeMatch);
         activeMatch.myMove = true;
         
-        if(activeMatch.unsureIfRejected) {
-          activeMatch.unsureIfRejected = false;
-          let previous = activeMatch.moveHistory.slice(-1)[0];
-          console.log(previous);
-          historyHelper(previous, activeMatch)
-          activeMatch.moveHistory.push(reverter);
-
-          previous = reverter;
-          console.log(previous);
-          let start = previous.startPos;
-          let end = previous.endPos;
-          activeMatch.board[end[0]][end[1]] = previous.piece;
-          activeMatch.board[start[0]][start[1]] = "";
-          previous.piece.position = end;
-          renderBoardState(activeMatch);
-        }
         break;
 
       case "GAME-ABORTED":
