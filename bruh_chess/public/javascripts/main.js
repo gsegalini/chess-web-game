@@ -24,6 +24,14 @@ window.addEventListener('load', function () {
     alert("Rules cookie not found, redirecting you.");
     location.href = "../";
   }
+  else{
+    let cookie = getCookie("rules");
+    let valids = ["1min", "1v1", "5min", "5v5", "10min", "10v10"];
+    if (!(cookie in valids)){
+      alert("Rules cookie has wrong format, redirecting you");
+    location.href = "../";
+    }
+  }
 
   const socket = new WebSocket(url);
   const resign = document.getElementById("resign");
@@ -365,4 +373,10 @@ function Match(color, socket) {
   this.premovePossible = true;
   this.premoveQueue = null;
   this.unsureIfRejected = false;
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
 }
