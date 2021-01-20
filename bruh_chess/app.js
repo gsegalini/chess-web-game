@@ -48,6 +48,7 @@ setInterval(function () {
         gameStats.totalPlayer -= gameObj.joined;
         //console.log(gameObj.joined);
         gameObj.joined = 0;
+        console.log("Deleting game " + i);
         delete websockets[i];
       }
     }
@@ -200,6 +201,7 @@ wss.on("connection", function connection(ws, req, res) {
             if (isWhite && gameObj.isV) gameObj.times["white"]+=gameObj.time;
             if (!isWhite && gameObj.isV) gameObj.times["black"]+=gameObj.time;
             f.sendTimer(gameObj.whiteWebSocket, gameObj.turn, gameObj.times[gameObj.turn])
+            f.sendTimer(gameObj.blackWebSocket, gameObj.turn, gameObj.times[gameObj.turn])
             gameObj.changeTurn();
             if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");
