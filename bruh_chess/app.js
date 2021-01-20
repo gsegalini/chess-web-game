@@ -199,6 +199,7 @@ wss.on("connection", function connection(ws, req, res) {
             f.sendConfirmedMove(gameObj.blackWebSocket, start, end);
             if (isWhite && gameObj.isV) gameObj.times["white"]+=gameObj.time;
             if (!isWhite && gameObj.isV) gameObj.times["black"]+=gameObj.time;
+            f.sendTimer(gameObj.whiteWebSocket, gameObj.turn, gameObj.times[gameObj.turn])
             gameObj.changeTurn();
             if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");
