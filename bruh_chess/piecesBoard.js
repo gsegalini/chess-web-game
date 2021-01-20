@@ -195,40 +195,7 @@ function boardObject() {
             }
         }
 
-        if (_moved === 0) {
-            if (color === "white") {
-                if (x == 4 && y == 7) {
-                    if (this.board[7][7].name === "rw1" && this.board[7][7].moved === 0) {
-                        if (this.board[6][7] == "" && this.board[5][7] == "") {
-                            console.log("castle kingside!");
-                            possibles.push([6, 7]);
-                        }
-                    }
-                    if (this.board[0][7].name === "rw0" && this.board[0][7].moved === 0) {
-                        if (this.board[1][7] == "" && this.board[2][7] == "" && this.board[3][7] == "") {
-                            console.log("castle queenside!");
-                            possibles.push([2, 7]);
-                        }
-                    }
-                }
-
-            } else {
-                if (x == 4 && y == 0) {
-                    if (this.board[7][0].name === "rb0" && this.board[7][0].moved === 0) {
-                        if (this.board[6][0] == "" && this.board[5][0] == "") {
-                            console.log("castle kingside!");
-                            possibles.push([6, 0]);
-                        }
-                    }
-                    if (this.board[0][0].name === "rb1" && this.board[0][0].moved === 0) {
-                        if (this.board[1][0] == "" && this.board[2][0] == "" && this.board[3][0] == "") {
-                            console.log("castle queenside!");
-                            possibles.push([2, 0]);
-                        }
-                    }
-                }
-            }
-        }
+        
         //remove from possibles all enemy moves
 
         var enemy = []
@@ -268,6 +235,42 @@ function boardObject() {
                 }
             }
         }
+        // if (_moved === 0) {
+        //     if (color === "white") {
+        //         if (x == 4 && y == 7) {
+        //             if (this.board[7][7].name === "rw1" && this.board[7][7].moved === 0) {
+        //                 if (this.board[6][7] == "" && this.board[5][7] == "") {
+        //                     console.log("castle kingside!");
+        //                     possibles.push([6, 7]);
+        //                 }
+        //             }
+        //             if (this.board[0][7].name === "rw0" && this.board[0][7].moved === 0) {
+        //                 if (this.board[1][7] == "" && this.board[2][7] == "" && this.board[3][7] == "") {
+        //                     console.log("castle queenside!");
+        //                     possibles.push([2, 7]);
+        //                 }
+        //             }
+        //         }
+
+        //     } else {
+        //         if (x == 4 && y == 0) {
+        //             if (this.board[7][0].name === "rb0" && this.board[7][0].moved === 0) {
+        //                 if (this.board[6][0] == "" && this.board[5][0] == "") {
+        //                     console.log("castle kingside!");
+        //                     possibles.push([6, 0]);
+        //                 }
+        //             }
+        //             if (this.board[0][0].name === "rb1" && this.board[0][0].moved === 0) {
+        //                 if (this.board[1][0] == "" && this.board[2][0] == "" && this.board[3][0] == "") {
+        //                     console.log("castle queenside!");
+        //                     possibles.push([2, 0]);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+
         //console.log(enemy);
         //console.log(enemy.includes([4, 2]))
         for (var i = 0;i<enemy.length;i++){
