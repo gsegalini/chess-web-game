@@ -10,7 +10,7 @@
 let activeMatch;
 const moveAudio = new Audio("./files/move.mp3");
 const captureAudio = new Audio("./files/capture.wav");
-var url = "ws://" + location.host;
+var url = "wss://" + location.host;
 
 
 
