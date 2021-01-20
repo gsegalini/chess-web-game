@@ -182,7 +182,7 @@ wss.on("connection", function connection(ws, req, res) {
         break;
 
       case messages.T_POSSIBLE_MOVE:
-        if (gameObj.status == "WAITING") break;
+        if (gameObj.status == "WAITING" || gameObj.status == "W-WIN" || gameObj.status == "B-WIN") break;
         //check if it is correct guy turn, receive move and check if it is valid, if it is update gameBoard
         if (isWhite && gameObj.turn === "white" || !isWhite && gameObj.turn === "black") {
           let start = oMsg.data[0]; //starting piece place

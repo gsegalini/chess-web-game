@@ -77,7 +77,7 @@ window.addEventListener('load', function () {
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
-    console.log(msg);
+    //console.log(msg);
     switch (msg.type) {
 
       case "START":

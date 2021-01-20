@@ -226,10 +226,9 @@ function boardObject() {
                     }
                     else{
                         var temp = p.board[x][y];
-                        console.log(temp.name);
+                        //console.log(temp.name);
                         p.board[x][y] = "";
                         enemy.push(...p.getMoves());
-                        if (p.name.startsWith("q")) console.log(enemy);
                         p.board[x][y] = temp;
                     }
                 }
