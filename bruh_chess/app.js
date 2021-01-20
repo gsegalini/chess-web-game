@@ -270,9 +270,10 @@ wss.on("connection", function connection(ws, req, res) {
         } 
       }
       if (gameObj.status == "WAITING") gameStats.playerWaiting--;
+      else{gameObj.status = "ABORTED";}
       gameObj.joined--;
       gameStats.totalPlayer--;
-      gameObj.status = "ABORTED";
+      
       try {
         gameObj.whiteWebSocket.close();
         gameObj.whiteWebSocket = "placeholder";
