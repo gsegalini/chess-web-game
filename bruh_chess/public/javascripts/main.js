@@ -394,6 +394,7 @@ function Match(color, socket) {
         }            
     }
     this.board[position[0]][position[1]] = new queen(name, oldP.color, position);
+    this.board[position[0]][position[1]].setBoard(this.board);
 }
 }
 
