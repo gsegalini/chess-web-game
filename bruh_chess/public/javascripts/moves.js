@@ -1,10 +1,3 @@
-/*
-Issues found:
-pawns cant capture other pieces
-pawns give moves that are beyond the board (like -1 or 8)
-pawns can jump over pieces on first move
-*/
-
 
 
 function pawnMove(x, y, color, moved) {
