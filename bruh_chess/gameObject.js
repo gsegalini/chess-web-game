@@ -103,6 +103,27 @@ function gameObject(id, time, isV){
         }
     }, 1000, this)
 
+    //promoto a piece
+    this.promotePiece = function(position){
+        var oldP = this.board()[position[0]][position[1]];
+        if (oldP.color == "white"){
+            const index = this.whiteAlive.indexOf(oldP.name);
+            if (index > -1) {//remove from alive and add the queen
+                this.whiteAlive.splice(index, 1);
+                this.whiteAlive.push("qw");
+            }
+        }
+        else{
+            const index = this.blackAlive.indexOf(oldP.name);
+            if (index > -1) {//remove from alive and add the queen
+                this.blackAlive.splice(index, 1);
+                this.blackAlive.push("qb");
+            }            
+        }
+        this.boardObj.promote(position);
+        this.board()[position[0]][position[1]].setBoard(this.board());
+    }
+
     //initalize pieces
     for (var x = 0;x<8;x++){
         for (var y = 0;y<8;y++){
@@ -124,4 +145,7 @@ if (require.main === module) {
     game.movePiece([0,6], [0,5]);
     console.log(game.validateMove([1,7], [0,5]));
     console.table(game.board());
+    game.promotePiece([0,0]);
+    console.table(game.board());
+    console.log(game.board()[0][0]);
 }

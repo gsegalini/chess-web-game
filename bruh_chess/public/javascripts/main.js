@@ -10,7 +10,7 @@
 let activeMatch;
 const moveAudio = new Audio("./files/move.mp3");
 const captureAudio = new Audio("./files/capture.wav");
-var url = "wss://" + location.host;
+var url = "ws://" + location.host;
 
 
 
@@ -77,15 +77,12 @@ window.addEventListener('load', function () {
 
   socket.onmessage = function (event) {
     const msg = JSON.parse(event.data);
-    //console.log(msg);
+    if (msg.type != "UPDATE-TIMER") console.log(msg);
     switch (msg.type) {
 
       case "START":
         document.getElementById("end-screen").classList.toggle("show")
 
-        
-        
-        
         activeMatch.myMove = (activeMatch.myColor == "white");
         break;
 
@@ -175,6 +172,11 @@ window.addEventListener('load', function () {
         else { 
           enemyTimer.innerHTML = min + ":" + seconds; 
         }
+        break;
+
+      case "PROMOTION":
+        var position = msg.data;
+        activeMatch.promotePiece(position);
         break;
       default:
         console.log("error?");
@@ -371,6 +373,29 @@ function Match(color, socket) {
   this.clickCounter = 0;
   this.premovePossible = true;
   this.premoveQueue = null;
+
+  this.promotePiece = function(position){
+    var oldP = this.board[position[0]][position[1]];
+    if (oldP.color == this.myColor){
+        const index = this.myPieces.indexOf(oldP.name);
+        if (index > -1) {//remove from alive and add the queen
+            this.myPieces.splice(index, 1);
+            var name = "q" + this.myColor[0];
+            this.myPieces.push(name);
+        }
+    }
+    else{
+        const index = this.opponentPieces.indexOf(oldP.name);
+        if (index > -1) {//remove from alive and add the queen
+            this.opponentPieces.splice(index, 1);
+            let opColor = this.myColor == "white" ? "b" : "w";
+            var name = "q" + opColor;
+            this.opponentPieces.push(name);
+        }            
+    }
+    this.board[position[0]][position[1]] = new queen(name, oldP.color, position);
+    this.board[position[0]][position[1]].setBoard(this.board);
+}
 }
 
 function getCookie(name) {

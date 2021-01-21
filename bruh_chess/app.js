@@ -205,7 +205,6 @@ wss.on("connection", function connection(ws, req, res) {
             if (!isWhite && gameObj.isV) gameObj.times["black"]+=gameObj.time;
             f.sendTimer(gameObj.whiteWebSocket, gameObj.turn, gameObj.times[gameObj.turn])
             f.sendTimer(gameObj.blackWebSocket, gameObj.turn, gameObj.times[gameObj.turn])
-            gameObj.changeTurn();
             if (gameObj.checkWin() == "black") {
               f.sendResult(gameObj.blackWebSocket, "WIN");
               f.sendResult(gameObj.whiteWebSocket, "LOSS");
@@ -216,6 +215,24 @@ wss.on("connection", function connection(ws, req, res) {
               f.sendResult(gameObj.whiteWebSocket, "WIN");
               gameObj.setStatus("B-WIN");
             }
+            //check if moved pawn is at the end and promote it
+
+            let moved = gameObj.boardObj.getPiece(end);
+            if (moved.name.startsWith("p")){ //moved is pawn
+              if (moved.color == "white" && end[1] == 0){
+                gameObj.promotePiece(end);
+                f.sendPromotion(gameObj.blackWebSocket, end);
+                f.sendPromotion(gameObj.whiteWebSocket, end);
+              }
+              else if (moved.color == "black" && end[1] == 7){
+                gameObj.promotePiece(end);
+                f.sendPromotion(gameObj.blackWebSocket, end);
+                f.sendPromotion(gameObj.whiteWebSocket, end);
+
+              }
+            }
+            console.log(gameObj.boardObj.getPiece(end));
+            gameObj.changeTurn();
           }
           else {
             console.log("An invalid move was sent");

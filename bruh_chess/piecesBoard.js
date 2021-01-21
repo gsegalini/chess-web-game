@@ -13,6 +13,13 @@ function boardObject() {
     }
     setupPieces(this.board);
 
+    this.promote = function(position){
+        var x = position[0];
+        var y = position[1];
+        var oldPawn = this.board[x][y];
+        var name = "q" + oldPawn.color[0];
+        this.board[x][y] = new queen(name, oldPawn.color, position);
+    }
 
     function setupPieces(board) {
         for (var x = 0; x < 8; x++) {
