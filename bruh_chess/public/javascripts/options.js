@@ -68,6 +68,8 @@ const lookup = {
     bw1: "B",
     kw: "K",
     kb: "K",
+    qw: "Q",
+    qb: "Q",
     qw1: "Q",
     qb1: "Q",
     qw2: "Q",
