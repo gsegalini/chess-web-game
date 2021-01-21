@@ -177,6 +177,7 @@ window.addEventListener('load', function () {
       case "PROMOTION":
         var position = msg.data;
         activeMatch.promotePiece(position);
+        renderBoardState(activeMatch);
         break;
       default:
         console.log("error?");
@@ -373,28 +374,35 @@ function Match(color, socket) {
   this.clickCounter = 0;
   this.premovePossible = true;
   this.premoveQueue = null;
+  this.promotionCounter = 1;
 
   this.promotePiece = function(position){
     var oldP = this.board[position[0]][position[1]];
+    console.log(oldP);
     if (oldP.color == this.myColor){
-        const index = this.myPieces.indexOf(oldP.name);
-        if (index > -1) {//remove from alive and add the queen
+      const index = this.myPieces.indexOf(oldP);
+      if (index > -1) {//remove from alive and add the queen
+        console.log(name);
             this.myPieces.splice(index, 1);
-            var name = "q" + this.myColor[0];
-            this.myPieces.push(name);
+            var name = "q" + this.myColor[0] + this.promotionCounter;
+            this.promotionCounter++;
+            this.board[position[0]][position[1]] = new queen(name, oldP.color, position);
+            this.board[position[0]][position[1]].setBoard(this.board);
+            this.myPieces.push(this.board[position[0]][position[1]]);
         }
     }
     else{
-        const index = this.opponentPieces.indexOf(oldP.name);
+        const index = this.opponentPieces.indexOf(oldP);
         if (index > -1) {//remove from alive and add the queen
             this.opponentPieces.splice(index, 1);
             let opColor = this.myColor == "white" ? "b" : "w";
-            var name = "q" + opColor;
-            this.opponentPieces.push(name);
+            var name = "q" + opColor + this.promotionCounter;
+            this.promotionCounter++;
+            this.board[position[0]][position[1]] = new queen(name, oldP.color, position);
+            this.board[position[0]][position[1]].setBoard(this.board);
+            this.opponentPieces.push(this.board[position[0]][position[1]]);
         }            
     }
-    this.board[position[0]][position[1]] = new queen(name, oldP.color, position);
-    this.board[position[0]][position[1]].setBoard(this.board);
 }
 }
 
