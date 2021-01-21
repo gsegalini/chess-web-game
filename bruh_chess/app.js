@@ -231,7 +231,6 @@ wss.on("connection", function connection(ws, req, res) {
 
               }
             }
-            console.log(gameObj.boardObj.getPiece(end));
             gameObj.changeTurn();
           }
           else {

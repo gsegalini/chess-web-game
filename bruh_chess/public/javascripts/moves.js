@@ -1,21 +1,14 @@
-/*
-Issues found:
-pawns cant capture other pieces
-pawns give moves that are beyond the board (like -1 or 8)
-pawns can jump over pieces on first move
-*/
-
 
 
 function pawnMove(x, y, color, moved) {
   let possibles = [];
   if (color === "black") {
     if (y + 1 < 8) {
-      if (this.board[x][y + 1] === undefined || this.board[x][y + 1] === "") possibles.push([x, y + 1]);
-
-      if (moved === 0)
-        if (this.board[x][y + 2] === undefined || this.board[x][y + 2] === "") possibles.push([x, y + 2]);
-        
+      if (this.board[x][y + 1] === undefined || this.board[x][y + 1] === ""){
+        possibles.push([x, y + 1]);
+        if (moved === 0)
+          if (this.board[x][y + 2] === undefined || this.board[x][y + 2] === "") possibles.push([x, y + 2]);
+        }
       if ((x + 1) < 8 && this.board[x + 1][y + 1] != undefined && this.board[x + 1][y + 1] != "" && this.board[x + 1][y + 1].color != color) {
         possibles.push([x + 1, y + 1]);
       }
@@ -26,11 +19,11 @@ function pawnMove(x, y, color, moved) {
   }
   else {
     if (y - 1 >= 0) {
-      if (this.board[x][y - 1] === undefined || this.board[x][y - 1] === "") possibles.push([x, y - 1]);
-
-      if (moved === 0)
-        if (this.board[x][y - 2] === undefined || this.board[x][y - 2] === "") possibles.push([x, y - 2]);
-      
+      if (this.board[x][y - 1] === undefined || this.board[x][y - 1] === ""){
+        possibles.push([x, y - 1]);
+        if (moved === 0)
+          if (this.board[x][y - 2] === undefined || this.board[x][y - 2] === "") possibles.push([x, y - 2]);
+      }
       if ((x + 1) < 8 && this.board[x + 1][y - 1] != undefined && this.board[x + 1][y - 1] != "" && this.board[x + 1][y - 1].color != color) {
         possibles.push([x + 1, y - 1]);
       }
