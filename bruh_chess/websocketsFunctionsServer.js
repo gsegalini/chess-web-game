@@ -46,4 +46,10 @@ function functions(){
         object.data = [color, time];
         this.sendmessage(socket, object);
     }
+
+    this.sendPromotion = function(socket, position){
+        let object = messages.O_PROMOTION;
+        object.data = position;
+        this.sendmessage(socket, object);
+    }
 }

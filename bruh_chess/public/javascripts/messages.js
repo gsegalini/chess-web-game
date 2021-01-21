@@ -107,4 +107,13 @@
     }
     //data is player color and remaining time
 
+    /**
+     * server to client: promotion of piece
+     */
+    exports.T_PROMOTION = "PROMOTION";
+    exports.O_PROMOTION =  {
+        type: exports.T_PROMOTION,
+        data: null
+    }//data is piece position
+
 })(typeof exports === "undefined" ? (this.Messages = {}) : exports);
