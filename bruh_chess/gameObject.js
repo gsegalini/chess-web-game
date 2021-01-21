@@ -17,7 +17,7 @@ function gameObject(id, time, isV){
     this.draws = 0;
     this.times = {"white": time*60, "black": time*60};
     this.timer = null;
-    this.isV = isV;
+    this.isV = isV;   // Increments 
     this.time = time;
     this.joined = 0;
 
