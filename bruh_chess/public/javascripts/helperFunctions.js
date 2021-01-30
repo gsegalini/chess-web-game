@@ -27,6 +27,8 @@ function renderBoardState(match) {
 
       // makes piece
       if (column != "") {
+        const htmlBoard = document.getElementById("chess-board");
+
         const htmlImage = document.createElement("IMG");
         htmlImage.classList.add("piece");
         htmlImage.style.position = "absolute";
@@ -50,8 +52,8 @@ function renderBoardState(match) {
         if (column.color == match.myColor) {
 
           // Click and hold
-          htmlImage.addEventListener("mousedown", function () {
-            mouseDownFun(match, htmlImage);
+          htmlImage.addEventListener("mousedown", function (event) {
+            mouseDownFun(match, htmlImage, event, htmlBoard);
           }, true)
 
           // Click
@@ -59,7 +61,7 @@ function renderBoardState(match) {
             if(options.clickMove) {
               if(match.clickCounter > 0) {
                 match.clickCounter = 0;
-                mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
+                mouseUpFun(match, event, htmlBoard, htmlImage);
               } else {
                 match.clickCounter++;
               }
@@ -69,7 +71,7 @@ function renderBoardState(match) {
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
             if(!options.clickMove) {
-              mouseUpFun(match, event, document.getElementById("chess-board"), htmlImage);
+              mouseUpFun(match, event, htmlBoard, htmlImage);
             }
 
           }, true)
@@ -79,7 +81,7 @@ function renderBoardState(match) {
             if (match.myMove) {
 
               event.preventDefault();
-              const offset = document.getElementById("chess-board").getBoundingClientRect();
+              const offset = htmlBoard.getBoundingClientRect();
               // Checks correspondence
               if (match.pieceHeld == htmlImage.classList[1]) {
                 const xCord = event.clientX - offset.left - 37;
@@ -353,16 +355,18 @@ function setupPieces(board) {
 }
 
 
-function mouseDownFun(match, htmlImage) {
+function mouseDownFun(match, htmlImage, event, htmlBoard) {
   if (match.myMove) {
-    mouseDownFunHelper(match, htmlImage, false);
+    mouseDownFunHelper(match, htmlImage, false, event, htmlBoard);
   } else if (options.premove && match.premovePossible) {
-    mouseDownFunHelper(match, htmlImage, true);
+    mouseDownFunHelper(match, htmlImage, true, event, htmlBoard);
   }
 
 }
 
-function mouseDownFunHelper(match, htmlImage, pre) {
+function mouseDownFunHelper(match, htmlImage, pre, event, htmlBoard) {
+  console.log(event);
+
   // Finds piece
   const piece = match.myPieces.find((index) => {
     return index.name == htmlImage.classList[1];
@@ -403,6 +407,33 @@ function mouseDownFunHelper(match, htmlImage, pre) {
 
   htmlImage.style.zIndex = "1000"
   match.pieceHeld = htmlImage.classList[1];
+
+  if (match.myMove || pre) {
+
+    event.preventDefault();
+    const offset = htmlBoard.getBoundingClientRect();
+    // Checks correspondence
+    if (match.pieceHeld == htmlImage.classList[1]) {
+      const xCord = event.clientX - offset.left - 37;
+      const yCord = event.clientY - offset.top - 45;
+      // Removes the move if it goes out of focus
+      if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+        const piece = match.myPieces.find((x) => {
+          return x.name == htmlImage.classList[1];
+        })
+        htmlImage.style.zIndex = "10"
+        match.pieceHeld = "";
+        htmlImage.style.left = piece.htmlPosition[0];
+        htmlImage.style.top = piece.htmlPosition[1];
+        match.pieceHTML = null;
+      } else {
+        htmlImage.style.left = xCord + "px";
+        htmlImage.style.top = yCord + "px";
+      }
+    }
+  }
+
+
 }
 
 

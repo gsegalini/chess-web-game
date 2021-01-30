@@ -261,8 +261,8 @@ function drawGameStart(match) {
         if (column.color == match.myColor) {
 
           // Click and hold
-          htmlImage.addEventListener("mousedown", function () {
-            mouseDownFun(match, htmlImage);
+          htmlImage.addEventListener("mousedown", function (event) {
+            mouseDownFun(match, htmlImage, event, htmlBoard);
           }, true)
 
           // Click
