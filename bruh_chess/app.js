@@ -60,14 +60,16 @@ let currentGames = {"1min" : null,
                     "5min" : null, 
                     "5v5" : null, 
                     "10min" : null, 
-                    "10v10" : null,}
+                    "10v10" : null,
+                    "bruh" : null,}
 
-currentGames["1min"] = new gameObject(gameStats.startedGames++, 1, false);   //startedGames will come from the stats tracker
-currentGames["1v1"] = new gameObject(gameStats.startedGames++, 1, true);
-currentGames["5min"] = new gameObject(gameStats.startedGames++, 5, false);
-currentGames["5v5"] = new gameObject(gameStats.startedGames++, 5, true);
-currentGames["10min"] = new gameObject(gameStats.startedGames++, 10, false);
-currentGames["10v10"] = new gameObject(gameStats.startedGames++, 10, true);
+currentGames["1min"] = new gameObject(gameStats.startedGames++, 1, false, false);   //startedGames will come from the stats tracker
+currentGames["1v1"] = new gameObject(gameStats.startedGames++, 1, true, false);
+currentGames["5min"] = new gameObject(gameStats.startedGames++, 5, false, false);
+currentGames["5v5"] = new gameObject(gameStats.startedGames++, 5, true, false);
+currentGames["10min"] = new gameObject(gameStats.startedGames++, 10, false, false);
+currentGames["10v10"] = new gameObject(gameStats.startedGames++, 10, true, false);
+currentGames["bruh"] = new gameObject(gameStats.startedGames++, 5, true, true)
 
 let socketID = 0;
 
@@ -84,6 +86,7 @@ wss.on("connection", function connection(ws, req, res) {
     if (cookies[i].startsWith("rules=")){rules = cookies[i].slice(6); break}
   }
   if (rules == "") {console.log("No rules cookie")};
+
   /**
    * get correct currentGame
    */
