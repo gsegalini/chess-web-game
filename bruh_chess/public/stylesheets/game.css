@@ -104,6 +104,10 @@ img {
   padding-right:10px;
   height:60%;
   width:12%;
+  background: #6F7277;
+}
+
+.active-timer {
   background: #F0F2F4;
 }
 .deadPieces {
@@ -128,6 +132,10 @@ img {
 .focused {
   background-color: #A0C9FF !important;
 }
+.focused-enemy {
+  background-color: #5D9AEB !important;
+}
+
 .focused-premove {
   background-color: #FF6F6F!important;
 }

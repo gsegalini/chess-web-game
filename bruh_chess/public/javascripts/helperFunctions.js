@@ -1,3 +1,145 @@
+
+// Puts the visual pieces on the board
+function drawGameStart(match) {
+  let htmlBoard = document.getElementById("chess-board");
+  let i = 0;
+  let y = 0;
+  let x = 0;
+
+  // Checks which side
+  if (match.myColor == "white") {
+    x = 0;
+  } else {
+    x = 7;
+  }
+
+  for (row of match.board) {
+
+    // Creates the row element
+    const htmlRow = document.createElement("div");
+    htmlRow.classList.add("row");
+
+    // Checks which side
+    if (match.myColor == "white") {
+      y = 0;
+    } else {
+      y = 7;
+    }
+
+    for (column of row) {
+
+      // makes blocks
+      const htmlColumn = document.createElement("div");
+      htmlColumn.classList.add("column");
+      const id = String(x) + String(y);
+      htmlColumn.setAttribute("id", id);
+      if (i % 2 == 0) {
+        htmlColumn.classList.add("white-block");
+      }
+
+      // makes piece
+      if (column != "") {
+        const htmlImage = document.createElement("IMG");
+        htmlImage.classList.add("piece");
+        htmlImage.style.position = "absolute";
+        htmlImage.style.zIndex = "10"
+        htmlImage.style.left = x * 75 + "px";
+        htmlImage.style.top = y * 75 + "px";
+        htmlImage.classList.add(column.name);
+        htmlImage.setAttribute('draggable', false);
+
+        // gives the html attributes to the piece
+        column.htmlPosition = [(x * 75 + "px"), (y * 75 + "px")];
+        column.htmlRef = htmlImage;
+
+        // Import images
+        const color = column.color;
+        const piece = lookup[column.name];
+        const loc = "images/" + color + "_" + piece + ".svg";
+
+        htmlImage.setAttribute("src", loc);
+
+        // Only active pieces get listeners
+        if (column.color == match.myColor) {
+
+          // Click and hold
+          htmlImage.addEventListener("mousedown", function (event) {
+            mouseDownFun(match, htmlImage, event, htmlBoard);
+          }, true)
+
+          // Click
+          htmlImage.addEventListener("click", function (event) {
+            if (options.clickMove) {
+              if (match.clickCounter > 0) {
+                match.clickCounter = 0;
+                mouseUpFun(match, event, htmlBoard, htmlImage);
+              } else {
+                match.clickCounter++;
+              }
+            }
+          }, true)
+
+          // let go of click
+          htmlImage.addEventListener("mouseup", function (event) {
+            if (!options.clickMove) {
+              mouseUpFun(match, event, htmlBoard, htmlImage);
+            }
+
+          }, true)
+
+          // move around while holding
+          htmlImage.addEventListener('mousemove', function (event) {
+            if (match.myMove) {
+
+              event.preventDefault();
+              const offset = htmlBoard.getBoundingClientRect();
+              // Checks correspondence
+              if (match.pieceHeld == htmlImage.classList[1]) {
+                const xCord = event.clientX - offset.left - 37;
+                const yCord = event.clientY - offset.top - 45;
+                // Removes the move if it goes out of focus
+                if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
+                  const piece = match.myPieces.find((x) => {
+                    return x.name == htmlImage.classList[1];
+                  })
+                  htmlImage.style.zIndex = "10"
+                  match.pieceHeld = "";
+                  htmlImage.style.left = piece.htmlPosition[0];
+                  htmlImage.style.top = piece.htmlPosition[1];
+                  match.pieceHTML = null;
+                } else {
+                  htmlImage.style.left = xCord + "px";
+                  htmlImage.style.top = yCord + "px";
+                }
+              }
+            }
+          }, true);
+        }
+        htmlColumn.appendChild(htmlImage);
+      }
+      htmlRow.appendChild(htmlColumn);
+      i++;
+
+
+      if (match.myColor == "white") {
+        y++;
+      } else {
+        y--;
+      }
+    }
+    i++;
+    htmlBoard.appendChild(htmlRow);
+    if (match.myColor == "white") {
+      x++;
+    } else {
+      x--;
+    }
+  }
+}
+
+
+
+
 function renderBoardState(match) {
   let y = 0;
   let x = 0;
@@ -58,19 +200,19 @@ function renderBoardState(match) {
 
           // Click
           htmlImage.addEventListener("click", function (event) {
-            if(options.clickMove) {
-              if(match.clickCounter > 0) {
+            if (options.clickMove) {
+              if (match.clickCounter > 0) {
                 match.clickCounter = 0;
                 mouseUpFun(match, event, htmlBoard, htmlImage);
               } else {
                 match.clickCounter++;
               }
-            } 
-        }, true)
+            }
+          }, true)
 
           // let go of click
           htmlImage.addEventListener("mouseup", function (event) {
-            if(!options.clickMove) {
+            if (!options.clickMove) {
               mouseUpFun(match, event, htmlBoard, htmlImage);
             }
 
@@ -138,6 +280,7 @@ function renderEnemyMove(start, end, match) {
     while (match.currentMove < match.moveHistory.length) {
       goForwardHistory(match);
     }
+    renderBoardState(match);
   }
 
   const piece = match.board[start[0]][start[1]];
@@ -151,7 +294,7 @@ function renderEnemyMove(start, end, match) {
     if (options.sound)
       captureAudio.play();
     match.myDeadPieces.push(checkBlock);
-    drawDeadPieces(checkBlock);
+    drawDeadPieces(piece, match);
     const nameOfRemoved = checkBlock.name;
     document.querySelectorAll("." + nameOfRemoved).forEach(e => e.remove());
     match.opponentPieces.filter((elem) => {
@@ -172,7 +315,7 @@ function renderEnemyMove(start, end, match) {
     endPos,
     endPiece: checkBlock
   });
-  renderTable(startPos, endPos, piece);
+  renderTable(startPos, endPos, piece, match);
 
 
   // makes the positional change
@@ -186,7 +329,6 @@ function renderEnemyMove(start, end, match) {
 
   const pastLoc = String(start[0]) + String(start[1]);
   document.getElementById(pastLoc).classList.add("focused");
-
 
   // Render the move
   const htmlImage = piece.htmlRef;
@@ -212,7 +354,7 @@ function findHTMLLocation(loc, color) {
   return htmlLoc;
 }
 
-function renderTable(start, end, piece) {
+function renderTable(start, end, piece, match) {
   const tBod = document.getElementById('moveTable').getElementsByTagName('tbody')[0];
   const row = tBod.insertRow();
   const cell1 = row.insertCell();
@@ -220,7 +362,7 @@ function renderTable(start, end, piece) {
   const cell3 = row.insertCell();
 
   const pieceInit = letterLookup[piece.name];
-  const newText1 = document.createTextNode(activeMatch.tableIndex + ".");
+  const newText1 = document.createTextNode(match.tableIndex + ".");
   const newText2 = document.createTextNode(pieceInit + xLookup[start[0]] + (8 - start[1]));
   const newText3 = document.createTextNode(pieceInit + xLookup[end[0]] + (8 - end[1]));
 
@@ -228,32 +370,31 @@ function renderTable(start, end, piece) {
   cell2.appendChild(newText2);
   cell3.appendChild(newText3);
 
-  activeMatch.tableIndex++;
+  match.tableIndex++;
 }
 
-function renderGameStart(msg, socket) {
-  activeMatch = new Match(msg.data, socket);
-  drawGameStart(activeMatch);
+function renderGameStart(match) {
+  drawGameStart(match);
 
   const goBack = document.getElementById("goBack");
   const goForward = document.getElementById("goForward");
 
-  goBack.addEventListener("click", () => goBackHistory(activeMatch));
-  goForward.addEventListener("click", () => goForwardHistory(activeMatch));
+  goBack.addEventListener("click", () => goBackHistory(match));
+  goForward.addEventListener("click", () => goForwardHistory(match));
 
 
   window.addEventListener('mousemove', function (event) {
     event.preventDefault();
     const offset = document.getElementById("chess-board").getBoundingClientRect();
     // Checks correspondence
-    if (activeMatch.pieceHTML != null) {
+    if (match.pieceHTML != null) {
       const xCord = event.clientX - offset.left - 37;
       const yCord = event.clientY - offset.top - 45;
       // Removes the move if it goes out of focus
       if (xCord < -40 || xCord > 570 || yCord > 580 || yCord < -40) {
       } else {
-        activeMatch.pieceHTML.style.left = xCord + "px";
-        activeMatch.pieceHTML.style.top = yCord + "px";
+        match.pieceHTML.style.left = xCord + "px";
+        match.pieceHTML.style.top = yCord + "px";
       }
     }
   })
@@ -295,7 +436,7 @@ function goForwardHistory(match) {
   }
 }
 
-function drawDeadPieces(piece) {
+function drawDeadPieces(piece, match) {
 
   const htmlImage = document.createElement("IMG");
   htmlImage.classList.add("deadPiece");
@@ -312,7 +453,7 @@ function drawDeadPieces(piece) {
   deadContainer.classList.add("deadcontainer");
   deadContainer.appendChild(htmlImage)
 
-  if (color == activeMatch.myColor) {
+  if (color == match.myColor) {
     document.getElementById("myPieces").appendChild(deadContainer);
   } else {
     document.getElementById("enemyPieces").appendChild(deadContainer);
@@ -432,10 +573,7 @@ function mouseDownFunHelper(match, htmlImage, pre, event, htmlBoard) {
       }
     }
   }
-
-
 }
-
 
 
 
@@ -467,7 +605,6 @@ function mouseUpFunHelper(match, event, htmlBoard, htmlImage) {
     // Confirms move
     if (id == position) {
       document.querySelectorAll(".container-movable").forEach(e => e.remove());
-
       // Sets coordinates for piece
       const normalCord = normalizeCoordinates(xCord, yCord);
       piece.htmlPosition = normalCord;
@@ -477,7 +614,7 @@ function mouseUpFunHelper(match, event, htmlBoard, htmlImage) {
       if (checkBlock != "") {
         if (options.sound) captureAudio.play();
         match.opponentDeadPieces.push(checkBlock);
-        drawDeadPieces(checkBlock);
+        drawDeadPieces(piece, match)
         const nameOfRemoved = checkBlock.name;
         document.querySelectorAll("." + nameOfRemoved).forEach(e => e.remove());
         match.opponentPieces.filter((elem) => {
@@ -498,7 +635,7 @@ function mouseUpFunHelper(match, event, htmlBoard, htmlImage) {
         endPos,
         endPiece: checkBlock
       });
-      renderTable(startPos, endPos, piece);
+      renderTable(startPos, endPos, piece, match);
 
       // makes the positional change
       match.board[startPos[0]][startPos[1]] = "";
@@ -602,3 +739,8 @@ function premoveMove(match, event, htmlBoard, htmlImage) {
 
 }
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
