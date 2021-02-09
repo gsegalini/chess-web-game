@@ -8,3 +8,6 @@ npm install
 npm start
 ```
 Then you can connect at localhost:3000
+
+Playable at:
+https://bruh-chess.herokuapp.com/
