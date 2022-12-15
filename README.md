@@ -10,4 +10,4 @@ npm start
 Then you can connect at localhost:3000
 
 Playable at:
-https://bruh-chess.herokuapp.com/ (not anymore as Heroku removed free hosting :()
+https://bruh-chess.herokuapp.com/ (not anymore as Heroku removed free hosting :( )
